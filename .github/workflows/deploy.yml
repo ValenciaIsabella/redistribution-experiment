@@ -20,30 +20,38 @@ jobs:
           JATOS_REMOTE_TOKEN: ${{ secrets.JATOS_REMOTE_TOKEN }}
         run: |
           STUDY_ID="23660"
-          
-          echo "🔎 Base URL: $JATOS_REMOTE_URL"
-          echo "🔎 Study ID: $STUDY_ID"
 
-          for file in *.html; do
+          echo "Base URL: $JATOS_REMOTE_URL"
+          echo "Study ID: $STUDY_ID"
+
+          shopt -s nullglob
+          html_files=(*.html)
+
+          if [ ${#html_files[@]} -eq 0 ]; then
+            echo "No .html files found in the repository root — nothing to upload."
+            exit 1
+          fi
+
+          for file in "${html_files[@]}"; do
             FILENAME=$(basename "$file")
             echo ""
-            echo "📤 Uploading $FILENAME via PUT (overwrite)..."
-            
+            echo "Uploading $FILENAME..."
+
             HTTP_CODE=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
-              -X PUT \
+              -X POST \
               -H "Authorization: Bearer $JATOS_REMOTE_TOKEN" \
               -H "accept: application/json" \
-              -F "file=@$file;type=text/html" \
+              -F "studyAssetsFile=@$file" \
               "$JATOS_REMOTE_URL/jatos/api/v1/studies/$STUDY_ID/assets/$FILENAME")
-            
-            echo "Status: $HTTP_CODE"
+
+            echo "HTTP Status: $HTTP_CODE"
             cat /tmp/response.txt
             echo ""
 
             if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
-              echo "❌ Failed to upload $FILENAME (HTTP $HTTP_CODE)"
+              echo "FAILED: $FILENAME (HTTP $HTTP_CODE)"
               exit 1
             else
-              echo "✅ $FILENAME uploaded successfully"
+              echo "OK: $FILENAME uploaded successfully"
             fi
           done

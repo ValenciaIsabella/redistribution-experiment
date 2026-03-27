@@ -14,19 +14,19 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install jatos-cli
-        run: |
-          curl -L "https://github.com/JATOS/JATOS_CLI/releases/latest/download/jatos_linux_amd64" -o jatos
-          chmod +x jatos
-          ./jatos --version || echo "Binary check failed"
-
-      - name: Deploy study assets to JATOS mindprobe
+      - name: Upload HTML files to JATOS mindprobe
         env:
           JATOS_REMOTE_URL: ${{ secrets.JATOS_REMOTE_URL }}
           JATOS_REMOTE_TOKEN: ${{ secrets.JATOS_REMOTE_TOKEN }}
         run: |
-          ./jatos --url "$JATOS_REMOTE_URL" \
-                  --token "$JATOS_REMOTE_TOKEN" \
-                  update-study-assets \
-                  --uuid "2258638b-1e40-4a76-9c2a-bad96df69fab" \
-                  --dir .
+          STUDY_ID="23660"
+          for file in *.html; do
+            echo "📤 Uploading $file..."
+            curl -s -w "Status: %{http_code}\n" \
+              -X POST \
+              -H "Authorization: Bearer $JATOS_REMOTE_TOKEN" \
+              -H "accept: application/json" \
+              -F "file=@$file;type=text/html" \
+              "$JATOS_REMOTE_URL/jatos/api/v1/studies/$STUDY_ID/assets/$file"
+            echo ""
+          done

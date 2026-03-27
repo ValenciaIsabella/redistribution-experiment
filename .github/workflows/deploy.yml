@@ -16,8 +16,9 @@ jobs:
 
       - name: Install jatos-cli
         run: |
-          curl -L https://github.com/JATOS/JATOS_CLI/releases/latest/download/jatos -o jatos
+          curl -L "https://github.com/JATOS/JATOS_CLI/releases/latest/download/jatos_linux_amd64" -o jatos
           chmod +x jatos
+          ./jatos --version || echo "Binary check failed"
 
       - name: Deploy study assets to JATOS mindprobe
         env:

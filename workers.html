@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assignment 1 – Code Recognition Task</title>
+  <script src="/assets/javascripts/jatos.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #e4dcc5;
+      color: #311a1a;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 16px;
+      min-height: 100vh;
+    }
+
+    /* ── SCREENS ────────────────────────────────── */
+    .screen {
+      display: none;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 30px 60px;
+    }
+    .screen.active { display: block; }
+
+    /* ── INSTRUCTIONS SCREEN ─────────────────────── */
+    #screen-instructions h2 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+    #screen-instructions p {
+      margin-bottom: 14px;
+      line-height: 1.65;
+    }
+    #screen-instructions .sub-heading {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .example-label  { font-weight: bold; margin: 28px 0 8px; }
+    .example-target { margin-bottom: 12px; }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px 8px;
+      max-width: 600px;
+      margin-bottom: 28px;
+    }
+    .example-grid .cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 0;
+    }
+    .example-grid .cell input[type="checkbox"] {
+      width: 13px; height: 13px;
+      cursor: default; pointer-events: none;
+      accent-color: #c0392b;
+    }
+    .example-grid .cell.hit  { color: #208027; font-weight: bold; }
+    .example-grid .cell.miss { color: #1e1d1d; }
+
+    /* ── BUTTONS ───────────────────────────────── */
+    .btn-next {
+      display: inline-block;
+      padding: 6px 18px;
+      background: transparent;
+      border: 2px solid #611111;
+      color: #d44f4f;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 16px;
+      float: right;
+    }
+    .btn-next:hover { background: #611111; color: #d5afaf; }
+
+    .btn-center {
+      display: inline-block;
+      padding: 10px 28px;
+      background: #502c2c;
+      border: 1px solid #888;
+      color: #e1dfdf;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 36px;
+    }
+    .btn-center:hover { background: #3d5166; }
+
+    #screen-task header {
+      text-align: center;
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+    #target-display { font-size: 15px; margin-bottom: 14px; }
+
+    #timer-bar-wrap {
+      width: 100%; height: 8px;
+      background: #333;
+      margin-bottom: 18px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #timer-bar {
+      height: 100%;
+      background: #e74c3c;
+      width: 100%;
+      transition: width 1s linear;
+    }
+    #round-info { font-size: 12px; color: #aaa; margin-bottom: 10px; text-align: right; }
+
+    #matrix-container {
+      display: grid;
+      grid-template-columns: repeat(20, auto);
+      gap: 3px 8px;
+      justify-content: start;
+    }
+    .matrix-cell { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .matrix-cell input[type="checkbox"] { width: 13px; height: 13px; cursor: pointer; accent-color: #e74c3c; }
+    .matrix-cell label { cursor: pointer; font-size: 13px; font-family: 'Courier New', Courier, monospace; color: #444242; }
+    .matrix-cell label.checked-correct { color: #2ecc71; }
+    .matrix-cell label.checked-wrong   { color: #e74c3c; text-decoration: line-through; }
+
+    /* ── PRACTICE SCREEN ────────────────────── */
+    #screen-practice header {
+      text-align: center;
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+    #practice-target-display { font-size: 15px; margin-bottom: 14px; }
+
+    #practice-timer-bar-wrap {
+      width: 100%; height: 8px;
+      background: #333;
+      margin-bottom: 18px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #practice-timer-bar {
+      height: 100%;
+      background: #e74c3c;
+      width: 100%;
+      transition: width 1s linear;
+    }
+    #practice-round-info { font-size: 12px; color: #aaa; margin-bottom: 10px; text-align: right; }
+
+    #practice-matrix-container {
+      display: grid;
+      grid-template-columns: repeat(20, auto);
+      gap: 3px 8px;
+      justify-content: start;
+    }
+    .practice-matrix-cell { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .practice-matrix-cell input[type="checkbox"] { width: 13px; height: 13px; cursor: pointer; accent-color: #e74c3c; }
+    .practice-matrix-cell label { cursor: pointer; font-size: 13px; font-family: 'Courier New', Courier, monospace; color: #444242; }
+    .practice-matrix-cell label.checked-correct { color: #2ecc71; }
+    .practice-matrix-cell label.checked-wrong   { color: #e74c3c; text-decoration: line-through; }
+
+    /* ── FEEDBACK SCREENS ───────────────────────── */
+    .feedback-screen { text-align: center; padding-top: 70px; }
+    .feedback-screen h2 { font-size: 22px; margin-bottom: 24px; }
+
+    /* Score box */
+    .score-box {
+      display: inline-block;
+      background: #f0e8d5;
+      border: 1px solid #a08070;
+      padding: 28px 56px;
+      margin-bottom: 20px;
+    }
+    .score-number { font-size: 52px; font-weight: bold; color: rgb(96, 55, 62); }
+    .score-label  { font-size: 13px; color: #3d2c2c; margin-top: 6px; }
+
+    /* Breakdown table */
+    .breakdown-table {
+      display: inline-grid;
+      grid-template-columns: auto auto;
+      gap: 10px 36px;
+      text-align: left;
+      background: #f0e8d5;
+      border: 1px solid #a08070;
+      padding: 22px 40px;
+      margin-bottom: 22px;
+    }
+    .bk-label { color: #7a5a5a; }
+    .bk-value { font-weight: bold; color: #311a1a; text-align: right; }
+    .bk-divider { grid-column: 1 / -1; border-top: 1px solid #c8b8a0; margin: 4px 0; }
+
+    .clearfix::after { content:''; display:block; clear:both; }
+
+    /* ── WELCOME SCREEN ─────────────────────────── */
+    #screen-welcome h1 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    #screen-welcome p {
+      margin-bottom: 14px;
+      line-height: 1.7;
+    }
+        .part-desc { line-height: 1.6; }
+    .part-desc strong { display: block; margin-bottom: 3px; }
+    .welcome-meta {
+      font-size: 13px;
+      color: #5a3a3a;
+      margin-top: 16px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+
+  
+<!-- SCREEN 0 – WELCOME -->
+<div id="screen-welcome" class="screen active">
+  <h1>Welcome</h1>
+
+  <p>Thank you for taking part in this study. We are investigating how people perform on tasks. Your participation will later help us understand decision-making in real-world scenarios.</p>
+
+  <p><strong>How this works:</strong></p>
+  <ul style="margin-left: 30px;">
+    <li>You will complete a brief performance task that requires focus and attention.</li>
+    <li><strong>Some participants will be selected for payment</strong> based on their task performance.</li>
+    <li>If selected, another participant will decide whether to distribute $8 between you and another participant.</li>
+    <li>We will then contact the selected participants via email to inform them of their earnings.</li>
+  </ul>
+
+  <p style="margin-top: 30px;">The task will take approximately <strong>4–6 minutes</strong> to complete.</p>
+  
+  <p class="welcome-meta"><strong>Participant Information & Consent</strong><br>
+    This study is conducted by Isabella Valencia at the Paris School of Economics, under the supervision of Professor Andrea FM Martinangeli. 
+    Your participation is entirely voluntary and you may withdraw at any time by closing this browser window. 
+    Data is collected anonymously under GDPR regulations and will be used for academic purposes only. Your email will only be used to contact you if you are selected for payment. 
+    If you have any questions about the study, please contact Isabella Valencia by clicking <a href="mailto:valenciaisabellap@gmail.com">here</a>.<br>
+    By clicking "Accept and Start Task", you confirm you are at least 18 years old and consent to these terms.</p>
+   
+  <div class="clearfix">
+    <button class="btn-next" id="welcome-btn" style="float: none; margin: 36px auto 0; display: block;">Accept and Start Task</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 1 – INSTRUCTIONS   (unchanged)
+════════════════════════════════════════════════ -->
+
+<div id="screen-instructions" class="screen">
+
+  <p class="sub-heading">Part 1:</p>
+
+  <p>
+    You are now asked to work on a code recognition task for a total of 4 minutes.
+    We will measure your performance by the number of points you receive.
+  </p>
+
+  <p>
+    <strong>The scoring works as follows:</strong>
+    <ul style="margin-top: 5px; margin-left: 40px;">
+      <li><span style="color: #28a745;">+1 point</span> for each correct code found.</li>
+      <li><span style="color: #dc3545;">-1 point</span> for each wrong code checked.</li>
+      <li>No penalty for missing a code.</li>
+    </ul>
+  </p>
+
+  <p>
+    The task involves <strong>5 rounds</strong>, each lasting <strong>45 seconds</strong> and displaying a different target code. Your goal is to select as many cells containing the target code as you can within the time limit. After the final round, you'll complete a brief survey about your experience before starting the second part of the study.
+  </p>
+
+  <p>
+  Press >> to get a simplified example and a practice round before starting the real task.
+  </p>
+  <div class="clearfix">
+    <button class="btn-next" id="start-btn">&gt;&gt;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 1.3 – EXAMPLE (INTERMEDIATE)
+════════════════════════════════════════════════ -->
+
+<div id="screen-example" class="screen">
+
+  <p style="margin-bottom: 20px;">
+  Here is a simplified example of the task:
+  </p>
+
+  <div class="example-label">This is a simplified example: </div>
+  <div class="example-target">If the code you must check off is: <strong>123</strong>, you must find and click as many "123" instances as possible in the grid.</div>
+
+  <div class="example-grid" id="example-grid"></div>
+
+  <p style="font-weight: bold; color: #611111; margin-top: 20px;">
+  Before starting the real task, you will have the opportunity to practice for 15 seconds
+  to familiarize yourself with the interface. This won't affect your score in any way, but we encourage you to try your best in the practice round to get a real feel for the task.
+  </p>
+
+  <p style="margin-top: 20px;">
+  When you are ready, press >> to start the short practice session.
+  </p>
+
+  <div class="clearfix">
+    <button class="btn-next" id="example-start-btn">&gt;&gt;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 1.5 – PRACTICE TASK
+════════════════════════════════════════════════ -->
+<div id="screen-practice" class="screen">
+  <header>Practice Round</header>
+
+  <p style="margin-bottom: 16px; font-size: 14px; line-height: 1.6;">
+    Remember: you will be given <strong>1 point</strong> for each correct marking. You will be <strong>subtracted 1 point</strong> if you check off a wrong code, but you will not lose any points for failing to check off all occurrences of the correct code.<br><br>
+    <em>This is a practice session and will not affect your total score.</em>
+  </p>
+
+  <div id="practice-target-display">The code you must check off is: <strong id="practice-target-code">???</strong></div>
+
+  <div id="practice-timer-bar-wrap"><div id="practice-timer-bar"></div></div>
+  <div id="practice-round-info">Practice Round</div>
+
+  <div id="practice-matrix-container"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 1.6 – PRACTICE FEEDBACK
+════════════════════════════════════════════════ -->
+<div id="screen-practice-feedback" class="screen feedback-screen">
+  <h2>Practice Results</h2>
+
+  <div class="breakdown-table">
+    <span class="bk-label">Correct markings</span>
+    <span class="bk-value" id="practice-fb-hits">—</span>
+    <span class="bk-label">Wrong markings</span>
+    <span class="bk-value" id="practice-fb-fa">—</span>
+    <div class="bk-divider"></div>
+    <span class="bk-label"><strong>Total score</strong> (correct − wrong)</span>
+    <span class="bk-value" id="practice-fb-total" style="font-size:18px;">—</span>
+  </div>
+
+  <br>
+
+  <div class="score-box">
+    <div class="score-number" id="practice-score-number">0</div>
+    <div class="score-label">Points obtained in practice</div>
+  </div>
+  <br>
+  <button class="btn-center" id="practice-continue-btn">Start Real Task &gt;&gt;</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 3 – TASK RESULTS (after all rounds)
+════════════════════════════════════════════════ -->
+<div id="screen-task-results" class="screen feedback-screen">
+  <h2>Task Completed!</h2>
+
+  <div class="breakdown-table">
+    <span class="bk-label">Correct markings</span>
+    <span class="bk-value" id="task-fb-hits">—</span>
+    <span class="bk-label">Wrong markings</span>
+    <span class="bk-value" id="task-fb-fa">—</span>
+    <div class="bk-divider"></div>
+    <span class="bk-label"><strong>Total score</strong> (correct − wrong)</span>
+    <span class="bk-value" id="task-fb-total" style="font-size:18px;">—</span>
+  </div>
+
+  <br>
+
+  <div class="score-box">
+    <div class="score-number" id="task-score-number">0</div>
+    <div class="score-label">Total Points Earned</div>
+  </div>
+  <br>
+  <button class="btn-center" id="task-continue-btn">Continue &gt;&gt;</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 4 – EMAIL COLLECTION
+════════════════════════════════════════════════ -->
+<div id="screen-email" class="screen feedback-screen">
+  <h2>Almost Done!</h2>
+  
+  <p style="margin-bottom: 20px; font-size: 15px; line-height: 1.7; max-width: 600px; text-align: center; margin-left: auto; margin-right: auto;">
+    Some participants will be selected for payment based on their performance. If you are selected, we will contact you using the email address you provide. Please enter your email below.
+  </p>
+
+  <div style="max-width: 400px; margin: 30px auto; text-align: center;">
+    <input type="email" id="participant-email" placeholder="Enter your email address" style="width: 100%; padding: 10px; font-size: 14px; border: 1px solid #a08070; border-radius: 4px; background: #f5f0e4; color: #311a1a;">
+    <button class="btn-center" id="email-submit-btn" style="margin-top: 20px; width: 100%;">Submit &gt;&gt;</button>
+  </div>
+  
+  <p style="font-size: 12px; color: #5a3a3a; text-align: center; margin-top: 20px;">
+    Your email will be stored securely and only used for payment purposes.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 5 – THANK YOU / FINAL
+════════════════════════════════════════════════ -->
+<div id="screen-final" class="screen feedback-screen">
+  <h2 style="margin-bottom: 30px;">Thank You for Participating!</h2>
+  
+  <p style="font-size: 16px; line-height: 1.8; max-width: 600px; margin: 0 auto; text-align: center;">
+    Your results have been saved successfully. We appreciate your participation in this research study.
+  </p>
+  
+  <p style="font-size: 14px; color: #5a3a3a; margin-top: 20px; text-align: center;">
+    If you have been selected for payment, we will contact you at the email address you provided.
+  </p>
+  
+  <p style="font-size: 12px; color: #7a5a5a; margin-top: 30px; text-align: center; font-style: italic;">
+    Study ID: 2258638b-1e40-4a76-9c2a-bad96df69fab
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 2 – TASK
+════════════════════════════════════════════════ -->
+<div id="screen-task" class="screen">
+  <header>Code Recognition Task</header>
+
+  <div id="target-display">The code you must check off is: <strong id="target-code">???</strong></div>
+
+  <div id="timer-bar-wrap"><div id="timer-bar"></div></div>
+  <div id="round-info">Round <span id="current-round">1</span> of <span id="total-rounds">5</span></div>
+
+  <div id="matrix-container"></div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────
+   CONFIGURATION    
+───────────────────────────────────────────── */
+const CONFIG = {
+  ROUND_SECONDS : 45,
+  PRACTICE_SECONDS : 15,
+  TOTAL_ROUNDS  : 5,
+  MATRIX_COLS   : 20,
+  MATRIX_ROWS   : 16,
+  TARGET_FREQ   : 0.15,
+  MIN_RANGE     : 100,
+  MAX_RANGE     : 999,
+};
+
+/* ─────────────────────────────────────────────
+   STATE    
+───────────────────────────────────────────── */
+let state = {
+  totalCorrect : 0,
+  totalWrong   : 0,
+  totalScore   : 0,
+  currentRound : 0,
+  targetCode   : '',
+  roundTimer   : null,
+  roundSeconds : 0,
+  checkboxData : [],
+  roundResults : [],
+  practiceScore : 0,
+  practiceCorrect : 0,
+  practiceWrong : 0,
+  email        : null,
+};
+
+/* ─────────────────────────────────────────────
+   UTILS    
+───────────────────────────────────────────── */
+function randInt(lo, hi) {
+  return Math.floor(Math.random() * (hi - lo + 1)) + lo;
+}
+function pad3(n) { return String(n).padStart(3, '0'); }
+function generateTarget() { return pad3(randInt(CONFIG.MIN_RANGE, CONFIG.MAX_RANGE)); }
+function generateDistractor(target) {
+  let d;
+  do { d = pad3(randInt(CONFIG.MIN_RANGE, CONFIG.MAX_RANGE)); } while (d === target);
+  return d;
+}
+
+/* ─────────────────────────────────────────────
+   EXAMPLE GRID    
+───────────────────────────────────────────── */
+(function buildExample() {
+  const items = [
+    { v: '123', col: 'hit'  }, { v: '283', col: 'miss' },
+    { v: '231', col: 'miss' }, { v: '123', col: 'hit'  },
+    { v: '952', col: 'miss' }, { v: '641', col: 'miss' },
+    { v: '864', col: 'miss' }, { v: '820', col: 'miss' },
+    { v: '123', col: 'hit'  }, { v: '462', col: 'miss' },
+    { v: '791', col: 'miss' }, { v: '123', col: 'hit'  },
+  ];
+  const grid = document.getElementById('example-grid');
+  items.forEach(item => {
+    const cell = document.createElement('div');
+    cell.className = `cell ${item.col}`;
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    if (item.col === 'hit') cb.checked = true;
+    const lbl = document.createElement('span');
+    lbl.textContent = item.v;
+    cell.appendChild(cb);
+    cell.appendChild(lbl);
+    grid.appendChild(cell);
+  });
+})();
+
+/* ─────────────────────────────────────────────
+   MATRIX BUILDER    
+───────────────────────────────────────────── */
+function buildMatrix(target) {
+  const total    = CONFIG.MATRIX_COLS * CONFIG.MATRIX_ROWS;
+  const nTargets = Math.round(total * CONFIG.TARGET_FREQ);
+  const codes    = [];
+  for (let i = 0; i < nTargets; i++)
+    codes.push({ value: target, isTarget: true });
+  for (let i = 0; i < total - nTargets; i++)
+    codes.push({ value: generateDistractor(target), isTarget: false });
+  for (let i = codes.length - 1; i > 0; i--) {
+    const j = randInt(0, i);
+    [codes[i], codes[j]] = [codes[j], codes[i]];
+  }
+  return codes.map(c => ({ ...c, checked: false }));
+}
+
+function renderMatrix() {
+  const container = document.getElementById('matrix-container');
+  container.innerHTML = '';
+  state.checkboxData.forEach((item, idx) => {
+    const cell = document.createElement('div');
+    cell.className = 'matrix-cell';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id   = `cb_${idx}`;
+    cb.checked = item.checked;
+    const lbl = document.createElement('label');
+    lbl.htmlFor     = `cb_${idx}`;
+    lbl.textContent = item.value;
+    cb.addEventListener('change', () => handleCheck(idx, cb.checked, lbl));
+    cell.appendChild(cb);
+    cell.appendChild(lbl);
+    container.appendChild(cell);
+  });
+}
+
+function handleCheck(idx, checked, lbl) {
+  const item = state.checkboxData[idx];
+  if (checked) {
+    item.checked = true;
+    lbl.classList.add(item.isTarget ? 'checked-correct' : 'checked-wrong');
+  } else {
+    item.checked = false;
+    lbl.classList.remove('checked-correct', 'checked-wrong');
+  }
+}
+
+/* ─────────────────────────────────────────────
+   PRACTICE LOGIC    
+───────────────────────────────────────────── */
+function startPractice() {
+  const target = generateTarget();
+  const matrix = buildMatrix(target);
+  document.getElementById('practice-target-code').textContent = target;
+  renderPracticeMatrix(matrix);
+  startPracticeTimer(target, matrix);
+}
+
+function renderPracticeMatrix(matrix) {
+  const container = document.getElementById('practice-matrix-container');
+  container.innerHTML = '';
+  matrix.forEach((item, idx) => {
+    const cell = document.createElement('div');
+    cell.className = 'practice-matrix-cell';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id   = `pcb_${idx}`;
+    cb.checked = item.checked;
+    const lbl = document.createElement('label');
+    lbl.htmlFor     = `pcb_${idx}`;
+    lbl.textContent = item.value;
+    cb.addEventListener('change', () => handlePracticeCheck(idx, cb.checked, lbl, item));
+    cell.appendChild(cb);
+    cell.appendChild(lbl);
+    container.appendChild(cell);
+  });
+}
+
+function handlePracticeCheck(idx, checked, lbl, item) {
+  if (checked) {
+    lbl.classList.add(item.isTarget ? 'checked-correct' : 'checked-wrong');
+  } else {
+    lbl.classList.remove('checked-correct', 'checked-wrong');
+  }
+}
+
+function startPracticeTimer(target, matrix) {
+  const bar = document.getElementById('practice-timer-bar');
+  bar.style.width = '100%';
+  let elapsed = 0;
+  const timer = setInterval(() => {
+    elapsed++;
+    const pct = Math.max(0, ((CONFIG.PRACTICE_SECONDS - elapsed) / CONFIG.PRACTICE_SECONDS) * 100);
+    bar.style.width = pct + '%';
+    if (elapsed >= CONFIG.PRACTICE_SECONDS) {
+      clearInterval(timer);
+      endPractice(target, matrix);
+    }
+  }, 1000);
+}
+
+function endPractice(target, matrix) {
+  let correct = 0, wrong = 0;
+  matrix.forEach((item, idx) => {
+    const cb = document.getElementById(`pcb_${idx}`);
+    if (cb.checked) {
+      if (item.isTarget) correct++;
+      else wrong++;
+    }
+  });
+  state.practiceCorrect = correct;
+  state.practiceWrong = wrong;
+  state.practiceScore = correct - wrong;
+  document.getElementById('practice-fb-hits').textContent = state.practiceCorrect;
+  document.getElementById('practice-fb-fa').textContent = state.practiceWrong;
+  document.getElementById('practice-fb-total').textContent = state.practiceScore;
+  document.getElementById('practice-score-number').textContent = state.practiceScore;
+  showScreen('screen-practice-feedback');
+}
+
+/* ─────────────────────────────────────────────
+   ROUND LOGIC    
+───────────────────────────────────────────── */
+function startRound(roundNumber) {
+  state.currentRound = roundNumber;
+  state.targetCode   = generateTarget();
+  state.checkboxData = buildMatrix(state.targetCode);
+  document.getElementById('target-code').textContent   = state.targetCode;
+  document.getElementById('current-round').textContent = roundNumber;
+  document.getElementById('total-rounds').textContent  = CONFIG.TOTAL_ROUNDS;
+  renderMatrix();
+  startTimer();
+}
+
+function startTimer() {
+  const bar = document.getElementById('timer-bar');
+  bar.style.width = '100%';
+  let elapsed = 0;
+  state.roundTimer = setInterval(() => {
+    elapsed++;
+    const pct = Math.max(0, ((CONFIG.ROUND_SECONDS - elapsed) / CONFIG.ROUND_SECONDS) * 100);
+    bar.style.width = pct + '%';
+    if (elapsed >= CONFIG.ROUND_SECONDS) {
+      clearInterval(state.roundTimer);
+      endRound();
+    }
+  }, 1000);
+}
+
+function endRound() {
+  let correct = 0, wrong = 0;
+  state.checkboxData.forEach(item => {
+    if (item.checked) { if (item.isTarget) correct++; else wrong++; }
+  });
+  state.totalCorrect += correct;
+  state.totalWrong   += wrong;
+  state.totalScore   += (correct - wrong);
+  state.roundResults.push({
+    round: state.currentRound, target: state.targetCode,
+    correct, wrong, score: correct - wrong,
+  });
+  if (state.currentRound < CONFIG.TOTAL_ROUNDS) {
+    startRound(state.currentRound + 1);
+  } else {
+    showTaskResults();
+  }
+}
+
+/* ─────────────────────────────────────────────
+   SHOW TASK RESULTS
+───────────────────────────────────────────── */
+function showTaskResults() {
+  document.getElementById('task-fb-hits').textContent = state.totalCorrect;
+  document.getElementById('task-fb-fa').textContent = state.totalWrong;
+  document.getElementById('task-fb-total').textContent = state.totalScore;
+  document.getElementById('task-score-number').textContent = state.totalScore;
+  showScreen('screen-task-results');
+}
+
+/* ─────────────────────────────────────────────
+   FINISH TASK
+───────────────────────────────────────────── */
+function finishTask() {
+  const payload = {
+    totalScore   : state.totalScore,
+    totalCorrect : state.totalCorrect,
+    totalWrong   : state.totalWrong,
+    roundResults : state.roundResults,
+    practiceScore: state.practiceScore,
+    practiceCorrect: state.practiceCorrect,
+    practiceWrong: state.practiceWrong,
+    participantEmail: state.email,
+  };
+
+  console.log('TASK COMPLETE – payload:', JSON.stringify(payload));
+
+  // Show final thank you screen first
+  showScreen('screen-final');
+
+  // Submit to JATOS with callback to end study
+  if (typeof jatos !== 'undefined') {
+    jatos.submitResultData(payload, function() {
+      console.log('Data submitted successfully');
+      // Wait 6 seconds for user to read final message, then end study
+      setTimeout(function() {
+        jatos.endStudy();
+      }, 6000);
+    });
+  } else {
+    // Fallback if JATOS not available (for testing)
+    console.log('JATOS not available, study would end here');
+  }
+}
+
+/* ─────────────────────────────────────────────
+   SCREEN SWITCHING
+───────────────────────────────────────────── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ─────────────────────────────────────────────
+   WELCOME BUTTON
+───────────────────────────────────────────── */
+document.getElementById('welcome-btn').addEventListener('click', () => {
+  showScreen('screen-instructions');
+});
+
+/* ─────────────────────────────────────────────
+   START BUTTON (from instructions to example)
+───────────────────────────────────────────── */
+document.getElementById('start-btn').addEventListener('click', () => {
+  showScreen('screen-example');
+});
+
+/* ─────────────────────────────────────────────
+   EXAMPLE START BUTTON (from example to practice)
+───────────────────────────────────────────── */
+document.getElementById('example-start-btn').addEventListener('click', () => {
+  showScreen('screen-practice');
+  startPractice();
+});
+
+/* ─────────────────────────────────────────────
+   PRACTICE CONTINUE BUTTON
+───────────────────────────────────────────── */
+document.getElementById('practice-continue-btn').addEventListener('click', () => {
+  showScreen('screen-task');
+  startRound(1);
+});
+
+/* ─────────────────────────────────────────────
+   TASK CONTINUE BUTTON
+───────────────────────────────────────────── */
+document.getElementById('task-continue-btn').addEventListener('click', () => {
+  showScreen('screen-email');
+});
+
+/* ─────────────────────────────────────────────
+   EMAIL SUBMISSION
+───────────────────────────────────────────── */
+document.getElementById('email-submit-btn').addEventListener('click', () => {
+  const emailInput = document.getElementById('participant-email').value.trim();
+  
+  // Simple email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(emailInput)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  
+  state.email = emailInput;
+  finishTask();
+});
+
+</script>
+
+</body>
+</html>

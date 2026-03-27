@@ -19,12 +19,14 @@ jobs:
           JATOS_REMOTE_URL: ${{ secrets.JATOS_REMOTE_URL }}
           JATOS_REMOTE_TOKEN: ${{ secrets.JATOS_REMOTE_TOKEN }}
         run: |
+          STUDY_UUID="2258638b-1e40-4a76-9c2a-bad96df69fab"
           for file in *.html; do
             echo "📤 Uploading $file..."
-            curl -s -o /dev/null -w "Status: %{http_code}\n" \
-              -X PUT \
+            curl -v -o response.txt -w "Status: %{http_code}\n" \
+              -X POST \
               -H "Authorization: Bearer $JATOS_REMOTE_TOKEN" \
-              -H "Content-Type: text/html" \
-              --data-binary "@$file" \
-              "$JATOS_REMOTE_URL/jatos/api/v1/study/component/properties/studyAssets/$file"
+              -F "file=@$file;type=text/html" \
+              "$JATOS_REMOTE_URL/jatos/api/v1/studies/$STUDY_UUID/studyAssets/$file"
+            cat response.txt
+            echo ""
           done

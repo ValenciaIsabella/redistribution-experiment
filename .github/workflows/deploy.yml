@@ -20,13 +20,28 @@ jobs:
           JATOS_REMOTE_TOKEN: ${{ secrets.JATOS_REMOTE_TOKEN }}
         run: |
           STUDY_ID="23660"
+
           for file in *.html; do
-            echo "📤 Uploading $file..."
-            curl -s -w "Status: %{http_code}\n" \
+            FILENAME=$(basename "$file")
+            echo "🗑️ Deleting existing $FILENAME (if exists)..."
+            curl -s -o /dev/null \
+              -X DELETE \
+              -H "Authorization: Bearer $JATOS_REMOTE_TOKEN" \
+              "$JATOS_REMOTE_URL/jatos/api/v1/studies/$STUDY_ID/assets/$FILENAME"
+
+            echo "📤 Uploading $FILENAME..."
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
               -X POST \
               -H "Authorization: Bearer $JATOS_REMOTE_TOKEN" \
               -H "accept: application/json" \
               -F "file=@$file;type=text/html" \
-              "$JATOS_REMOTE_URL/jatos/api/v1/studies/$STUDY_ID/assets/$file"
-            echo ""
+              "$JATOS_REMOTE_URL/jatos/api/v1/studies/$STUDY_ID/assets")
+            
+            echo "Status: $HTTP_CODE"
+            if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+              echo "❌ Failed to upload $FILENAME"
+              exit 1
+            else
+              echo "✅ $FILENAME uploaded successfully"
+            fi
           done

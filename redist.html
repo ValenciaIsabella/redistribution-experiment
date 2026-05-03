@@ -1298,11 +1298,11 @@
     <input type="text" id="demo-occupation-field" placeholder="e.g. Engineering, Healthcare, Business">
   </div>
 
-    <!-- Optional: Email for Results -->
+    <!-- Optional: Email for Results --> POR AHORA CAMBIO LA PREGUNTA
   <div class="sr-block">
-    <div class="sr-question">Would you like us to let you know if your allocation decision was selected? </div>
-    <p class="sr-intro" style="font-size: 12px; margin-top: -5px; margin-bottom: 10px;">If so, please provide your email address below.</p>
-    <input type="email" id="demo-email-results" placeholder="your.email@example.com" style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #a08070; background: #f5f0e4; color: #311a1a; font-family: Georgia, serif; font-size: 13px;">
+    <div class="sr-question">Is there anything you didn't understand during the study? </div>
+    <p class="sr-intro" style="font-size: 12px; margin-top: -5px; margin-bottom: 10px;">You can answers yes or no and explain a bit.</p>
+    <input type="email" id="demo-email-results" placeholder="(Optional)" style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #a08070; background: #f5f0e4; color: #311a1a; font-family: Georgia, serif; font-size: 13px;">
   </div>
 
   <!-- Comments -->
@@ -1360,8 +1360,8 @@ window.addEventListener('resize', applyMatrixGridColumns);
    CONFIGURATION    
 ───────────────────────────────────────────── */
 const CONFIG = {
-  ROUND_SECONDS : 45,
-  PRACTICE_SECONDS : 20,
+  ROUND_SECONDS : 1,
+  PRACTICE_SECONDS : 1,
   TOTAL_ROUNDS  : 5,
   MATRIX_COLS   : isMobileDevice() ? 7 : 20,
   MATRIX_ROWS   : isMobileDevice() ? 46 : 16,

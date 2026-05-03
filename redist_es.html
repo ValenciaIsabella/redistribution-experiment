@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarea 1 – Tarea de Reconocimiento de Códigos</title>
+  <script src="/assets/javascripts/jatos.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #e4dcc5;
+      color: #311a1a;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 16px;
+      min-height: 100vh;
+    }
+
+    /* ── SCREENS ────────────────────────────────── */
+    .screen {
+      display: none;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 30px 60px;
+    }
+    .screen.active { display: block; }
+
+    /* ── INSTRUCTIONS SCREEN ─────────────────────── */
+    #screen-instructions h2 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+    #screen-instructions p {
+      margin-bottom: 14px;
+      line-height: 1.65;
+    }
+    #screen-instructions .sub-heading {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .example-label  { font-weight: bold; margin: 28px 0 8px; }
+    .example-target { margin-bottom: 12px; }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px 8px;
+      max-width: 600px;
+      margin-bottom: 28px;
+    }
+    .example-grid .cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 0;
+    }
+    .example-grid .cell input[type="checkbox"] {
+      width: 13px; height: 13px;
+      cursor: default; pointer-events: none;
+      accent-color: #c0392b;
+    }
+    .example-grid .cell.hit  { color: #208027; font-weight: bold; }
+    .example-grid .cell.miss { color: #1e1d1d; }
+
+    /* ── BUTTONS ───────────────────────────────── */
+    .btn-next {
+      display: inline-block;
+      padding: 6px 18px;
+      background: transparent;
+      border: 2px solid #611111;
+      color: #d44f4f;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 16px;
+      float: right;
+    }
+    .btn-next:hover { background: #611111; color: #d5afaf; }
+
+    .btn-center {
+      display: inline-block;
+      padding: 10px 28px;
+      background: #502c2c;
+      border: 1px solid #888;
+      color: #e1dfdf;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 36px;
+    }
+    .btn-center:hover { background: #3d5166; }
+
+    #screen-task header {
+      text-align: center;
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+    #target-display { font-size: 15px; margin-bottom: 14px; }
+
+    #timer-bar-wrap {
+      width: 100%; height: 8px;
+      background: #333;
+      margin-bottom: 18px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #timer-bar {
+      height: 100%;
+      background: #e74c3c;
+      width: 100%;
+      transition: width 1s linear;
+    }
+    #round-info { font-size: 12px; color: #aaa; margin-bottom: 10px; text-align: right; }
+
+    #matrix-container {
+      display: grid;
+      gap: 3px 8px;
+      justify-content: start;
+    }
+    /* Mobile: invertir a 16 columnas */
+    @media (max-width: 768px) {
+      #matrix-container {
+        /* Will be overridden by JavaScript */
+      }
+    }
+    .matrix-cell { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .matrix-cell input[type="checkbox"] { width: 13px; height: 13px; cursor: pointer; accent-color: #e74c3c; }
+    .matrix-cell label { cursor: pointer; font-size: 13px; font-family: 'Courier New', Courier, monospace; color: #444242; }
+    .matrix-cell label.checked-correct { color: #2ecc71; }
+    .matrix-cell label.checked-wrong   { color: #e74c3c; text-decoration: line-through; }
+
+    /* ── PRACTICE SCREEN ────────────────────── */
+    #screen-practice header {
+      text-align: center;
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+    #practice-target-display { font-size: 15px; margin-bottom: 14px; }
+
+    #practice-timer-bar-wrap {
+      width: 100%; height: 8px;
+      background: #333;
+      margin-bottom: 18px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #practice-timer-bar {
+      height: 100%;
+      background: #e74c3c;
+      width: 100%;
+      transition: width 1s linear;
+    }
+    #practice-round-info { font-size: 12px; color: #aaa; margin-bottom: 10px; text-align: right; }
+
+    #practice-matrix-container {
+      display: grid;
+      gap: 3px 8px;
+      justify-content: start;
+    }
+    /* Mobile: invertir a 16 columnas */
+    @media (max-width: 768px) {
+      #practice-matrix-container {
+        /* Will be overridden by JavaScript */
+      }
+    }
+    .practice-matrix-cell { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .practice-matrix-cell input[type="checkbox"] { width: 13px; height: 13px; cursor: pointer; accent-color: #e74c3c; }
+    .practice-matrix-cell label { cursor: pointer; font-size: 13px; font-family: 'Courier New', Courier, monospace; color: #444242; }
+    .practice-matrix-cell label.checked-correct { color: #2ecc71; }
+    .practice-matrix-cell label.checked-wrong   { color: #e74c3c; text-decoration: line-through; }
+
+    /* ── SELF-REPORT SCREEN ─────────────────────── */
+    #screen-selfreport h2 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .sr-intro { margin-bottom: 28px; color: #5a3a3a; font-style: italic; }
+    .sr-block { margin-bottom: 30px; }
+    .sr-question { font-weight: bold; margin-bottom: 10px; line-height: 1.5; }
+
+    .slider-row { display: flex; align-items: center; gap: 12px; }
+    .slider-row input[type="range"] { flex: 1; accent-color: #611111; cursor: pointer; }
+    .slider-val { min-width: 26px; text-align: center; font-weight: bold; color: #311a1a; font-size: 15px; }
+    .slider-ends { display: flex; justify-content: space-between; font-size: 11px; color: #7a5a5a; margin-top: 4px; }
+
+    input[type="number"] {
+      background: #f5f0e4; color: #311a1a;
+      border: 1px solid #a08070;
+      padding: 6px 10px; font-size: 13px;
+      font-family: Georgia, serif; width: 120px;
+    }
+    input[type="number"]:focus { outline: none; border-color: #611111; }
+
+    input[type="text"] {
+      background: #f5f0e4; color: #311a1a;
+      border: 1px solid #a08070;
+      padding: 6px 10px; font-size: 13px;
+      font-family: Georgia, serif; width: 100%;
+      max-width: 400px;
+    }
+    input[type="text"]:focus { outline: none; border-color: #611111; }
+
+    textarea {
+      background: #f5f0e4; color: #311a1a;
+      border: 1px solid #a08070;
+      padding: 8px 10px; font-size: 13px;
+      font-family: Georgia, serif;
+      resize: vertical;
+    }
+    textarea:focus { outline: none; border-color: #611111; }
+
+    select {
+      background: #f5f0e4; color: #311a1a;
+      border: 1px solid #a08070;
+      padding: 8px 10px; font-size: 13px;
+      font-family: Georgia, serif;
+      cursor: pointer;
+    }
+    select:focus { outline: none; border-color: #611111; }
+
+    .radio-group { display: flex; flex-direction: column; gap: 9px; }
+    .radio-group label { display: flex; align-items: center; gap: 9px; cursor: pointer; color: #311a1a; }
+    .radio-group input[type="radio"] { accent-color: #611111; width: 14px; height: 14px; cursor: pointer; }
+
+    /* ── FEEDBACK SCREENS ───────────────────────── */
+    .feedback-screen { text-align: center; padding-top: 70px; }
+    .feedback-screen h2 { font-size: 22px; margin-bottom: 24px; }
+
+    /* Group NONE */
+    #screen-fb-none .complete-box {
+      display: inline-block;
+      border: 2px solid #8b6a4a;
+      background: #f0e8d5;
+      padding: 50px 80px;
+      margin-bottom: 32px;
+    }
+    #screen-fb-none .complete-text {
+      font-size: 20px; font-weight: bold;
+      color: #311a1a; letter-spacing: .5px;
+    }
+
+    /* Score box */
+    .score-box {
+      display: inline-block;
+      background: #f0e8d5;
+      border: 1px solid #a08070;
+      padding: 28px 56px;
+      margin-bottom: 20px;
+    }
+    .score-number { font-size: 52px; font-weight: bold; color: rgb(96, 55, 62); }
+    .score-label  { font-size: 13px; color: #3d2c2c; margin-top: 6px; }
+
+    /* Breakdown table */
+    .breakdown-table {
+      display: inline-grid;
+      grid-template-columns: auto auto;
+      gap: 10px 36px;
+      text-align: left;
+      background: #f0e8d5;
+      border: 1px solid #a08070;
+      padding: 22px 40px;
+      margin-bottom: 22px;
+    }
+    .bk-label { color: #7a5a5a; }
+    .bk-value { font-weight: bold; color: #311a1a; text-align: right; }
+    .bk-divider { grid-column: 1 / -1; border-top: 1px solid #c8b8a0; margin: 4px 0; }
+
+    /* Comparison box */
+    .comparison-box {
+      display: inline-block;
+      border: 1px solid #a08070;
+      background: #f0e8d5;
+      padding: 18px 36px;
+      margin-top: 8px; margin-bottom: 28px;
+      font-size: 13px; line-height: 1.7;
+      text-align: center; max-width: 480px;
+    }
+    .comp-intro  { color: #7a5a5a; margin-bottom: 6px; }
+    .comp-result { font-size: 15px; font-weight: bold; margin-top: 6px; }
+    .comp-above  { color: #27ae60; }
+    .comp-below  { color: #c0392b; }
+    .comp-equal  { color: #5a5a5a; }
+
+    .clearfix::after { content:''; display:block; clear:both; }
+
+    /* ── WELCOME SCREEN ─────────────────────────── */
+    #screen-welcome h1 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    #screen-welcome p {
+      margin-bottom: 14px;
+      line-height: 1.7;
+    }
+    .welcome-parts {
+      background: #f0e8d5;
+      border: 1px solid #a08070;
+      padding: 20px 28px;
+      margin: 22px 0 28px;
+    }
+    .welcome-parts .part-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .welcome-parts .part-row:last-child { margin-bottom: 0; }
+    .part-tag {
+      flex-shrink: 0;
+      font-weight: bold;
+      color: #611111;
+      min-width: 68px;
+      padding-top: 1px;
+    }
+    .part-desc { line-height: 1.6; }
+    .part-desc strong { display: block; margin-bottom: 3px; }
+    .welcome-meta {
+      font-size: 13px;
+      color: #5a3a3a;
+      margin-top: 16px;
+      font-style: italic;
+    }
+
+    /* ── DISTRIBUTION SCREEN (Part 2) ───────────── */
+    #screen-distribution h2 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+    #screen-distribution p {
+      margin-bottom: 13px;
+      line-height: 1.7;
+    }
+    .dist-scenario {
+      background: #f0e8d5;
+      border: 1px solid #a08070;
+      padding: 16px 22px;
+      margin: 18px 0;
+      font-style: italic;
+      font-size: 13.5px;
+      line-height: 1.65;
+    }
+
+    /* Worker cards */
+    .worker-cards {
+      display: flex;
+      gap: 16px;
+      margin: 22px 0 8px;
+      justify-content: center;
+    }
+    .worker-card {
+      flex: 1;
+      max-width: 260px;
+      border: 1px solid #a08070;
+      background: #f5f0e4;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .worker-card .wc-name {
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: #311a1a;
+    }
+    .worker-card .wc-amount {
+      font-size: 28px;
+      font-weight: bold;
+      color: #3f342f;
+      margin-bottom: 4px;
+      transition: all .25s;
+    }
+    .worker-card .wc-label {
+      font-size: 11px;
+      color: #3e0606;
+    }
+
+    /* Bar chart */
+    .dist-bar-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      height: 90px;
+      margin: 0 0 22px;
+      justify-content: center;
+    }
+    .dist-bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 120px;
+    }
+    .dist-bar {
+      width: 100%;
+      background: #a08070;
+      transition: height .25s;
+      min-height: 2px;
+    }
+    .dist-bar.bar-a { background: #8f6a6a; }
+    .dist-bar.bar-b { background: #8f6a6a; }
+    .dist-bar-lbl {
+      font-size: 11px;
+      color: #322525;
+      margin-top: 4px;
+    }
+
+    /* Options list */
+    .dist-options-label {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .dist-options {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      margin-bottom: 28px;
+      align-items: flex-start;
+    }
+    .dist-options-col {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex: 1;
+    }
+    .dist-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border: 1px solid #c8b8a0;
+      background: #f5f0e4;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .dist-option:hover { background: #ece3ce; border-color: #a08070; }
+    .dist-option.selected { background: #e0d4b8; border-color: #611111; }
+    .dist-option input[type="radio"] {
+      accent-color: #611111;
+      width: 14px; height: 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .dist-option .opt-text { font-size: 13px; line-height: 1.4; }
+    .dist-option .opt-no-redist { font-weight: bold; }
+    .dist-option .opt-amounts {
+      display: flex; gap: 18px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px; margin-top: 2px;
+    }
+    .opt-a { color: #3a6e3a; }
+    .opt-b { color: #6e3a3a; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 0 – BIENVENIDA
+════════════════════════════════════════════════ -->
+<div id="screen-welcome" class="screen active">
+
+  <h1>Bienvenido/a</h1>
+    
+  <p>Gracias por participar en este estudio sobre toma de decisiones en economía. El estudio consta de las siguientes dos partes:</p>
+
+  <div class="welcome-parts">
+    <div class="part-row">
+      <div class="part-tag">Parte 1:</div>
+      <div class="part-desc">
+        <strong>Tarea de Desempeño</strong>
+        Realizarás una breve tarea que no requiere conocimientos previos.
+      </div>
+    </div>
+    <div class="part-row">
+      <div class="part-tag">Parte 2:</div>
+      <div class="part-desc">
+        <strong>Tarea de Decisión</strong>
+        Tendrás que tomar una decisión que podría afectar el pago de dos participantes.
+      </div>
+    </div>
+  </div>
+
+  <p>El estudio completo tomará aproximadamente <strong>7–10 minutos</strong>.</p>
+  
+  <p class="welcome-meta"><strong>Información del Participante y Consentimiento</strong><br>
+    Este estudio es realizado por Isabella Valencia en la Paris School of Economics, bajo la supervisión del Profesor Andrea FM Martinangeli, para estudiar la toma de decisiones en economía.
+    Tu participación es completamente voluntaria y puedes retirarte en cualquier momento cerrando esta ventana del navegador.
+    Los datos se recopilan de forma anónima bajo las regulaciones del RGPD y serán utilizados únicamente con fines académicos. No se almacena ninguna información identificativa.
+    Si tienes preguntas sobre el estudio, por favor contacta a Isabella Valencia haciendo clic <a href="mailto:valenciaisabellap@gmail.com">aquí</a>.<br>
+    Al hacer clic en "Aceptar e Iniciar el Experimento", confirmas que tienes al menos 18 años y consientes estos términos.</p>
+   
+  <div class="clearfix">
+    <button class="btn-next" id="welcome-btn" style="float: none; margin: 36px auto 0; display: block;">Aceptar e Iniciar el Experimento</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 0.5 – DATOS DEMOGRÁFICOS INICIALES
+════════════════════════════════════════════════ -->
+<div id="screen-early-demographics" class="screen">
+
+  <h2>Información General</h2>
+  <p class="sr-intro">Antes de comenzar, por favor responde algunas preguntas breves.</p>
+
+  <!-- Género -->
+  <div class="sr-block">
+    <div class="sr-question">Género</div>
+    <div class="radio-group">
+      <label><input type="radio" name="early-demo-gender" value="male"> Masculino</label>
+      <label><input type="radio" name="early-demo-gender" value="female"> Femenino</label>
+      <label><input type="radio" name="early-demo-gender" value="non-binary"> No binario</label>
+      <label><input type="radio" name="early-demo-gender" value="prefer-not"> Prefiero no decirlo</label>
+    </div>
+  </div>
+
+  <!-- Edad -->
+  <div class="sr-block">
+    <div class="sr-question">Edad</div>
+    <input type="number" id="early-demo-age" min="18" max="120" placeholder="ej. 25">
+  </div>
+
+  <!-- País de Residencia -->
+  <div class="sr-block">
+    <div class="sr-question">País de Residencia</div>
+    <select id="early-demo-country-residence" style="width: 100%; max-width: 400px;">
+      <option value="">-- Selecciona un país --</option>
+      <option value="France">France</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Afghanistan">Afghanistan</option>
+      <option value="Albania">Albania</option>
+      <option value="Algeria">Algeria</option>
+      <option value="Andorra">Andorra</option>
+      <option value="Angola">Angola</option>
+      <option value="Argentina">Argentina</option>
+      <option value="Armenia">Armenia</option>
+      <option value="Australia">Australia</option>
+      <option value="Austria">Austria</option>
+      <option value="Azerbaijan">Azerbaijan</option>
+      <option value="Bahamas">Bahamas</option>
+      <option value="Bahrain">Bahrain</option>
+      <option value="Bangladesh">Bangladesh</option>
+      <option value="Barbados">Barbados</option>
+      <option value="Belarus">Belarus</option>
+      <option value="Belgium">Belgium</option>
+      <option value="Belize">Belize</option>
+      <option value="Benin">Benin</option>
+      <option value="Bhutan">Bhutan</option>
+      <option value="Bolivia">Bolivia</option>
+      <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+      <option value="Botswana">Botswana</option>
+      <option value="Brazil">Brazil</option>
+      <option value="Brunei">Brunei</option>
+      <option value="Bulgaria">Bulgaria</option>
+      <option value="Burkina Faso">Burkina Faso</option>
+      <option value="Burundi">Burundi</option>
+      <option value="Cambodia">Cambodia</option>
+      <option value="Cameroon">Cameroon</option>
+      <option value="Canada">Canada</option>
+      <option value="Cape Verde">Cape Verde</option>
+      <option value="Central African Republic">Central African Republic</option>
+      <option value="Chad">Chad</option>
+      <option value="Chile">Chile</option>
+      <option value="China">China</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Comoros">Comoros</option>
+      <option value="Congo">Congo</option>
+      <option value="Costa Rica">Costa Rica</option>
+      <option value="Croatia">Croatia</option>
+      <option value="Cuba">Cuba</option>
+      <option value="Cyprus">Cyprus</option>
+      <option value="Czech Republic">Czech Republic</option>
+      <option value="Denmark">Denmark</option>
+      <option value="Djibouti">Djibouti</option>
+      <option value="Dominica">Dominica</option>
+      <option value="Dominican Republic">Dominican Republic</option>
+      <option value="East Timor">East Timor</option>
+      <option value="Ecuador">Ecuador</option>
+      <option value="Egypt">Egypt</option>
+      <option value="El Salvador">El Salvador</option>
+      <option value="Equatorial Guinea">Equatorial Guinea</option>
+      <option value="Eritrea">Eritrea</option>
+      <option value="Estonia">Estonia</option>
+      <option value="Ethiopia">Ethiopia</option>
+      <option value="Fiji">Fiji</option>
+      <option value="Finland">Finland</option>
+      <option value="France">France</option>
+      <option value="Gabon">Gabon</option>
+      <option value="Gambia">Gambia</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Germany">Germany</option>
+      <option value="Ghana">Ghana</option>
+      <option value="Greece">Greece</option>
+      <option value="Grenada">Grenada</option>
+      <option value="Guatemala">Guatemala</option>
+      <option value="Guinea">Guinea</option>
+      <option value="Guinea-Bissau">Guinea-Bissau</option>
+      <option value="Guyana">Guyana</option>
+      <option value="Haiti">Haiti</option>
+      <option value="Honduras">Honduras</option>
+      <option value="Hungary">Hungary</option>
+      <option value="Iceland">Iceland</option>
+      <option value="India">India</option>
+      <option value="Indonesia">Indonesia</option>
+      <option value="Iran">Iran</option>
+      <option value="Iraq">Iraq</option>
+      <option value="Ireland">Ireland</option>
+      <option value="Israel">Israel</option>
+      <option value="Italy">Italy</option>
+      <option value="Jamaica">Jamaica</option>
+      <option value="Japan">Japan</option>
+      <option value="Jordan">Jordan</option>
+      <option value="Kazakhstan">Kazakhstan</option>
+      <option value="Kenya">Kenya</option>
+      <option value="Kiribati">Kiribati</option>
+      <option value="South Korea">South Korea</option>
+      <option value="North Korea">North Korea</option>
+      <option value="Kosovo">Kosovo</option>
+      <option value="Kuwait">Kuwait</option>
+      <option value="Kyrgyzstan">Kyrgyzstan</option>
+      <option value="Laos">Laos</option>
+      <option value="Latvia">Latvia</option>
+      <option value="Lebanon">Lebanon</option>
+      <option value="Lesotho">Lesotho</option>
+      <option value="Liberia">Liberia</option>
+      <option value="Libya">Libya</option>
+      <option value="Liechtenstein">Liechtenstein</option>
+      <option value="Lithuania">Lithuania</option>
+      <option value="Luxembourg">Luxembourg</option>
+      <option value="Madagascar">Madagascar</option>
+      <option value="Malawi">Malawi</option>
+      <option value="Malaysia">Malaysia</option>
+      <option value="Maldives">Maldives</option>
+      <option value="Mali">Mali</option>
+      <option value="Malta">Malta</option>
+      <option value="Marshall Islands">Marshall Islands</option>
+      <option value="Mauritania">Mauritania</option>
+      <option value="Mauritius">Mauritius</option>
+      <option value="Mexico">Mexico</option>
+      <option value="Micronesia">Micronesia</option>
+      <option value="Moldova">Moldova</option>
+      <option value="Monaco">Monaco</option>
+      <option value="Mongolia">Mongolia</option>
+      <option value="Montenegro">Montenegro</option>
+      <option value="Morocco">Morocco</option>
+      <option value="Mozambique">Mozambique</option>
+      <option value="Myanmar">Myanmar</option>
+      <option value="Namibia">Namibia</option>
+      <option value="Nauru">Nauru</option>
+      <option value="Nepal">Nepal</option>
+      <option value="Netherlands">Netherlands</option>
+      <option value="New Zealand">New Zealand</option>
+      <option value="Nicaragua">Nicaragua</option>
+      <option value="Niger">Niger</option>
+      <option value="Nigeria">Nigeria</option>
+      <option value="North Macedonia">North Macedonia</option>
+      <option value="Norway">Norway</option>
+      <option value="Oman">Oman</option>
+      <option value="Pakistan">Pakistan</option>
+      <option value="Palau">Palau</option>
+      <option value="Palestine">Palestine</option>
+      <option value="Panama">Panama</option>
+      <option value="Papua New Guinea">Papua New Guinea</option>
+      <option value="Paraguay">Paraguay</option>
+      <option value="Peru">Peru</option>
+      <option value="Philippines">Philippines</option>
+      <option value="Poland">Poland</option>
+      <option value="Portugal">Portugal</option>
+      <option value="Qatar">Qatar</option>
+      <option value="Romania">Romania</option>
+      <option value="Russia">Russia</option>
+      <option value="Rwanda">Rwanda</option>
+      <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+      <option value="Saint Lucia">Saint Lucia</option>
+      <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
+      <option value="Samoa">Samoa</option>
+      <option value="San Marino">San Marino</option>
+      <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+      <option value="Saudi Arabia">Saudi Arabia</option>
+      <option value="Senegal">Senegal</option>
+      <option value="Serbia">Serbia</option>
+      <option value="Seychelles">Seychelles</option>
+      <option value="Sierra Leone">Sierra Leone</option>
+      <option value="Singapore">Singapore</option>
+      <option value="Slovakia">Slovakia</option>
+      <option value="Slovenia">Slovenia</option>
+      <option value="Solomon Islands">Solomon Islands</option>
+      <option value="Somalia">Somalia</option>
+      <option value="South Africa">South Africa</option>
+      <option value="South Sudan">South Sudan</option>
+      <option value="Spain">Spain</option>
+      <option value="Sri Lanka">Sri Lanka</option>
+      <option value="Sudan">Sudan</option>
+      <option value="Suriname">Suriname</option>
+      <option value="Sweden">Sweden</option>
+      <option value="Switzerland">Switzerland</option>
+      <option value="Syria">Syria</option>
+      <option value="Taiwan">Taiwan</option>
+      <option value="Tajikistan">Tajikistan</option>
+      <option value="Tanzania">Tanzania</option>
+      <option value="Thailand">Thailand</option>
+      <option value="Togo">Togo</option>
+      <option value="Tonga">Tonga</option>
+      <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+      <option value="Tunisia">Tunisia</option>
+      <option value="Turkey">Turkey</option>
+      <option value="Turkmenistan">Turkmenistan</option>
+      <option value="Tuvalu">Tuvalu</option>
+      <option value="Uganda">Uganda</option>
+      <option value="Ukraine">Ukraine</option>
+      <option value="United Arab Emirates">United Arab Emirates</option>
+      <option value="United Kingdom">United Kingdom</option>
+      <option value="United States">United States</option>
+      <option value="Uruguay">Uruguay</option>
+      <option value="Uzbekistan">Uzbekistan</option>
+      <option value="Vanuatu">Vanuatu</option>
+      <option value="Vatican City">Vatican City</option>
+      <option value="Venezuela">Venezuela</option>
+      <option value="Vietnam">Vietnam</option>
+      <option value="Yemen">Yemen</option>
+      <option value="Zambia">Zambia</option>
+      <option value="Zimbabwe">Zimbabwe</option>
+    </select>
+  </div>
+
+  <div class="clearfix">
+    <button class="btn-next" id="early-demo-submit-btn">&gt;&gt;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 1 – INSTRUCCIONES
+════════════════════════════════════════════════ -->
+
+<div id="screen-instructions" class="screen">
+
+  <p class="sub-heading">Parte 1:</p>
+
+  <p>
+    A continuación realizarás una tarea de reconocimiento de códigos durante un total de 4 minutos.
+    Mediremos tu desempeño por el número de puntos que obtengas.
+  </p>
+
+  <p>
+    <strong>El sistema de puntuación es el siguiente:</strong>
+    <ul style="margin-top: 5px; margin-left: 40px;">
+      <li><span style="color: #28a745;">+1 punto</span> por cada código correcto encontrado.</li>
+      <li><span style="color: #dc3545;">−1 punto</span> por cada código incorrecto marcado.</li>
+      <li>Sin penalización por no marcar un código.</li>
+    </ul>
+  </p>
+
+  <p>
+    La tarea consta de <strong>5 rondas</strong>, cada una de <strong>45 segundos</strong>, en las que se mostrará un código objetivo diferente. Tu objetivo es seleccionar el mayor número posible de celdas que contengan el código objetivo dentro del tiempo límite. Tras la última ronda, completarás una breve encuesta sobre tu experiencia antes de comenzar la segunda parte del estudio.
+  </p>
+
+  <p>
+  Pulsa >> para ver un ejemplo simplificado y una ronda de práctica antes de comenzar la tarea real.
+  </p>
+  <div class="clearfix">
+    <button class="btn-next" id="start-btn">&gt;&gt;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 1.3 – EJEMPLO (INTERMEDIO)
+════════════════════════════════════════════════ -->
+
+<div id="screen-example" class="screen">
+
+  <p style="margin-bottom: 20px;">
+  Este es un ejemplo simplificado de la tarea:
+  </p>
+
+  <div class="example-label">Ejemplo simplificado: </div>
+  <div class="example-target">Si el código que debes marcar es: <strong>123</strong>, debes encontrar y hacer clic en tantas instancias de "123" como sea posible en la cuadrícula.</div>
+
+  <div class="example-grid" id="example-grid"></div>
+
+  <p style="font-weight: bold; color: #611111; margin-top: 20px;">
+  Antes de comenzar la tarea real, tendrás la oportunidad de practicar durante 20 segundos para familiarizarte con la interfaz. Esto no afectará tu puntuación de ninguna manera, pero te animamos a hacer tu mejor esfuerzo en la ronda de práctica para hacerte una idea real de la tarea.
+  </p>
+
+  <p style="margin-top: 20px;">
+  Cuando estés listo/a, pulsa >> para comenzar la sesión de práctica breve.
+  </p>
+
+  <div class="clearfix">
+    <button class="btn-next" id="example-start-btn">&gt;&gt;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 1.5 – TAREA DE PRÁCTICA
+════════════════════════════════════════════════ -->
+<div id="screen-practice" class="screen">
+  <header>Ronda de Práctica</header>
+
+  <p style="margin-bottom: 16px; font-size: 14px; line-height: 1.6;">
+    Recuerda: recibirás <strong>1 punto</strong> por cada marca correcta. Se te <strong>restará 1 punto</strong> si marcas un código incorrecto, pero no perderás puntos por no marcar todas las apariciones del código correcto.<br><br>
+    <em>Esta es una sesión de práctica y no afectará tu puntuación total.</em>
+  </p>
+
+  <div id="practice-target-display">El código que debes marcar es: <strong id="practice-target-code">???</strong></div>
+
+  <div id="practice-timer-bar-wrap"><div id="practice-timer-bar"></div></div>
+  <div id="practice-round-info">Ronda de Práctica</div>
+
+  <div id="practice-matrix-container"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 1.6 – RESULTADO DE PRÁCTICA
+════════════════════════════════════════════════ -->
+<div id="screen-practice-feedback" class="screen feedback-screen">
+  <h2>Resultados de la Práctica</h2>
+
+  <div class="breakdown-table">
+    <span class="bk-label">Marcas correctas</span>
+    <span class="bk-value" id="practice-fb-hits">—</span>
+    <span class="bk-label">Marcas incorrectas</span>
+    <span class="bk-value" id="practice-fb-fa">—</span>
+    <div class="bk-divider"></div>
+    <span class="bk-label"><strong>Puntuación total</strong> (correctas − incorrectas)</span>
+    <span class="bk-value" id="practice-fb-total" style="font-size:18px;">—</span>
+  </div>
+
+  <br>
+
+  <div class="score-box">
+    <div class="score-number" id="practice-score-number">0</div>
+    <div class="score-label">Puntos obtenidos en la práctica</div>
+  </div>
+  <br>
+  <button class="btn-center" id="practice-continue-btn">Comenzar Tarea Real &gt;&gt;</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 2 – TAREA
+════════════════════════════════════════════════ -->
+<div id="screen-task" class="screen">
+  <header>Tarea de Reconocimiento de Códigos</header>
+
+  <div id="target-display">El código que debes marcar es: <strong id="target-code">???</strong></div>
+
+  <div id="timer-bar-wrap"><div id="timer-bar"></div></div>
+  <div id="round-info">Ronda <span id="current-round">1</span> de <span id="total-rounds">5</span></div>
+
+  <div id="matrix-container"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 3 – AUTOINFORME
+     Se muestra a TODOS los grupos antes de cualquier resultado
+════════════════════════════════════════════════ -->
+<div id="screen-selfreport" class="screen">
+
+  <h2>Antes de ver tus resultados</h2>
+  <p class="sr-intro">Por favor responde las siguientes preguntas antes de continuar.</p>
+
+  <!-- P1 -->
+  <div class="sr-block">
+    <div class="sr-question">1. ¿Cuánto esfuerzo pusiste en la tarea?</div>
+    <div class="slider-row">
+      <span style="font-size:12px;color:#7a5a5a;">Ningún esfuerzo</span>
+      <input type="range" id="effort-slider" min="0" max="10" value="0"
+             oninput="document.getElementById('effort-val').textContent = this.value">
+      <span class="slider-val" id="effort-val">0</span>
+      <span style="font-size:12px;color:#7a5a5a;">Máximo esfuerzo</span>
+    </div>
+    <div class="slider-ends"><span>0</span><span>10</span></div>
+  </div>
+
+  <!-- P2.1 -->
+  <div class="sr-block">
+    <div class="sr-question">2. El máximo de puntos que podías obtener era 200. ¿Cuántos crees que obtuviste?</div>
+    <input type="number" id="points-guess" min="-200" max="1000" placeholder=" ">
+  </div>
+
+  <!-- P2.2 -->
+  <div class="sr-block">
+    <div class="sr-question">3. En un grupo de 100 participantes, ¿cuántos crees que tuvieron un mejor desempeño que tú?</div>
+    <input type="number" id="points-guess" min="0" max="100" placeholder=" ">
+  </div>
+
+  <!-- P3 -->
+  <div class="sr-block">
+    <div class="sr-question">
+      4. Si fueras emparejado/a aleatoriamente con otro participante, ¿crees que tendrías un desempeño
+      <strong>mejor</strong> o <strong>peor</strong> que el suyo?
+    </div>
+    <div class="radio-group">
+      <label><input type="radio" name="rel-perf" value="much_better">    Tendría un desempeño <strong>igual o mejor</strong> que el otro participante</label>
+      <label><input type="radio" name="rel-perf" value="much_worse">     Tendría un desempeño <strong>peor</strong> que el otro participante</label>
+    </div>
+  </div>
+
+  <div class="clearfix">
+    <button class="btn-next" id="sr-submit-btn">&gt;&gt;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 4-A – RESULTADO: SIN INFORMACIÓN
+     Solo muestra "Tarea completada"
+════════════════════════════════════════════════ -->
+<div id="screen-fb-none" class="screen feedback-screen">
+
+  <h2>Has terminado la Parte 1</h2>
+  <div class="comparison-box" style="margin-top: 20px; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background-color: #f9f9f9;">
+  <div class="comp-intro" style="font-size: 1.1em; line-height: 1.6;">
+      Ahora puedes continuar con la segunda parte del estudio.
+  </div> <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
+  </div>
+
+  <br>
+  <button class="btn-center" id="finish-btn-none">Continuar &gt;&gt;</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 4-B – RESULTADO: SOLO PUNTUACIÓN
+     Puntuación total, sin desglose, sin comparación
+════════════════════════════════════════════════ -->
+<div id="screen-fb-score" class="screen feedback-screen">
+  <h2>Tus Resultados</h2>
+  <div class="score-box">
+    <div class="score-number" id="fb-score-number">0</div>
+    <div class="score-label">Puntos obtenidos</div>
+  </div>
+  <br>
+  <button class="btn-center" id="finish-btn-score">Continuar &gt;&gt;</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 4-C – RESULTADO: INFORMACIÓN COMPLETA
+     Desglose + comparación con participante aleatorio
+════════════════════════════════════════════════ -->
+<div id="screen-fb-full" class="screen feedback-screen">
+  <h2>Tus Resultados</h2>
+
+  <div class="breakdown-table">
+    <span class="bk-label">Marcas correctas</span>
+    <span class="bk-value" id="fb-hits">—</span>
+    <span class="bk-label">Marcas incorrectas</span>
+    <span class="bk-value" id="fb-fa">—</span>
+    <div class="bk-divider"></div>
+    <span class="bk-label"><strong>Puntuación total</strong> (correctas − incorrectas)</span>
+    <span class="bk-value" id="fb-total" style="font-size:18px;">—</span>
+  </div>
+
+  <br>
+
+  <div class="comparison-box">
+    <div class="comp-intro">
+      Fuiste emparejado/a aleatoriamente con un participante anterior.<br>
+      Su puntuación: <strong id="pair-score-display">—</strong> puntos
+    </div>
+    <div class="comp-result" id="pair-result-text">—</div>
+  </div>
+
+  <br>
+  <button class="btn-center" id="finish-btn-full">Continuar &gt;&gt;</button>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 4-D – RESULTADO: POSICIÓN RELATIVA ALEATORIA
+     Comparación con participante aleatorio
+════════════════════════════════════════════════ -->
+<div id="screen-fb-relative" class="screen feedback-screen">
+  <h2>Tus Resultados</h2>
+
+  <div class="comparison-box" style="margin-top: 20px; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background-color: #f9f9f9;">
+    <div class="comp-intro" style="font-size: 1.1em; line-height: 1.6;">
+      Fuiste emparejado/a aleatoriamente con un participante anterior.
+    </div> <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
+    
+    <div class="comp-result" id="pair-result-text-rel" style="font-weight: bold; font-size: 1.2em; color: #2c3e50;">
+      </div>
+  </div>
+
+  <br>
+  <button class="btn-center" id="finish-btn-pairing">Continuar &gt;&gt;</button>
+</div>
+
+
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 5 – PARTE 2: DISTRIBUCIÓN
+     Tratamiento suerte o mérito (asignado aleatoriamente)
+════════════════════════════════════════════════ -->
+<div id="screen-distribution" class="screen">
+
+  <h2>Parte 2: Fase de Distribución</h2>
+
+  <p>Dos participantes anteriores, <strong>Trabajador A</strong> y <strong>Trabajador B</strong>, fueron reclutados para realizar exactamente la misma tarea que acabas de completar. <span id="dist-scenario-text"></span></p>
+  
+  <p><strong>Tu Rol:</strong></p>
+  <p>
+  Tu tarea es decidir <strong>cómo distribuir un pago total de $8</strong> entre los trabajadores.
+  Puedes dar todo el dinero a un trabajador, dividirlo en partes iguales o cualquier otra división que consideres adecuada.
+  Tu decisión es anónima y puede ser la que determine su pago final.
+  Dado que recopilamos decisiones de varios participantes, seleccionaremos aleatoriamente la decisión de una persona para implementarla.
+  Si la tuya es seleccionada, los trabajadores recibirán exactamente lo que tú decidas.
+  </p>
+
+  <p><strong>Tu Decisión:</strong></p>
+  <p>Recuerda que <span id="dist-outcome-text"></span> <strong>¿Cómo distribuirías un total de $8 entre el Trabajador A y el Trabajador B?</strong></p>
+
+  <!-- Visual: tarjetas de trabajadores + gráfico de barras -->
+  <div class="worker-cards">
+    <div class="worker-card">
+      <div class="wc-name">Trabajador A</div>
+      <div class="wc-amount" id="wc-a-amount">$8</div>
+      <div class="wc-label">ganancias de la tarea</div>
+    </div>
+    <div class="worker-card">
+      <div class="wc-name">Trabajador B</div>
+      <div class="wc-amount zero" id="wc-b-amount">$0</div>
+      <div class="wc-label">ganancias de la tarea</div>
+    </div>
+  </div>
+
+  <div class="dist-bar-wrap">
+    <div class="dist-bar-col">
+      <div class="dist-bar bar-a" id="bar-a" style="height:80px;"></div>
+      <div class="dist-bar-lbl">Trabajador A</div>
+    </div>
+    <div class="dist-bar-col">
+      <div class="dist-bar bar-b" id="bar-b" style="height:2px;"></div>
+      <div class="dist-bar-lbl">Trabajador B</div>
+    </div>
+  </div>
+
+  <!-- Opciones -->
+  <div class="dist-options-label">Por favor selecciona una de las siguientes alternativas:</div>
+  <div class="dist-options" id="dist-options-list"></div>
+
+  <div class="clearfix">
+    <button class="btn-next" id="dist-submit-btn">&gt;&gt;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 6 – DATOS DEMOGRÁFICOS
+════════════════════════════════════════════════ -->
+<div id="screen-demographics" class="screen">
+
+  <h2>Información General</h2>
+  <p class="sr-intro">Gracias por completar la tarea. Para ayudarnos a interpretar los resultados, por favor responde las siguientes preguntas.</p>
+
+  <!-- Nivel de Educación -->
+  <div class="sr-block">
+    <div class="sr-question">¿Cuál es tu nivel de educación más alto?</div>
+    <div class="radio-group">
+      <label><input type="radio" name="demo-education" value="high-school"> Bachillerato / Secundaria</label>
+      <label><input type="radio" name="demo-education" value="some-college"> Estudios universitarios incompletos</label>
+      <label><input type="radio" name="demo-education" value="bachelor"> Licenciatura</label>
+      <label><input type="radio" name="demo-education" value="master"> Maestría</label>
+      <label><input type="radio" name="demo-education" value="phd"> Doctorado o superior</label>
+    </div>
+  </div>
+
+  <!-- Educación de los padres -->
+  <div class="sr-block">
+    <div class="sr-question">¿Cuál es el nivel de educación más alto de tus padres?</div>
+    <div class="radio-group">
+      <label><input type="radio" name="demo-parent-education" value="high-school"> Bachillerato o menos</label>
+      <label><input type="radio" name="demo-parent-education" value="some-college"> Estudios universitarios incompletos</label>
+      <label><input type="radio" name="demo-parent-education" value="bachelor"> Licenciatura</label>
+      <label><input type="radio" name="demo-parent-education" value="master"> Maestría o superior</label>
+    </div>
+  </div>
+
+  <!-- País de Origen -->
+  <div class="sr-block">
+    <div class="sr-question">País de Origen</div>
+    <select id="early-demo-country-origin" style="width: 100%; max-width: 400px;">
+      <option value="">-- Selecciona un país --</option>
+      <option value="France">France</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Afghanistan">Afghanistan</option>
+      <option value="Albania">Albania</option>
+      <option value="Algeria">Algeria</option>
+      <option value="Andorra">Andorra</option>
+      <option value="Angola">Angola</option>
+      <option value="Argentina">Argentina</option>
+      <option value="Armenia">Armenia</option>
+      <option value="Australia">Australia</option>
+      <option value="Austria">Austria</option>
+      <option value="Azerbaijan">Azerbaijan</option>
+      <option value="Bahamas">Bahamas</option>
+      <option value="Bahrain">Bahrain</option>
+      <option value="Bangladesh">Bangladesh</option>
+      <option value="Barbados">Barbados</option>
+      <option value="Belarus">Belarus</option>
+      <option value="Belgium">Belgium</option>
+      <option value="Belize">Belize</option>
+      <option value="Benin">Benin</option>
+      <option value="Bhutan">Bhutan</option>
+      <option value="Bolivia">Bolivia</option>
+      <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+      <option value="Botswana">Botswana</option>
+      <option value="Brazil">Brazil</option>
+      <option value="Brunei">Brunei</option>
+      <option value="Bulgaria">Bulgaria</option>
+      <option value="Burkina Faso">Burkina Faso</option>
+      <option value="Burundi">Burundi</option>
+      <option value="Cambodia">Cambodia</option>
+      <option value="Cameroon">Cameroon</option>
+      <option value="Canada">Canada</option>
+      <option value="Cape Verde">Cape Verde</option>
+      <option value="Central African Republic">Central African Republic</option>
+      <option value="Chad">Chad</option>
+      <option value="Chile">Chile</option>
+      <option value="China">China</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Comoros">Comoros</option>
+      <option value="Congo">Congo</option>
+      <option value="Costa Rica">Costa Rica</option>
+      <option value="Croatia">Croatia</option>
+      <option value="Cuba">Cuba</option>
+      <option value="Cyprus">Cyprus</option>
+      <option value="Czech Republic">Czech Republic</option>
+      <option value="Denmark">Denmark</option>
+      <option value="Djibouti">Djibouti</option>
+      <option value="Dominica">Dominica</option>
+      <option value="Dominican Republic">Dominican Republic</option>
+      <option value="East Timor">East Timor</option>
+      <option value="Ecuador">Ecuador</option>
+      <option value="Egypt">Egypt</option>
+      <option value="El Salvador">El Salvador</option>
+      <option value="Equatorial Guinea">Equatorial Guinea</option>
+      <option value="Eritrea">Eritrea</option>
+      <option value="Estonia">Estonia</option>
+      <option value="Ethiopia">Ethiopia</option>
+      <option value="Fiji">Fiji</option>
+      <option value="Finland">Finland</option>
+      <option value="France">France</option>
+      <option value="Gabon">Gabon</option>
+      <option value="Gambia">Gambia</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Germany">Germany</option>
+      <option value="Ghana">Ghana</option>
+      <option value="Greece">Greece</option>
+      <option value="Grenada">Grenada</option>
+      <option value="Guatemala">Guatemala</option>
+      <option value="Guinea">Guinea</option>
+      <option value="Guinea-Bissau">Guinea-Bissau</option>
+      <option value="Guyana">Guyana</option>
+      <option value="Haiti">Haiti</option>
+      <option value="Honduras">Honduras</option>
+      <option value="Hungary">Hungary</option>
+      <option value="Iceland">Iceland</option>
+      <option value="India">India</option>
+      <option value="Indonesia">Indonesia</option>
+      <option value="Iran">Iran</option>
+      <option value="Iraq">Iraq</option>
+      <option value="Ireland">Ireland</option>
+      <option value="Israel">Israel</option>
+      <option value="Italy">Italy</option>
+      <option value="Jamaica">Jamaica</option>
+      <option value="Japan">Japan</option>
+      <option value="Jordan">Jordan</option>
+      <option value="Kazakhstan">Kazakhstan</option>
+      <option value="Kenya">Kenya</option>
+      <option value="Kiribati">Kiribati</option>
+      <option value="South Korea">South Korea</option>
+      <option value="North Korea">North Korea</option>
+      <option value="Kosovo">Kosovo</option>
+      <option value="Kuwait">Kuwait</option>
+      <option value="Kyrgyzstan">Kyrgyzstan</option>
+      <option value="Laos">Laos</option>
+      <option value="Latvia">Latvia</option>
+      <option value="Lebanon">Lebanon</option>
+      <option value="Lesotho">Lesotho</option>
+      <option value="Liberia">Liberia</option>
+      <option value="Libya">Libya</option>
+      <option value="Liechtenstein">Liechtenstein</option>
+      <option value="Lithuania">Lithuania</option>
+      <option value="Luxembourg">Luxembourg</option>
+      <option value="Madagascar">Madagascar</option>
+      <option value="Malawi">Malawi</option>
+      <option value="Malaysia">Malaysia</option>
+      <option value="Maldives">Maldives</option>
+      <option value="Mali">Mali</option>
+      <option value="Malta">Malta</option>
+      <option value="Marshall Islands">Marshall Islands</option>
+      <option value="Mauritania">Mauritania</option>
+      <option value="Mauritius">Mauritius</option>
+      <option value="Mexico">Mexico</option>
+      <option value="Micronesia">Micronesia</option>
+      <option value="Moldova">Moldova</option>
+      <option value="Monaco">Monaco</option>
+      <option value="Mongolia">Mongolia</option>
+      <option value="Montenegro">Montenegro</option>
+      <option value="Morocco">Morocco</option>
+      <option value="Mozambique">Mozambique</option>
+      <option value="Myanmar">Myanmar</option>
+      <option value="Namibia">Namibia</option>
+      <option value="Nauru">Nauru</option>
+      <option value="Nepal">Nepal</option>
+      <option value="Netherlands">Netherlands</option>
+      <option value="New Zealand">New Zealand</option>
+      <option value="Nicaragua">Nicaragua</option>
+      <option value="Niger">Niger</option>
+      <option value="Nigeria">Nigeria</option>
+      <option value="North Macedonia">North Macedonia</option>
+      <option value="Norway">Norway</option>
+      <option value="Oman">Oman</option>
+      <option value="Pakistan">Pakistan</option>
+      <option value="Palau">Palau</option>
+      <option value="Palestine">Palestine</option>
+      <option value="Panama">Panama</option>
+      <option value="Papua New Guinea">Papua New Guinea</option>
+      <option value="Paraguay">Paraguay</option>
+      <option value="Peru">Peru</option>
+      <option value="Philippines">Philippines</option>
+      <option value="Poland">Poland</option>
+      <option value="Portugal">Portugal</option>
+      <option value="Qatar">Qatar</option>
+      <option value="Romania">Romania</option>
+      <option value="Russia">Russia</option>
+      <option value="Rwanda">Rwanda</option>
+      <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+      <option value="Saint Lucia">Saint Lucia</option>
+      <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
+      <option value="Samoa">Samoa</option>
+      <option value="San Marino">San Marino</option>
+      <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+      <option value="Saudi Arabia">Saudi Arabia</option>
+      <option value="Senegal">Senegal</option>
+      <option value="Serbia">Serbia</option>
+      <option value="Seychelles">Seychelles</option>
+      <option value="Sierra Leone">Sierra Leone</option>
+      <option value="Singapore">Singapore</option>
+      <option value="Slovakia">Slovakia</option>
+      <option value="Slovenia">Slovenia</option>
+      <option value="Solomon Islands">Solomon Islands</option>
+      <option value="Somalia">Somalia</option>
+      <option value="South Africa">South Africa</option>
+      <option value="South Sudan">South Sudan</option>
+      <option value="Spain">Spain</option>
+      <option value="Sri Lanka">Sri Lanka</option>
+      <option value="Sudan">Sudan</option>
+      <option value="Suriname">Suriname</option>
+      <option value="Sweden">Sweden</option>
+      <option value="Switzerland">Switzerland</option>
+      <option value="Syria">Syria</option>
+      <option value="Taiwan">Taiwan</option>
+      <option value="Tajikistan">Tajikistan</option>
+      <option value="Tanzania">Tanzania</option>
+      <option value="Thailand">Thailand</option>
+      <option value="Togo">Togo</option>
+      <option value="Tonga">Tonga</option>
+      <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+      <option value="Tunisia">Tunisia</option>
+      <option value="Turkey">Turkey</option>
+      <option value="Turkmenistan">Turkmenistan</option>
+      <option value="Tuvalu">Tuvalu</option>
+      <option value="Uganda">Uganda</option>
+      <option value="Ukraine">Ukraine</option>
+      <option value="United Arab Emirates">United Arab Emirates</option>
+      <option value="United Kingdom">United Kingdom</option>
+      <option value="United States">United States</option>
+      <option value="Uruguay">Uruguay</option>
+      <option value="Uzbekistan">Uzbekistan</option>
+      <option value="Vanuatu">Vanuatu</option>
+      <option value="Vatican City">Vatican City</option>
+      <option value="Venezuela">Venezuela</option>
+      <option value="Vietnam">Vietnam</option>
+      <option value="Yemen">Yemen</option>
+      <option value="Zambia">Zambia</option>
+      <option value="Zimbabwe">Zimbabwe</option>
+    </select>
+  </div>
+
+  <!-- Situación laboral -->
+  <div class="sr-block">
+    <div class="sr-question">¿Qué describe mejor tu situación laboral actual?</div>
+    <select id="demo-occupation-status" style="padding: 8px; font-size: 14px;">
+      <option value="">-- Por favor selecciona --</option>
+       <option value="employed">Empleado/a</option>
+      <option value="self-employed">Trabajador/a independiente</option>
+      <option value="student">Estudiante</option>
+      <option value="working-and-studying">Trabajando y estudiando</option>
+      <option value="unemployed">Desempleado/a</option>
+    </select>
+  </div>
+
+  <!-- Área de trabajo/estudio -->
+  <div class="sr-block" id="occupationfield-block">
+    <div class="sr-question">¿En qué área trabajas o estudias?</div>
+    <input type="text" id="demo-occupation-field" placeholder="ej. Ingeniería, Salud, Negocios">
+  </div>
+
+  <!-- Correo electrónico opcional -->
+  <div class="sr-block">
+    <div class="sr-question">¿Te gustaría que te informáramos si tu decisión de distribución fue seleccionada?</div>
+    <p class="sr-intro" style="font-size: 12px; margin-top: -5px; margin-bottom: 10px;">Si es así, por favor proporciona tu correo electrónico a continuación.</p>
+    <input type="email" id="demo-email-results" placeholder="tu.correo@ejemplo.com" style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #a08070; background: #f5f0e4; color: #311a1a; font-family: Georgia, serif; font-size: 13px;">
+  </div>
+
+  <!-- Comentarios -->
+  <div class="sr-block">
+    <div class="sr-question">Comentarios Adicionales</div>
+    <p class="sr-intro" style="font-size: 12px; margin-top: -5px;">Si tienes comentarios, sugerencias o retroalimentación sobre este estudio, por favor compártelos. ¿Algo no estuvo claro? ¿Cómo podríamos mejorar?</p>
+    <textarea id="demo-comments" style="width: 100%; height: 100px; padding: 8px; border: 1px solid #a08070; background: #f5f0e4; color: #311a1a; font-family: Georgia, serif; font-size: 13px; resize: vertical;" placeholder="Tus comentarios aquí..."></textarea>
+  </div>
+
+  <div class="clearfix">
+    <button class="btn-next" id="demo-submit-btn">&gt;&gt;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PANTALLA 7 – ESTUDIO COMPLETADO
+════════════════════════════════════════════════ -->
+<div id="screen-complete" class="screen feedback-screen">
+  <h2>Estudio Completado</h2>
+  <div class="complete-box" style="padding:40px 60px;">
+    <div class="complete-text">Gracias por tu participación.</div>
+    <p style="margin-top:16px; font-size:13px; color:#7a5a5a; font-weight:normal;">
+      Tus respuestas han sido registradas.
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────────
+   DEVICE DETECTION    
+───────────────────────────────────────────── */
+function isMobileDevice() {
+  return window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+/* ─────────────────────────────────────────────
+   APPLY DYNAMIC GRID COLUMNS
+───────────────────────────────────────────── */
+function applyMatrixGridColumns() {
+  const cols = isMobileDevice() ? 8 : 20;
+  const matrixContainer = document.getElementById('matrix-container');
+  const practiceContainer = document.getElementById('practice-matrix-container');
+  if (matrixContainer) matrixContainer.style.gridTemplateColumns = `repeat(${cols}, auto)`;
+  if (practiceContainer) practiceContainer.style.gridTemplateColumns = `repeat(${cols}, auto)`;
+}
+
+// Apply on load (after DOM is ready) and on window resize
+document.addEventListener('DOMContentLoaded', applyMatrixGridColumns);
+window.addEventListener('resize', applyMatrixGridColumns);
+
+/* ─────────────────────────────────────────────
+   CONFIGURATION    
+───────────────────────────────────────────── */
+const CONFIG = {
+  ROUND_SECONDS : 45,
+  PRACTICE_SECONDS : 20,
+  TOTAL_ROUNDS  : 5,
+  MATRIX_COLS   : isMobileDevice() ? 7 : 20,
+  MATRIX_ROWS   : isMobileDevice() ? 46 : 16,
+  TARGET_FREQ   : 0.15,
+  MIN_RANGE     : 100,
+  MAX_RANGE     : 999,
+};
+
+/* ─────────────────────────────────────────────
+   TREATMENT GROUP ASSIGNMENT (1/3 each)
+   'none'  → solo "Tarea completada"
+   'score' → solo puntuación total
+   'full'  → desglose completo + emparejamiento aleatorio
+   'relative' → emparejamiento aleatorio
+   I decide to keep only none and relative
+   const GROUP = (() => {
+  const r = Math.random();
+  if (r < 1/3) return 'none';
+  if (r < 2/3) return 'score';
+  return 'full';
+})();
+───────────────────────────────────────────── */
+const PAIR_SCORES = [10,200];
+
+const GROUP = (() => {
+  const r = Math.random();
+  if (r < 1/3) return 'none';
+  return 'relative';
+})();
+
+/* ─────────────────────────────────────────────
+   STATE    
+───────────────────────────────────────────── */
+let state = {
+  totalCorrect : 0,
+  totalWrong   : 0,
+  totalScore   : 0,
+  currentRound : 0,
+  targetCode   : '',
+  roundTimer   : null,
+  roundSeconds : 0,
+  checkboxData : [],
+  roundResults : [],
+  practiceScore : 0,
+  practiceCorrect : 0,
+  practiceWrong : 0,
+  isMobile     : isMobileDevice(),
+};
+
+/* Respuestas del autoinforme */
+let srData = { effort: null, guess: null, relPerf: null };
+
+/* Datos demográficos iniciales */
+let earlyDemoData = { gender: null, age: null, country_residence: null, country_origin: null };
+
+/* Datos demográficos finales */
+let lateDemoData = { education: null, parentEducation: null, occupationStatus: null, occupationField: null, comments: null, emailResults: null, knowSelection: null };
+
+/* Resultado del emparejamiento (guardado para el payload) */
+let pairResult = { score: null, result: null };
+
+/* ─────────────────────────────────────────────
+   UTILS    
+───────────────────────────────────────────── */
+function randInt(lo, hi) {
+  return Math.floor(Math.random() * (hi - lo + 1)) + lo;
+}
+function pad3(n) { return String(n).padStart(3, '0'); }
+function generateTarget() { return pad3(randInt(CONFIG.MIN_RANGE, CONFIG.MAX_RANGE)); }
+function generateDistractor(target) {
+  let d;
+  do { d = pad3(randInt(CONFIG.MIN_RANGE, CONFIG.MAX_RANGE)); } while (d === target);
+  return d;
+}
+
+/* ─────────────────────────────────────────────
+   EXAMPLE GRID    
+───────────────────────────────────────────── */
+(function buildExample() {
+  const items = [
+    { v: '123', col: 'hit'  }, { v: '283', col: 'miss' },
+    { v: '231', col: 'miss' }, { v: '123', col: 'hit'  },
+    { v: '952', col: 'miss' }, { v: '641', col: 'miss' },
+    { v: '864', col: 'miss' }, { v: '820', col: 'miss' },
+    { v: '123', col: 'hit'  }, { v: '462', col: 'miss' },
+    { v: '791', col: 'miss' }, { v: '123', col: 'hit'  },
+  ];
+  const grid = document.getElementById('example-grid');
+  items.forEach(item => {
+    const cell = document.createElement('div');
+    cell.className = `cell ${item.col}`;
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    if (item.col === 'hit') cb.checked = true;
+    const lbl = document.createElement('span');
+    lbl.textContent = item.v;
+    cell.appendChild(cb);
+    cell.appendChild(lbl);
+    grid.appendChild(cell);
+  });
+})();
+
+/* ─────────────────────────────────────────────
+   MATRIX BUILDER    
+───────────────────────────────────────────── */
+function buildMatrix(target) {
+  const total    = CONFIG.MATRIX_COLS * CONFIG.MATRIX_ROWS;
+  const nTargets = Math.round(total * CONFIG.TARGET_FREQ);
+  const codes    = [];
+  for (let i = 0; i < nTargets; i++)
+    codes.push({ value: target, isTarget: true });
+  for (let i = 0; i < total - nTargets; i++)
+    codes.push({ value: generateDistractor(target), isTarget: false });
+  for (let i = codes.length - 1; i > 0; i--) {
+    const j = randInt(0, i);
+    [codes[i], codes[j]] = [codes[j], codes[i]];
+  }
+  return codes.map(c => ({ ...c, checked: false }));
+}
+
+function renderMatrix() {
+  const container = document.getElementById('matrix-container');
+  container.innerHTML = '';
+  state.checkboxData.forEach((item, idx) => {
+    const cell = document.createElement('div');
+    cell.className = 'matrix-cell';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id   = `cb_${idx}`;
+    cb.checked = item.checked;
+    const lbl = document.createElement('label');
+    lbl.htmlFor     = `cb_${idx}`;
+    lbl.textContent = item.value;
+    cb.addEventListener('change', () => handleCheck(idx, cb.checked, lbl));
+    cell.appendChild(cb);
+    cell.appendChild(lbl);
+    container.appendChild(cell);
+  });
+}
+
+function handleCheck(idx, checked, lbl) {
+  const item = state.checkboxData[idx];
+  if (checked) {
+    item.checked = true;
+    lbl.classList.add(item.isTarget ? 'checked-correct' : 'checked-wrong');
+  } else {
+    item.checked = false;
+    lbl.classList.remove('checked-correct', 'checked-wrong');
+  }
+}
+
+/* ─────────────────────────────────────────────
+   PRACTICE LOGIC    
+───────────────────────────────────────────── */
+function startPractice() {
+  const target = generateTarget();
+  const matrix = buildMatrix(target);
+  document.getElementById('practice-target-code').textContent = target;
+  renderPracticeMatrix(matrix);
+  startPracticeTimer(target, matrix);
+}
+
+function renderPracticeMatrix(matrix) {
+  const container = document.getElementById('practice-matrix-container');
+  container.innerHTML = '';
+  matrix.forEach((item, idx) => {
+    const cell = document.createElement('div');
+    cell.className = 'practice-matrix-cell';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id   = `pcb_${idx}`;
+    cb.checked = item.checked;
+    const lbl = document.createElement('label');
+    lbl.htmlFor     = `pcb_${idx}`;
+    lbl.textContent = item.value;
+    cb.addEventListener('change', () => handlePracticeCheck(idx, cb.checked, lbl, item));
+    cell.appendChild(cb);
+    cell.appendChild(lbl);
+    container.appendChild(cell);
+  });
+}
+
+function handlePracticeCheck(idx, checked, lbl, item) {
+  if (checked) {
+    lbl.classList.add(item.isTarget ? 'checked-correct' : 'checked-wrong');
+  } else {
+    lbl.classList.remove('checked-correct', 'checked-wrong');
+  }
+}
+
+function startPracticeTimer(target, matrix) {
+  const bar = document.getElementById('practice-timer-bar');
+  bar.style.width = '100%';
+  let elapsed = 0;
+  const timer = setInterval(() => {
+    elapsed++;
+    const pct = Math.max(0, ((CONFIG.PRACTICE_SECONDS - elapsed) / CONFIG.PRACTICE_SECONDS) * 100);
+    bar.style.width = pct + '%';
+    if (elapsed >= CONFIG.PRACTICE_SECONDS) {
+      clearInterval(timer);
+      endPractice(target, matrix);
+    }
+  }, 1000);
+}
+
+function endPractice(target, matrix) {
+  let correct = 0, wrong = 0;
+  matrix.forEach((item, idx) => {
+    const cb = document.getElementById(`pcb_${idx}`);
+    if (cb.checked) {
+      if (item.isTarget) correct++;
+      else wrong++;
+    }
+  });
+  state.practiceCorrect = correct;
+  state.practiceWrong = wrong;
+  state.practiceScore = correct - wrong;
+  document.getElementById('practice-fb-hits').textContent = state.practiceCorrect;
+  document.getElementById('practice-fb-fa').textContent = state.practiceWrong;
+  document.getElementById('practice-fb-total').textContent = state.practiceScore;
+  document.getElementById('practice-score-number').textContent = state.practiceScore;
+  showScreen('screen-practice-feedback');
+}
+
+/* ─────────────────────────────────────────────
+   ROUND LOGIC    
+───────────────────────────────────────────── */
+function startRound(roundNumber) {
+  state.currentRound = roundNumber;
+  state.targetCode   = generateTarget();
+  state.checkboxData = buildMatrix(state.targetCode);
+  document.getElementById('target-code').textContent   = state.targetCode;
+  document.getElementById('current-round').textContent = roundNumber;
+  document.getElementById('total-rounds').textContent  = CONFIG.TOTAL_ROUNDS;
+  renderMatrix();
+  startTimer();
+}
+
+function startTimer() {
+  const bar = document.getElementById('timer-bar');
+  bar.style.width = '100%';
+  let elapsed = 0;
+  state.roundTimer = setInterval(() => {
+    elapsed++;
+    const pct = Math.max(0, ((CONFIG.ROUND_SECONDS - elapsed) / CONFIG.ROUND_SECONDS) * 100);
+    bar.style.width = pct + '%';
+    if (elapsed >= CONFIG.ROUND_SECONDS) {
+      clearInterval(state.roundTimer);
+      endRound();
+    }
+  }, 1000);
+}
+
+function endRound() {
+  let correct = 0, wrong = 0;
+  state.checkboxData.forEach(item => {
+    if (item.checked) { if (item.isTarget) correct++; else wrong++; }
+  });
+  state.totalCorrect += correct;
+  state.totalWrong   += wrong;
+  state.totalScore   += (correct - wrong);
+  state.roundResults.push({
+    round: state.currentRound, target: state.targetCode,
+    correct, wrong, score: correct - wrong,
+  });
+  if (state.currentRound < CONFIG.TOTAL_ROUNDS) {
+    startRound(state.currentRound + 1);
+  } else {
+    showScreen('screen-selfreport');   /* ← va al autoinforme, no a los resultados */
+  }
+}
+
+/* ─────────────────────────────────────────────
+   ENVÍO DEL AUTOINFORME
+───────────────────────────────────────────── */
+document.getElementById('sr-submit-btn').addEventListener('click', () => {
+  const guess   = document.getElementById('points-guess').value.trim();
+  const relPerf = document.querySelector('input[name="rel-perf"]:checked');
+
+  if (guess === '') {
+    alert('Por favor introduce cuántos puntos crees que obtuviste (Pregunta 2).');
+    return;
+  }
+  if (!relPerf) {
+    alert('Por favor selecciona una respuesta para la Pregunta 3.');
+    return;
+  }
+
+  srData.effort  = parseInt(document.getElementById('effort-slider').value);
+  srData.guess   = parseInt(guess);
+  srData.relPerf = relPerf.value;
+
+  showFeedback();
+});
+
+/* ─────────────────────────────────────────────
+   RESULTADO – ramificación por grupo
+───────────────────────────────────────────── */
+function showFeedback() {
+  if (GROUP === 'none') {
+    showScreen('screen-fb-none');
+
+  } else if (GROUP === 'score') {
+    document.getElementById('fb-score-number').textContent = state.totalScore;
+    showScreen('screen-fb-score');
+
+  } else {
+    /* ── Lógica para grupos con comparación (4-C y 4-D) ── */
+    
+    // 1. Intentar llenar la tabla de desglose (solo si existe en el HTML, como en 4-C)
+    const hitsEl = document.getElementById('fb-hits');
+    if (hitsEl) {
+        hitsEl.textContent = state.totalCorrect;
+        document.getElementById('fb-fa').textContent = state.totalWrong;
+        document.getElementById('fb-total').textContent = state.totalScore;
+    }
+
+    // 2. Obtener puntaje aleatorio del par
+    const ps = PAIR_SCORES[randInt(0, PAIR_SCORES.length - 1)];
+    pairResult.score = ps;
+
+    // 3. Actualizar el número del par (solo si el elemento existe)
+    const pairScoreEl = document.getElementById('pair-score-display');
+    if (pairScoreEl) {
+        pairScoreEl.textContent = ps;
+    }
+
+    // 4. Decidir qué pantalla mostrar según el grupo
+    if (GROUP === 'full') {
+        const el = document.getElementById('pair-result-text');
+        if (el) {
+            if (state.totalScore > ps) {
+              el.textContent = 'Tuviste un mejor desempeño que ellos.';
+              el.className   = 'comp-result comp-above';
+              pairResult.result = 'above';
+            } else if (state.totalScore < ps) {
+              el.textContent = 'Tuviste un peor desempeño que ellos.';
+              el.className   = 'comp-result comp-below';
+              pairResult.result = 'below';
+            } else {
+              el.textContent = 'Tuviste un mejor desempeño que ellos.';
+              el.className   = 'comp-result comp-equal';
+              pairResult.result = 'equal';
+            }
+        }
+        showScreen('screen-fb-full'); // Muestra la 4-C (con tabla)
+    } else {
+        const el = document.getElementById('pair-result-text-rel');
+        if (el) {
+            if (state.totalScore > ps) {
+              el.textContent = 'Tuviste un mejor desempeño que ellos.';
+              el.className   = 'comp-result comp-above';
+              pairResult.result = 'above';
+            } else if (state.totalScore < ps) {
+              el.textContent = 'Tuviste un peor desempeño que ellos.';
+              el.className   = 'comp-result comp-below';
+              pairResult.result = 'below';
+            } else {
+              el.textContent = 'Tuviste un mejor desempeño que ellos.';
+              el.className   = 'comp-result comp-equal';
+              pairResult.result = 'equal';
+            }
+        }
+        showScreen('screen-fb-relative'); // Muestra la 4-D (solo comparación)
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────
+   SCREEN SWITCHING
+───────────────────────────────────────────── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ─────────────────────────────────────────────
+   START BUTTON (de instrucciones a ejemplo)
+───────────────────────────────────────────── */
+document.getElementById('start-btn').addEventListener('click', () => {
+  showScreen('screen-example');
+});
+
+/* ─────────────────────────────────────────────
+   EXAMPLE START BUTTON (de ejemplo a práctica)
+───────────────────────────────────────────── */
+document.getElementById('example-start-btn').addEventListener('click', () => {
+  showScreen('screen-practice');
+  startPractice();
+});
+
+/* ─────────────────────────────────────────────
+   PRACTICE CONTINUE BUTTON
+───────────────────────────────────────────── */
+document.getElementById('practice-continue-btn').addEventListener('click', () => {
+  showScreen('screen-task');
+  startRound(1);
+});
+
+/* ─────────────────────────────────────────────
+   FINISH – lógica compartida para todos los grupos
+───────────────────────────────────────────── */
+function finishTask() {
+  const payload = {
+    /* Desempeño */
+    group        : GROUP,
+    totalScore   : state.totalScore,
+    totalCorrect : state.totalCorrect,
+    totalWrong   : state.totalWrong,
+    roundResults : state.roundResults,
+    practiceScore: state.practiceScore,
+    practiceCorrect: state.practiceCorrect,
+    practiceWrong: state.practiceWrong,
+    /* Autoinforme */
+    sr_effort    : srData.effort,
+    sr_guess     : srData.guess,
+    sr_relPerf   : srData.relPerf,
+    /* Emparejamiento (grupos full y relative; null en caso contrario) */
+    pair_score   : (GROUP === 'full' || GROUP === 'relative') ? pairResult.score  : null,
+    pair_result  : (GROUP === 'full' || GROUP === 'relative') ? pairResult.result : null,
+  };
+
+  console.log('TASK COMPLETE – payload:', JSON.stringify(payload));
+
+  /* Avanzar a la Parte 2 */
+  showDistribution();
+}
+
+document.getElementById('finish-btn-none').addEventListener('click',  finishTask);
+document.getElementById('finish-btn-score').addEventListener('click', finishTask);
+document.getElementById('finish-btn-full').addEventListener('click',  finishTask);
+document.getElementById('finish-btn-pairing').addEventListener('click', finishTask);
+
+/* ─────────────────────────────────────────────
+   WELCOME BUTTON
+───────────────────────────────────────────── */
+document.getElementById('welcome-btn').addEventListener('click', () => {
+  showScreen('screen-early-demographics');
+});
+
+/* ─────────────────────────────────────────────
+   PARTE 2 – ASIGNACIÓN DE TRATAMIENTO
+   'luck'  → ganancias determinadas por sorteo
+   'merit' → ganancias determinadas por productividad
+───────────────────────────────────────────── */
+const DIST_TREATMENT = Math.random() < 0 ? 'luck' : 'merit';
+
+/* Las 9 opciones de distribución (A decrece, B crece) */
+const DIST_OPTIONS = [
+  { a: 8, b: 0, noRedist: true  },
+  { a: 7, b: 1, noRedist: false },
+  { a: 6, b: 2, noRedist: false },
+  { a: 5, b: 3, noRedist: false },
+  { a: 4, b: 4, noRedist: false },
+  { a: 3, b: 5, noRedist: false },
+  { a: 2, b: 6, noRedist: false },
+  { a: 1, b: 7, noRedist: false },
+  { a: 0, b: 8, noRedist: false },
+];
+
+let distChoice = null;   // índice de la opción seleccionada
+
+/* Construir y mostrar la pantalla de distribución */
+function showDistribution() {
+  /* ── Inyectar texto específico del tratamiento ── */
+  const scenarioEl = document.getElementById('dist-scenario-text');
+  const outcomeEl  = document.getElementById('dist-outcome-text');
+
+  if (DIST_TREATMENT === 'luck') {
+    scenarioEl.innerHTML = 'Al terminar, se les informó que sus ganancias serían determinadas inicialmente por un ' +
+      '<strong>sorteo</strong>. El trabajador que ganara el sorteo recibiría ' +
+      '<strong>8 USD</strong>, mientras que el otro trabajador no recibiría <strong>nada</strong>.</p>' +
+    '<p><strong>Los resultados:</strong>' +
+    '<ul style="margin-top: 5px; margin-left: 40px;">' +
+      '<li> <strong>Trabajador A</strong> ganó el sorteo y obtuvo <strong>$8 USD</strong>.</li>' +
+      '<li> <strong>Trabajador B</strong> no ganó el sorteo y obtuvo <strong>$0 USD</strong>.</li>' +
+    '</ul>' +
+  '</p>' +
+      '<p>También se les informó que una tercera persona conocería el resultado del sorteo ' +
+      'y tendría la oportunidad de redistribuir las ganancias, determinando así los pagos finales.</p>';
+    outcomeEl.innerHTML =
+      '<strong>el Trabajador A ganó el sorteo</strong> y obtuvo 8 USD por la tarea; ' +
+      'por lo tanto, el Trabajador B no obtuvo nada.';
+  } else {
+    scenarioEl.innerHTML = 'Al terminar, se les informó que sus ganancias serían determinadas inicialmente por su ' +
+      '<strong>desempeño relativo en la tarea de reconocimiento de códigos</strong>. El trabajador con la puntuación más alta recibiría ' +
+      '<strong>8 USD</strong>, mientras que el otro trabajador no recibiría <strong>nada</strong>.</p>' +
+      
+        '<p><strong>Los resultados:</strong>' +
+    '<ul style="margin-top: 5px; margin-left: 40px;">' +
+      '<li> <strong>Trabajador A</strong> obtuvo la puntuación más alta y ganó <strong>$8 USD</strong>.</li>' +
+      '<li> <strong>Trabajador B</strong> tuvo un desempeño inferior al del Trabajador A y obtuvo <strong>$0 USD</strong>.</li>' +
+    '</ul>' +
+  '</p>' +
+
+      '<p>También se les informó que una tercera persona conocería su desempeño relativo ' +
+      'y tendría la oportunidad de redistribuir las ganancias, determinando así los pagos finales.</p>';
+    outcomeEl.innerHTML =
+      '<strong>el Trabajador A obtuvo la puntuación más alta</strong> y ganó 8 USD por la tarea; ' +
+      'por lo tanto, el Trabajador B no obtuvo nada.';
+  }
+
+  /* ── Construir filas de opciones – dos columnas (5 izquierda, 4 derecha) ── */
+  const list = document.getElementById('dist-options-list');
+  list.innerHTML = '';
+
+  const colLeft  = document.createElement('div');
+  const colRight = document.createElement('div');
+  colLeft.className  = 'dist-options-col';
+  colRight.className = 'dist-options-col';
+
+  DIST_OPTIONS.forEach((opt, idx) => {
+    const row = document.createElement('div');
+    row.className = 'dist-option';
+    row.dataset.idx = idx;
+
+    const rb = document.createElement('input');
+    rb.type  = 'radio';
+    rb.name  = 'dist-choice';
+    rb.value = idx;
+    rb.id    = `dopt_${idx}`;
+
+    const txt = document.createElement('div');
+    txt.className = 'opt-text';
+
+    if (opt.noRedist) {
+      txt.innerHTML =
+        '<span class="opt-no-redist">No redistribuyo:</span>' +
+        '<div class="opt-amounts">' +
+        `<span class="opt-a">Trabajador A: $${opt.a}</span>` +
+        `<span class="opt-b">Trabajador B: $${opt.b}</span>` +
+        '</div>';
+    } else {
+      txt.innerHTML =
+        '<span style="font-weight: bold;">Redistribuyo $' + (8 - opt.a) + ':</span>' +
+        '<div class="opt-amounts">' +
+        `<span class="opt-a">Trabajador A: $${opt.a}</span>` +
+        `<span class="opt-b">Trabajador B: $${opt.b}</span>` +
+        '</div>';
+    }
+
+    row.appendChild(rb);
+    row.appendChild(txt);
+
+    // Primeras 5 → columna izquierda, últimas 4 → columna derecha
+    if (idx < 5) colLeft.appendChild(row);
+    else         colRight.appendChild(row);
+
+    /* Hacer clic en cualquier parte de la fila la selecciona */
+    row.addEventListener('click', () => {
+      rb.checked = true;
+      document.querySelectorAll('.dist-option').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      distChoice = idx;
+      updateWorkerCards(opt);
+    });
+  });
+
+  list.appendChild(colLeft);
+  list.appendChild(colRight);
+
+  showScreen('screen-distribution');
+}
+
+/* Actualizar las tarjetas visuales + barras al seleccionar una opción */
+function updateWorkerCards(opt) {
+  const MAX_H = 80;   // px para 8 USD
+  const aH = Math.round((opt.a / 8) * MAX_H);
+  const bH = Math.round((opt.b / 8) * MAX_H);
+
+  document.getElementById('wc-a-amount').textContent = '$' + opt.a;
+  document.getElementById('wc-b-amount').textContent = '$' + opt.b;
+
+  document.getElementById('wc-a-amount').className = 'wc-amount';
+  document.getElementById('wc-b-amount').className = 'wc-amount';
+
+  document.getElementById('bar-a').style.height = Math.max(aH, 2) + 'px';
+  document.getElementById('bar-b').style.height = Math.max(bH, 2) + 'px';
+}
+
+/* ─────────────────────────────────────────────
+   ENVÍO DE DISTRIBUCIÓN
+───────────────────────────────────────────── */
+document.getElementById('dist-submit-btn').addEventListener('click', () => {
+  if (distChoice === null) {
+    alert('Por favor selecciona una de las alternativas de distribución.');
+    return;
+  }
+  showScreen('screen-demographics');
+});
+
+/* ─────────────────────────────────────────────
+   ENVÍO DE DATOS DEMOGRÁFICOS INICIALES
+───────────────────────────────────────────── */
+document.getElementById('early-demo-submit-btn').addEventListener('click', () => {
+  const gender = document.querySelector('input[name="early-demo-gender"]:checked');
+  const age = document.getElementById('early-demo-age').value.trim();
+  const country_residence = document.getElementById('early-demo-country-residence').value;
+
+  if (!gender) {
+    alert('Por favor selecciona un género.');
+    return;
+  }
+  if (age === '') {
+    alert('Por favor introduce tu edad.');
+    return;
+  }
+  if (!country_residence || country_residence === '') {
+    alert('Por favor selecciona tu país de residencia.');
+    return;
+  }
+
+  earlyDemoData.gender = gender.value;
+  earlyDemoData.age = parseInt(age);
+  earlyDemoData.country_residence = country_residence;
+
+  showScreen('screen-instructions');
+});
+
+/* ─────────────────────────────────────────────
+   CAMBIO DE SITUACIÓN LABORAL - Mostrar/Ocultar campo
+───────────────────────────────────────────── */
+document.getElementById('demo-occupation-status').addEventListener('change', () => {
+  const status = document.getElementById('demo-occupation-status').value;
+  const fieldBlock = document.getElementById('occupationfield-block');
+  const fieldInput = document.getElementById('demo-occupation-field');
+  
+  if (status && status !== '') {
+    fieldBlock.style.display = 'block';
+    fieldInput.focus();
+  } else {
+    fieldBlock.style.display = 'none';
+    fieldInput.value = '';
+  }
+});
+
+/* ─────────────────────────────────────────────
+   ENVÍO DE DATOS DEMOGRÁFICOS FINALES
+───────────────────────────────────────────── */
+document.getElementById('demo-submit-btn').addEventListener('click', () => {
+  const education = document.querySelector('input[name="demo-education"]:checked');
+  const parentEducation = document.querySelector('input[name="demo-parent-education"]:checked');
+  const occupationStatus = document.getElementById('demo-occupation-status').value.trim();
+  const occupationField = document.getElementById('demo-occupation-field').value.trim();
+  const comments = document.getElementById('demo-comments').value.trim();
+  const emailResults = document.getElementById('demo-email-results').value.trim();
+  const knowSelection = document.querySelector('input[name="demo-know-selection"]:checked');
+  const country_origin = document.getElementById('early-demo-country-origin').value;
+  earlyDemoData.country_origin = country_origin || null;
+
+  if (!education) {
+    alert('Por favor selecciona tu nivel educativo.');
+    return;
+  }
+  if (!parentEducation) {
+    alert('Por favor selecciona el nivel educativo de tus padres.');
+    return;
+  }
+  if (occupationStatus === '') {
+    alert('Por favor selecciona tu situación laboral.');
+    return;
+  }
+  if (occupationField === '') {
+    alert('Por favor introduce el área en la que trabajas o estudias.');
+    return;
+  }
+
+  lateDemoData.education = education.value;
+  lateDemoData.parentEducation = parentEducation.value;
+  lateDemoData.occupationStatus = occupationStatus;
+  lateDemoData.occupationField = occupationField;
+  lateDemoData.comments = comments || null;
+  lateDemoData.emailResults = emailResults || null;
+  lateDemoData.knowSelection = knowSelection ? knowSelection.value : null;
+
+  // Mostrar la pantalla de finalización primero
+  showScreen('screen-complete');
+
+  // Luego enviar datos a JATOS
+  const chosen = DIST_OPTIONS[distChoice];
+  
+  const fullPayload = {
+    group        : GROUP,
+    totalScore   : state.totalScore,
+    totalCorrect : state.totalCorrect,
+    totalWrong   : state.totalWrong,
+    roundResults : state.roundResults,
+    practiceScore: state.practiceScore,
+    practiceCorrect: state.practiceCorrect,
+    practiceWrong: state.practiceWrong,
+    sr_effort    : srData.effort,
+    sr_guess     : srData.guess,
+    sr_relPerf   : srData.relPerf,
+    pair_score   : (GROUP === 'full' || GROUP === 'relative') ? pairResult.score  : null,
+    pair_result  : (GROUP === 'full' || GROUP === 'relative') ? pairResult.result : null,
+    dist_treatment    : DIST_TREATMENT,
+    dist_choice_idx   : distChoice,
+    dist_worker_a_usd : chosen.a,
+    dist_worker_b_usd : chosen.b,
+    dist_no_redist    : chosen.noRedist,
+    demo_gender   : earlyDemoData.gender,
+    demo_age      : earlyDemoData.age,
+    demo_country_residence : earlyDemoData.country_residence,
+    demo_country_origin : earlyDemoData.country_origin,
+    demo_education : lateDemoData.education,
+    demo_parent_education : lateDemoData.parentEducation,
+    demo_occupationStatus : lateDemoData.occupationStatus,
+    demo_occupationField : lateDemoData.occupationField,
+    demo_comments : lateDemoData.comments,
+    demo_emailResults : lateDemoData.emailResults,
+    demo_knowSelection : lateDemoData.knowSelection,
+    device_type : state.isMobile ? 'mobile' : 'desktop',
+  };
+
+  jatos.submitResultData(fullPayload, function() {
+      // Esperar 6 segundos para que el participante lea el mensaje final, luego terminar el estudio
+      setTimeout(function() {
+        jatos.endStudy();
+      }, 6000);
+  });
+});
+
+
+</script>
+</body>
+</html>

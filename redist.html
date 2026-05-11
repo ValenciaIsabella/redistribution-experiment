@@ -520,7 +520,7 @@
   <!-- Age -->
   <div class="sr-block">
     <div class="sr-question">Age</div>
-    <input type="number" id="early-demo-age" min="18" max="120" placeholder="e.g. 25">
+    <input type="number" id="early-demo-age" min="18" max="99" placeholder="e.g. 25">
   </div>
 
   <!-- Country of Residence -->
@@ -878,7 +878,7 @@
   <!-- Q2.1 -->
   <div class="sr-block">
     <div class="sr-question">2. The maximum amount of points you could have obtained was 200. How many do you think you got?</div>
-    <input type="number" id="points-guess" min="-200" max="1000" placeholder=" ">
+    <input type="number" id="points-guess" min="0" max="100" placeholder=" ">
   </div>
 
     <!-- Q2.2 -->
@@ -1298,11 +1298,17 @@
     <input type="text" id="demo-occupation-field" placeholder="e.g. Engineering, Healthcare, Business">
   </div>
 
-    <!-- Optional: Email for Results --> POR AHORA CAMBIO LA PREGUNTA
+  <!-- Effort vs Luck -->
   <div class="sr-block">
-    <div class="sr-question">Is there anything you didn't understand during the study? </div>
-    <p class="sr-intro" style="font-size: 12px; margin-top: -5px; margin-bottom: 10px;">You can answers yes or no and explain a bit.</p>
-    <input type="email" id="demo-email-results" placeholder="(Optional)" style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #a08070; background: #f5f0e4; color: #311a1a; font-family: Georgia, serif; font-size: 13px;">
+    <div class="sr-question">To what extent do you think the initial income assigned to the participants in the previous task — before any redistribution — was determined by effort versus luck?</div>
+    <div class="slider-row">
+      <span style="font-size:12px;color:#7a5a5a;">0% Effort</span>
+      <input type="range" id="demo-effort-luck" min="0" max="100" value="0"
+             oninput="document.getElementById('effort-luck-val').textContent = this.value">
+      <span class="slider-val" id="effort-luck-val">0</span>
+      <span style="font-size:12px;color:#7a5a5a;">100% Effort</span>
+    </div>
+    <div class="slider-ends"><span>(100% Luck)</span><span>(0% Luck)</span></div>
   </div>
 
   <!-- Comments -->
@@ -1360,8 +1366,8 @@ window.addEventListener('resize', applyMatrixGridColumns);
    CONFIGURATION    
 ───────────────────────────────────────────── */
 const CONFIG = {
-  ROUND_SECONDS : 45,
-  PRACTICE_SECONDS : 20,
+  ROUND_SECONDS : 20,
+  PRACTICE_SECONDS : 45,
   TOTAL_ROUNDS  : 5,
   MATRIX_COLS   : isMobileDevice() ? 7 : 20,
   MATRIX_ROWS   : isMobileDevice() ? 46 : 16,
@@ -1418,7 +1424,7 @@ let srData = { effort: null, guess: null, relPerf: null };
 let earlyDemoData = { gender: null, age: null, country_residence: null, country_origin: null };
 
 /* Late Demographics answers */
-let lateDemoData = { education: null, parentEducation: null, occupationStatus: null, occupationField: null, comments: null, emailResults: null, knowSelection: null };
+let lateDemoData = { education: null, parentEducation: null, occupationStatus: null, occupationField: null, comments: null, knowSelection: null, effortLuck: null };
 
 /* Pairing result (stored for payload) */
 let pairResult = { score: null, result: null };
@@ -1644,6 +1650,10 @@ document.getElementById('sr-submit-btn').addEventListener('click', () => {
 
   if (guess === '') {
     alert('Please enter how many points you think you obtained (Question 2).');
+    return;
+  }
+  if (parseInt(guess) < 0 || parseInt(guess) > 100) {
+    alert('Question 2: Please enter a value between 0 and 100.');
     return;
   }
   if (!relPerf) {
@@ -1987,6 +1997,10 @@ document.getElementById('early-demo-submit-btn').addEventListener('click', () =>
     alert('Please enter your age.');
     return;
   }
+  if (parseInt(age) < 18 || parseInt(age) > 99) {
+    alert('Age must be between 18 and 99.');
+    return;
+  }
   if (!country_residence || country_residence === '') {
     alert('Please select your country of residence.');
     return;
@@ -2025,7 +2039,6 @@ document.getElementById('demo-submit-btn').addEventListener('click', () => {
   const occupationStatus = document.getElementById('demo-occupation-status').value.trim();
   const occupationField = document.getElementById('demo-occupation-field').value.trim();
   const comments = document.getElementById('demo-comments').value.trim();
-  const emailResults = document.getElementById('demo-email-results').value.trim();
   const knowSelection = document.querySelector('input[name="demo-know-selection"]:checked');
   const country_origin = document.getElementById('early-demo-country-origin').value;
   earlyDemoData.country_origin = country_origin || null;
@@ -2052,8 +2065,8 @@ document.getElementById('demo-submit-btn').addEventListener('click', () => {
   lateDemoData.occupationStatus = occupationStatus;
   lateDemoData.occupationField = occupationField;
   lateDemoData.comments = comments || null;
-  lateDemoData.emailResults = emailResults || null;
   lateDemoData.knowSelection = knowSelection ? knowSelection.value : null;
+  lateDemoData.effortLuck = parseInt(document.getElementById('demo-effort-luck').value);
 
   // Show completion screen first
   showScreen('screen-complete');
@@ -2089,8 +2102,8 @@ document.getElementById('demo-submit-btn').addEventListener('click', () => {
     demo_occupationStatus : lateDemoData.occupationStatus,
     demo_occupationField : lateDemoData.occupationField,
     demo_comments : lateDemoData.comments,
-    demo_emailResults : lateDemoData.emailResults,
     demo_knowSelection : lateDemoData.knowSelection,
+    demo_effortLuck   : lateDemoData.effortLuck,
     device_type : state.isMobile ? 'mobile' : 'desktop',
   };
 

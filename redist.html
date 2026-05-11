@@ -893,7 +893,7 @@
   <!-- Q2.1 -->
   <div class="sr-block">
     <div class="sr-question" data-i18n="sr_q2_1">2. The maximum amount of points you could have obtained was 200. How many do you think you got?</div>
-    <input type="number" id="points-guess" min="0" max="100" placeholder=" ">
+    <input type="number" id="points-guess" min="-200" max="200" placeholder=" ">
   </div>
 
   <!-- Q2.2 -->
@@ -1025,7 +1025,7 @@
   </p>
 
   <p data-i18n-html="dist_decision_title"><strong> Your Decision:</strong></p>
-  <p><span data-i18n="dist_decision_remember">Remember that</span> <span id="dist-outcome-text"></span> <strong data-i18n-html="dist_decision_question">How would you allocate a total of $8 between Worker A and Worker B?</strong></p>
+  <p><span data-i18n="dist_decision_remember">Remember that</span> <span id="dist-outcome-text"></span> <strong data-i18n-html="dist_decision_question">How would you reallocate the total of $8 between Worker A and Worker B?</strong></p>
 
   <!-- Visual: worker cards + bar chart -->
   <div class="worker-cards">
@@ -1426,22 +1426,22 @@ const T = {
     fb_full_pair_intro: 'You were randomly paired with a previous participant.<br>Their score: <strong id="pair-score-display">—</strong> points',
     fb_rel_pair_intro: 'You were randomly paired with a previous participant.',
     dist_h2: 'Part 2: Distribution Phase',
-    dist_participants: 'Two previous participants, <strong>Worker A</strong> and <strong>Worker B</strong>, were recruited to conduct the exact same task you just completed.',
+    dist_participants: 'Two previous participants, <strong>Worker A</strong> and <strong>Worker B</strong>, completed the same task you just did.',
     dist_role_title: '<strong>Your Role:</strong>',
     dist_role_desc: 'Your task is to decide <strong>how to distribute a total payment of $8</strong> between the workers. You can choose to give all the money to one worker, split it equally, or any other division you see fit. Your decision is anonymous and may be the one that determines their final payment. Since we collect decisions from several participants, we will randomly select one person\'s choice to be implemented. If yours is selected, the workers will be paid exactly as you decide.',
     dist_decision_title: '<strong>Your Decision:</strong>',
     dist_decision_remember: 'Remember that',
-    dist_decision_question: 'How would you allocate a total of $8 between Worker A and Worker B?',
+    dist_decision_question: 'How would you reallocate the total of $8 between Worker A and Worker B?',
     dist_worker_a: 'Worker A',
     dist_worker_b: 'Worker B',
     dist_earnings: 'earnings from assignment',
     dist_options_label: 'Please select one of the following alternatives:',
     dist_no_redist: 'I do not redistribute:',
     dist_redist: 'I redistribute $',
-    dist_scenario_luck: 'After completing it, they were informed that their assignment earnings would be initially determined by a <strong>lottery</strong>. The worker winning the lottery would receive <strong>8 USD</strong>, while the other worker would receive <strong>nothing</strong>.</p><p><strong>The results:</strong><ul style="margin-top:5px;margin-left:40px;"><li><strong>Worker A</strong> won the lottery and earned <strong>$8 USD</strong>.</li><li><strong>Worker B</strong> did not win the lottery and earned <strong>$0 USD</strong>.</li></ul></p><p>They were also told that a third person would be informed about the outcome of the lottery and would be given the opportunity to redistribute the earnings, thereby determining their final payments.',
-    dist_outcome_luck: '<strong>Worker A won the lottery</strong> and earned 8 USD for the assignment; thus Worker B earned nothing for the assignment.',
-    dist_scenario_merit: 'After completing it, they were informed that their assignment earnings would be initially determined by their <strong>relative performance in the code recognition task</strong>. The worker with the highest score would receive <strong>8 USD</strong>, while the other worker would receive <strong>nothing</strong>.</p><p><strong>The results:</strong><ul style="margin-top:5px;margin-left:40px;"><li><strong>Worker A</strong> got the highest score and earned <strong>$8 USD</strong>.</li><li><strong>Worker B</strong> performed worse than Worker A and earned <strong>$0 USD</strong>.</li></ul></p><p>They were also told that a third person would be informed about their relative performance and would be given the opportunity to redistribute the earnings, thereby determining their final payments.',
-    dist_outcome_merit: '<strong>Worker A got the highest score</strong> and earned 8 USD for the assignment; thus Worker B earned nothing for the assignment.',
+    dist_scenario_luck: 'In this case, they will receive real payment. They were informed that the assignment rules were as follows: their initial earnings would be determined by a <strong>lottery</strong> — the winner would receive <strong>$8 USD</strong> and the other worker would receive <strong>$0</strong>. They were also told upfront that a third person would later learn the lottery outcome and would have the opportunity to redistribute the earnings before final payment.</p><p><strong>Lottery results (before any redistribution):</strong><ul style="margin-top:5px;margin-left:40px;"><li><strong>Worker A</strong> won the lottery: initial earnings <strong>$8 USD</strong>.</li><li><strong>Worker B</strong> did not win the lottery: initial earnings <strong>$0 USD</strong>.</li></ul>',
+    dist_outcome_luck: '<strong>Worker A won the lottery</strong> and initially earned $8 USD; Worker B initially earned $0.',
+    dist_scenario_merit: 'In this case, they will receive real payment. They were informed that the assignment rules were as follows: their initial earnings would be determined by their <strong>relative performance</strong> in the task — the worker with the highest score would receive <strong>$8 USD</strong> and the other worker would receive <strong>$0</strong>. They were also told upfront that a third person would later learn their initial assignments and would have the opportunity to redistribute the earnings before final payment.</p><p><strong>Performance results (before any redistribution):</strong><ul style="margin-top:5px;margin-left:40px;"><li><strong>Worker A</strong> got the highest score: initial earnings <strong>$8 USD</strong>.</li><li><strong>Worker B</strong> scored lower than Worker A: initial earnings <strong>$0 USD</strong>.</li></ul>',
+    dist_outcome_merit: '<strong>Worker A got the highest score</strong> and initially earned $8 USD; Worker B initially earned $0.',
     demo_h2: 'Background Information',
     demo_intro: 'Thank you for completing the task. To help us understand the results, please answer the following background questions.',
     demo_education: 'What is your highest level of education?',
@@ -1551,22 +1551,22 @@ const T = {
     fb_full_pair_intro: 'Fuiste emparejado/a al azar con un participante anterior.<br>Su puntuación: <strong id="pair-score-display">—</strong> puntos',
     fb_rel_pair_intro: 'Fuiste emparejado/a al azar con un participante anterior.',
     dist_h2: 'Parte 2: Fase de Distribución',
-    dist_participants: 'Dos participantes anteriores, <strong>Trabajador A</strong> y <strong>Trabajador B</strong>, fueron contratados para realizar la misma tarea que acabas de completar.',
+    dist_participants: 'Dos participantes anteriores, <strong>Trabajador A</strong> y <strong>Trabajador B</strong>, realizaron la misma tarea que acabas de completar.',
     dist_role_title: '<strong>Tu Rol:</strong>',
     dist_role_desc: 'Tu tarea es decidir <strong>cómo distribuir un pago total de $8</strong> entre los trabajadores. Puedes dar todo el dinero a un trabajador, dividirlo por igual, o cualquier otra división que consideres apropiada. Tu decisión es anónima y puede ser la que determine su pago final. Como recopilamos decisiones de varios participantes, seleccionaremos aleatoriamente la decisión de una persona para ser implementada. Si se selecciona la tuya, los trabajadores recibirán exactamente lo que decidas.',
     dist_decision_title: '<strong>Tu Decisión:</strong>',
     dist_decision_remember: 'Recuerda que',
-    dist_decision_question: '¿Cómo asignarías un total de $8 entre el Trabajador A y el Trabajador B?',
+    dist_decision_question: '¿Cómo reasignarías un total de $8 entre el Trabajador A y el Trabajador B?',
     dist_worker_a: 'Trabajador A',
     dist_worker_b: 'Trabajador B',
     dist_earnings: 'ingresos de la tarea',
     dist_options_label: 'Por favor selecciona una de las siguientes alternativas:',
     dist_no_redist: 'No redistribuyo:',
     dist_redist: 'Redistribuyo $',
-    dist_scenario_luck: 'Después de completarla, se les informó que sus ingresos inicialmente serían determinados por una <strong>lotería</strong>. El trabajador que ganara la lotería recibiría <strong>8 USD</strong>, mientras que el otro trabajador no recibiría <strong>nada</strong>.</p><p><strong>Los resultados:</strong><ul style="margin-top:5px;margin-left:40px;"><li>El <strong>Trabajador A</strong> ganó la lotería y obtuvo <strong>$8 USD</strong>.</li><li>El <strong>Trabajador B</strong> no ganó la lotería y obtuvo <strong>$0 USD</strong>.</li></ul></p><p>También se les informó que una tercera persona conocería el resultado de la lotería y tendría la oportunidad de redistribuir los ingresos, determinando así sus pagos finales.',
-    dist_outcome_luck: 'el <strong>Trabajador A ganó la lotería</strong> y obtuvo 8 USD por la tarea; por lo tanto, el Trabajador B no obtuvo nada.',
-    dist_scenario_merit: 'Después de completarla, se les informó que sus ingresos inicialmente serían determinados por su <strong>rendimiento relativo en la tarea de reconocimiento de código</strong>. El trabajador con la mayor puntuación recibiría <strong>8 USD</strong>, mientras que el otro trabajador no recibiría <strong>nada</strong>.</p><p><strong>Los resultados:</strong><ul style="margin-top:5px;margin-left:40px;"><li>El <strong>Trabajador A</strong> obtuvo la mayor puntuación y ganó <strong>$8 USD</strong>.</li><li>El <strong>Trabajador B</strong> tuvo un rendimiento inferior al Trabajador A y ganó <strong>$0 USD</strong>.</li></ul></p><p>También se les informó que una tercera persona conocería su rendimiento relativo y tendría la oportunidad de redistribuir los ingresos, determinando así sus pagos finales.',
-    dist_outcome_merit: 'el <strong>Trabajador A obtuvo la mayor puntuación</strong> y ganó 8 USD por la tarea; por lo tanto, el Trabajador B no obtuvo nada.',
+    dist_scenario_luck: 'En este caso, ellos van a recibir una remuneración real, y fueron informados que la asignación seguía las siguientes reglas: sus ingresos iniciales serían determinados por una <strong>lotería</strong> — el ganador recibiría <strong>$8 USD</strong> y el otro trabajador recibiría <strong>$0</strong>. También se les informó que una tercera persona conocería el resultado de la lotería y tendría la oportunidad de redistribuir los ingresos antes del pago final.</p><p><strong>Resultado de la lotería (antes de cualquier redistribución):</strong><ul style="margin-top:5px;margin-left:40px;"><li>El <strong>Trabajador A</strong> ganó la lotería: ingresos iniciales <strong>$8 USD</strong>.</li><li>El <strong>Trabajador B</strong> no ganó la lotería: ingresos iniciales <strong>$0 USD</strong>.</li></ul>',
+    dist_outcome_luck: 'el <strong>Trabajador A ganó la lotería</strong> y obtuvo inicialmente $8 USD; el Trabajador B obtuvo inicialmente $0.',
+    dist_scenario_merit: 'En este caso, ellos van a recibir una remuneración real, y fueron informados que la asignación seguía las siguientes reglas: sus ingresos iniciales serían determinados por su <strong>rendimiento relativo</strong> en la tarea — el trabajador con la mayor puntuación recibiría <strong>$8 USD</strong> y el otro trabajador recibiría <strong>$0</strong>. También se les informó que una tercera persona conocería sus asignaciones iniciales y tendría la oportunidad de redistribuir los ingresos antes del pago final.</p><p><strong>Resultados de rendimiento (antes de cualquier redistribución):</strong><ul style="margin-top:5px;margin-left:40px;"><li>El <strong>Trabajador A</strong> obtuvo la mayor puntuación: ingresos iniciales <strong>$8 USD</strong>.</li><li>El <strong>Trabajador B</strong> tuvo una puntuación inferior: ingresos iniciales <strong>$0 USD</strong>.</li></ul>',
+    dist_outcome_merit: 'el <strong>Trabajador A obtuvo la mayor puntuación</strong> y obtuvo inicialmente $8 USD; el Trabajador B obtuvo inicialmente $0.',
     demo_h2: 'Información básica',
     demo_intro: 'Gracias por completar la tarea. Para ayudarnos a entender los resultados, por favor responde las siguientes preguntas de contexto.',
     demo_education: '¿Cuál es tu nivel de educación más alto?',
@@ -1597,8 +1597,8 @@ const T = {
     complete_h2: 'Estudio Completado',
     complete_thanks: 'Gracias por tu participación.',
     complete_recorded: 'Tus respuestas han sido registradas.',
-    pair_better: 'Tuviste un mejor rendimiento que ellos.',
-    pair_worse: 'Tuviste un peor rendimiento que ellos.',
+    pair_better: 'Tuviste un mejor rendimiento que él.',
+    pair_worse: 'Tuviste un peor rendimiento que él.',
     alert_gender: 'Por favor selecciona un género.',
     alert_age: 'Por favor ingresa tu edad.',
     alert_age_range: 'La edad debe estar entre 18 y 99.',

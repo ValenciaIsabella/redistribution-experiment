@@ -28,6 +28,14 @@
       padding: 40px 30px 60px;
     }
     .screen.active { display: block; }
+    #screen-lang.screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 90vh;
+      text-align: center;
+    }
 
     /* ── INSTRUCTIONS SCREEN ─────────────────────── */
     #screen-instructions h2 {
@@ -459,42 +467,54 @@
 <body>
 
 <!-- ══════════════════════════════════════════════
+     SCREEN -1 – LANGUAGE SELECTION
+════════════════════════════════════════════════ -->
+<div id="screen-lang" class="screen active">
+  <h1 style="font-size:24px;margin-bottom:8px;">Select your language</h1>
+  <h2 style="font-size:20px;margin-bottom:40px;font-weight:normal;color:#7a5a5a;">Selecciona tu idioma</h2>
+  <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;">
+    <button id="lang-en-btn" style="padding:14px 40px;font-size:18px;font-family:Georgia,serif;background:#f5f0e4;border:2px solid #611111;color:#311a1a;cursor:pointer;min-width:160px;">English</button>
+    <button id="lang-es-btn" style="padding:14px 40px;font-size:18px;font-family:Georgia,serif;background:#f5f0e4;border:2px solid #611111;color:#311a1a;cursor:pointer;min-width:160px;">Español</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
      SCREEN 0 – WELCOME
 ════════════════════════════════════════════════ -->
-<div id="screen-welcome" class="screen active">
+<div id="screen-welcome" class="screen">
 
-  <h1>Welcome</h1>
-    
-  <p>Thank you for taking part in this study on decision-making in economics. The study consists of the following two parts: </p>
+  <h1 data-i18n="welcome_title">Welcome</h1>
+
+  <p data-i18n="welcome_intro">Thank you for taking part in this study on decision-making in economics. The study consists of the following two parts: </p>
 
   <div class="welcome-parts">
     <div class="part-row">
-      <div class="part-tag">Part 1:</div>
+      <div class="part-tag" data-i18n="welcome_part1_tag">Part 1:</div>
       <div class="part-desc">
-        <strong>Performance Task</strong>
-        You will perform a brief task that requires no previous knowledge
+        <strong data-i18n="welcome_part1_title">Performance Task</strong>
+        <span data-i18n="welcome_part1_desc">You will perform a brief task that requires no previous knowledge</span>
       </div>
     </div>
     <div class="part-row">
-      <div class="part-tag">Part 2:</div>
+      <div class="part-tag" data-i18n="welcome_part2_tag">Part 2:</div>
       <div class="part-desc">
-        <strong>Decision Task</strong>
-        You will have to make a decision that might affect how much two participants will get paid.
+        <strong data-i18n="welcome_part2_title">Decision Task</strong>
+        <span data-i18n="welcome_part2_desc">You will have to make a decision that might affect how much two participants will get paid.</span>
       </div>
     </div>
   </div>
 
-  <p>The entire study will take approximately <strong>7–10 minutes</strong> to complete.</p>
-  
-  <p class="welcome-meta"><strong>Participant Information & Consent</strong><br>
-    This study is conducted by Isabella Valencia at the Paris School of Economics, under the supervision of Professor Andrea FM Martinangeli, to study decision-making in economics. 
-    Your participation is entirely voluntary and you may withdraw at any time by closing this browser window. 
-    Data is collected anonymously under GDPR regulations and will be used for academic purposes only. No identifying information is stored. 
+  <p data-i18n-html="welcome_duration">The entire study will take approximately <strong>7–10 minutes</strong> to complete.</p>
+
+  <p class="welcome-meta" data-i18n-html="welcome_consent"><strong>Participant Information &amp; Consent</strong><br>
+    This study is conducted by Isabella Valencia at the Paris School of Economics, under the supervision of Professor Andrea FM Martinangeli, to study decision-making in economics.
+    Your participation is entirely voluntary and you may withdraw at any time by closing this browser window.
+    Data is collected anonymously under GDPR regulations and will be used for academic purposes only. No identifying information is stored.
     If you have any questions about the study, please contact Isabella Valencia by clicking <a href="mailto:valenciaisabellap@gmail.com">here</a>.<br>
     By clicking "Accept and Start Experiment", you confirm you are at least 18 years old and consent to these terms.</p>
-   
+
   <div class="clearfix">
-    <button class="btn-next" id="welcome-btn" style="float: none; margin: 36px auto 0; display: block;">Accept and Start Experiment</button>
+    <button class="btn-next" id="welcome-btn" data-i18n="welcome_btn" style="float: none; margin: 36px auto 0; display: block;">Accept and Start Experiment</button>
   </div>
 </div>
 
@@ -503,31 +523,31 @@
 ════════════════════════════════════════════════ -->
 <div id="screen-early-demographics" class="screen">
 
-  <h2>Background Information</h2>
-  <p class="sr-intro">Before we begin, please answer a few quick questions.</p>
+  <h2 data-i18n="early_h2">Background Information</h2>
+  <p class="sr-intro" data-i18n="early_intro">Before we begin, please answer a few quick questions.</p>
 
   <!-- Gender -->
   <div class="sr-block">
-    <div class="sr-question">Gender</div>
+    <div class="sr-question" data-i18n="early_gender">Gender</div>
     <div class="radio-group">
-      <label><input type="radio" name="early-demo-gender" value="male"> Male</label>
-      <label><input type="radio" name="early-demo-gender" value="female"> Female</label>
-      <label><input type="radio" name="early-demo-gender" value="non-binary"> Non-binary</label>
-      <label><input type="radio" name="early-demo-gender" value="prefer-not"> Prefer not to say</label>
+      <label><input type="radio" name="early-demo-gender" value="male"> <span data-i18n="early_gender_male">Male</span></label>
+      <label><input type="radio" name="early-demo-gender" value="female"> <span data-i18n="early_gender_female">Female</span></label>
+      <label><input type="radio" name="early-demo-gender" value="non-binary"> <span data-i18n="early_gender_nonbinary">Non-binary</span></label>
+      <label><input type="radio" name="early-demo-gender" value="prefer-not"> <span data-i18n="early_gender_prefernot">Prefer not to say</span></label>
     </div>
   </div>
 
   <!-- Age -->
   <div class="sr-block">
-    <div class="sr-question">Age</div>
-    <input type="number" id="early-demo-age" min="18" max="99" placeholder="e.g. 25">
+    <div class="sr-question" data-i18n="early_age">Age</div>
+    <input type="number" id="early-demo-age" min="18" max="99" placeholder="e.g. 25" data-i18n-placeholder="early_age_placeholder">
   </div>
 
   <!-- Country of Residence -->
   <div class="sr-block">
-    <div class="sr-question">Country of Residence</div>
+    <div class="sr-question" data-i18n="early_country_res">Country of Residence</div>
     <select id="early-demo-country-residence" style="width: 100%; max-width: 400px;">
-      <option value="">-- Select a country --</option>
+      <option value="" data-i18n="select_country">-- Select a country --</option>
       <option value="France">France</option>
       <option value="Colombia">Colombia</option>
       <option value="Afghanistan">Afghanistan</option>
@@ -737,27 +757,27 @@
 
 <div id="screen-instructions" class="screen">
 
-  <p class="sub-heading">Part 1:</p>
+  <p class="sub-heading" data-i18n="instr_part1">Part 1:</p>
 
-  <p>
+  <p data-i18n="instr_task_desc">
     You are now asked to work on a code recognition task for a total of 4 minutes.
     We will measure your performance by the number of points you receive.
   </p>
 
-  <p>
+  <div data-i18n-html="instr_scoring">
     <strong>The scoring works as follows:</strong>
     <ul style="margin-top: 5px; margin-left: 40px;">
       <li><span style="color: #28a745;">+1 point</span> for each correct code found.</li>
       <li><span style="color: #dc3545;">-1 point</span> for each wrong code checked.</li>
       <li>No penalty for missing a code.</li>
     </ul>
-  </p>
+  </div>
 
-  <p>
+  <p data-i18n-html="instr_rounds" style="margin-top: 14px;">
     The task involves <strong>5 rounds</strong>, each lasting <strong>45 seconds</strong> and displaying a different target code. Your goal is to select as many cells containing the target code as you can within the time limit. After the final round, you'll complete a brief survey about your experience before starting the second part of the study.
   </p>
 
-  <p>
+  <p data-i18n="instr_press">
   Press >> to get a simplified example and a practice round before starting the real task.
   </p>
   <div class="clearfix">
@@ -771,21 +791,17 @@
 
 <div id="screen-example" class="screen">
 
-  <p style="margin-bottom: 20px;">
-  Here is a simplified example of the task:
-  </p>
-
-  <div class="example-label">This is a simplified example: </div>
-  <div class="example-target">If the code you must check off is: <strong>123</strong>, you must find and click as many "123" instances as possible in the grid.</div>
+  <div class="example-label" data-i18n="example_label">This is a simplified example:</div>
+  <div class="example-target" data-i18n-html="example_target">If the code you must check off is: <strong>123</strong>, you must find and click as many "123" instances as possible in the grid.</div>
 
   <div class="example-grid" id="example-grid"></div>
 
-  <p style="font-weight: bold; color: #611111; margin-top: 20px;">
+  <p style="font-weight: bold; color: #611111; margin-top: 20px;" data-i18n="example_practice_warn">
   Before starting the real task, you will have the opportunity to practice for 20 seconds
   to familiarize yourself with the interface. This won't affect your score in any way, but we encourage you to try your best in the practice round to get a real feel for the task.
   </p>
 
-  <p style="margin-top: 20px;">
+  <p style="margin-top: 20px;" data-i18n="example_ready">
   When you are ready, press >> to start the short practice session.
   </p>
 
@@ -798,17 +814,16 @@
      SCREEN 1.5 – PRACTICE TASK
 ════════════════════════════════════════════════ -->
 <div id="screen-practice" class="screen">
-  <header>Practice Round</header>
+  <header data-i18n="practice_header">Practice Round</header>
 
-  <p style="margin-bottom: 16px; font-size: 14px; line-height: 1.6;">
-    Remember: you will be given <strong>1 point</strong> for each correct marking. You will be <strong>subtracted 1 point</strong> if you check off a wrong code, but you will not lose any points for failing to check off all occurrences of the correct code.<br><br>
+  <p style="margin-bottom: 16px; font-size: 14px; line-height: 1.6;" data-i18n-html="practice_reminder">
     <em>This is a practice session and will not affect your total score.</em>
   </p>
 
-  <div id="practice-target-display">The code you must check off is: <strong id="practice-target-code">???</strong></div>
+  <div id="practice-target-display"><span data-i18n="task_target_prefix">The code you must check off is:</span> <strong id="practice-target-code">???</strong></div>
 
   <div id="practice-timer-bar-wrap"><div id="practice-timer-bar"></div></div>
-  <div id="practice-round-info">Practice Round</div>
+  <div id="practice-round-info" data-i18n="practice_round_label">Practice Round</div>
 
   <div id="practice-matrix-container"></div>
 </div>
@@ -817,15 +832,15 @@
      SCREEN 1.6 – PRACTICE FEEDBACK
 ════════════════════════════════════════════════ -->
 <div id="screen-practice-feedback" class="screen feedback-screen">
-  <h2>Practice Results</h2>
+  <h2 data-i18n="practice_fb_h2">Practice Results</h2>
 
   <div class="breakdown-table">
-    <span class="bk-label">Correct markings</span>
+    <span class="bk-label" data-i18n="fb_correct">Correct markings</span>
     <span class="bk-value" id="practice-fb-hits">—</span>
-    <span class="bk-label">Wrong markings</span>
+    <span class="bk-label" data-i18n="fb_wrong">Wrong markings</span>
     <span class="bk-value" id="practice-fb-fa">—</span>
     <div class="bk-divider"></div>
-    <span class="bk-label"><strong>Total score</strong> (correct − wrong)</span>
+    <span class="bk-label" data-i18n-html="fb_total"><strong>Total score</strong> (correct − wrong)</span>
     <span class="bk-value" id="practice-fb-total" style="font-size:18px;">—</span>
   </div>
 
@@ -833,22 +848,22 @@
 
   <div class="score-box">
     <div class="score-number" id="practice-score-number">0</div>
-    <div class="score-label">Points obtained in practice</div>
+    <div class="score-label" data-i18n="practice_score_label">Points obtained in practice</div>
   </div>
   <br>
-  <button class="btn-center" id="practice-continue-btn">Start Real Task &gt;&gt;</button>
+  <button class="btn-center" id="practice-continue-btn" data-i18n="practice_fb_btn">Start Real Task &gt;&gt;</button>
 </div>
 
 <!-- ══════════════════════════════════════════════
      SCREEN 2 – TASK   (unchanged)
 ════════════════════════════════════════════════ -->
 <div id="screen-task" class="screen">
-  <header>Code Recognition Task</header>
+  <header data-i18n="task_header">Code Recognition Task</header>
 
-  <div id="target-display">The code you must check off is: <strong id="target-code">???</strong></div>
+  <div id="target-display"><span data-i18n="task_target_prefix">The code you must check off is:</span> <strong id="target-code">???</strong></div>
 
   <div id="timer-bar-wrap"><div id="timer-bar"></div></div>
-  <div id="round-info">Round <span id="current-round">1</span> of <span id="total-rounds">5</span></div>
+  <div id="round-info"><span data-i18n="task_round_prefix">Round</span> <span id="current-round">1</span> <span data-i18n="task_round_of">of</span> <span id="total-rounds">5</span></div>
 
   <div id="matrix-container"></div>
 </div>
@@ -859,43 +874,43 @@
 ════════════════════════════════════════════════ -->
 <div id="screen-selfreport" class="screen">
 
-  <h2>Before you see your results</h2>
-  <p class="sr-intro">Please answer the following questions before continuing.</p>
+  <h2 data-i18n="sr_h2">Before you see your results</h2>
+  <p class="sr-intro" data-i18n="sr_intro">Please answer the following questions before continuing.</p>
 
   <!-- Q1 -->
   <div class="sr-block">
-    <div class="sr-question">1. How much effort did you put into the task?</div>
+    <div class="sr-question" data-i18n="sr_q1">1. How much effort did you put into the task?</div>
     <div class="slider-row">
-      <span style="font-size:12px;color:#7a5a5a;">No effort at all</span>
+      <span style="font-size:12px;color:#7a5a5a;" data-i18n="sr_q1_low">No effort at all</span>
       <input type="range" id="effort-slider" min="0" max="10" value="0"
              oninput="document.getElementById('effort-val').textContent = this.value">
       <span class="slider-val" id="effort-val">0</span>
-      <span style="font-size:12px;color:#7a5a5a;">Maximum effort</span>
+      <span style="font-size:12px;color:#7a5a5a;" data-i18n="sr_q1_high">Maximum effort</span>
     </div>
     <div class="slider-ends"><span>0</span><span>10</span></div>
   </div>
 
   <!-- Q2.1 -->
   <div class="sr-block">
-    <div class="sr-question">2. The maximum amount of points you could have obtained was 200. How many do you think you got?</div>
+    <div class="sr-question" data-i18n="sr_q2_1">2. The maximum amount of points you could have obtained was 200. How many do you think you got?</div>
     <input type="number" id="points-guess" min="0" max="100" placeholder=" ">
   </div>
 
-    <!-- Q2.2 -->
+  <!-- Q2.2 -->
   <div class="sr-block">
-    <div class="sr-question">3. In a group of 100 participants, how many do you think performed better than you?</div>
+    <div class="sr-question" data-i18n="sr_q2_2">3. In a group of 100 participants, how many do you think performed better than you?</div>
     <input type="number" id="points-guess" min="0" max="100" placeholder=" ">
   </div>
 
   <!-- Q3 -->
   <div class="sr-block">
-    <div class="sr-question">
+    <div class="sr-question" data-i18n-html="sr_q3">
       4. If you were randomly paired with another participant, do <strong>you</strong> think you would
       likely perform <strong>better</strong> or <strong>worse</strong> than them?
     </div>
     <div class="radio-group">
-      <label><input type="radio" name="rel-perf" value="much_better">    I would perform <strong>better or the same</strong> as the other participant</label>
-      <label><input type="radio" name="rel-perf" value="much_worse">     I would perform <strong>worse</strong> than the other participant</label>
+      <label><input type="radio" name="rel-perf" value="much_better"> <span data-i18n-html="sr_q3_better">I would perform <strong>better or the same</strong> as the other participant</span></label>
+      <label><input type="radio" name="rel-perf" value="much_worse"> <span data-i18n-html="sr_q3_worse">I would perform <strong>worse</strong> than the other participant</span></label>
     </div>
   </div>
 
@@ -910,15 +925,15 @@
 ════════════════════════════════════════════════ -->
 <div id="screen-fb-none" class="screen feedback-screen">
 
-  <h2>You are done with Part 1</h2>
+  <h2 data-i18n="fb_none_h2">You are done with Part 1</h2>
   <div class="comparison-box" style="margin-top: 20px; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background-color: #f9f9f9;">
-  <div class="comp-intro" style="font-size: 1.1em; line-height: 1.6;">
+  <div class="comp-intro" style="font-size: 1.1em; line-height: 1.6;" data-i18n="fb_none_desc">
       You can now proceed to the second part of the study.
   </div> <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
   </div>
 
   <br>
-  <button class="btn-center" id="finish-btn-none">Continue &gt;&gt;</button>
+  <button class="btn-center" id="finish-btn-none" data-i18n="fb_btn_continue">Continue &gt;&gt;</button>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -926,13 +941,13 @@
      Total score, no breakdown, no comparison
 ════════════════════════════════════════════════ -->
 <div id="screen-fb-score" class="screen feedback-screen">
-  <h2>Your Results</h2>
+  <h2 data-i18n="fb_results_h2">Your Results</h2>
   <div class="score-box">
     <div class="score-number" id="fb-score-number">0</div>
-    <div class="score-label">Points obtained</div>
+    <div class="score-label" data-i18n="fb_score_label">Points obtained</div>
   </div>
   <br>
-  <button class="btn-center" id="finish-btn-score">Continue &gt;&gt;</button>
+  <button class="btn-center" id="finish-btn-score" data-i18n="fb_btn_continue">Continue &gt;&gt;</button>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -940,22 +955,22 @@
      Breakdown + random pairing comparison
 ════════════════════════════════════════════════ -->
 <div id="screen-fb-full" class="screen feedback-screen">
-  <h2>Your Results</h2>
+  <h2 data-i18n="fb_results_h2">Your Results</h2>
 
   <div class="breakdown-table">
-    <span class="bk-label">Correct markings</span>
+    <span class="bk-label" data-i18n="fb_correct">Correct markings</span>
     <span class="bk-value" id="fb-hits">—</span>
-    <span class="bk-label">Wrong markings</span>
+    <span class="bk-label" data-i18n="fb_wrong">Wrong markings</span>
     <span class="bk-value" id="fb-fa">—</span>
     <div class="bk-divider"></div>
-    <span class="bk-label"><strong>Total score</strong> (correct − wrong)</span>
+    <span class="bk-label" data-i18n-html="fb_total"><strong>Total score</strong> (correct − wrong)</span>
     <span class="bk-value" id="fb-total" style="font-size:18px;">—</span>
   </div>
 
   <br>
 
   <div class="comparison-box">
-    <div class="comp-intro">
+    <div class="comp-intro" id="fb-full-pair-intro" data-i18n-html="fb_full_pair_intro">
       You were randomly paired with a previous participant.<br>
       Their score: <strong id="pair-score-display">—</strong> points
     </div>
@@ -963,7 +978,7 @@
   </div>
 
   <br>
-  <button class="btn-center" id="finish-btn-full">Continue &gt;&gt;</button>
+  <button class="btn-center" id="finish-btn-full" data-i18n="fb_btn_continue">Continue &gt;&gt;</button>
 </div>
 
 
@@ -972,19 +987,19 @@
      Random pairing comparison
 ════════════════════════════════════════════════ -->
 <div id="screen-fb-relative" class="screen feedback-screen">
-  <h2>Your Results</h2>
+  <h2 data-i18n="fb_results_h2">Your Results</h2>
 
   <div class="comparison-box" style="margin-top: 20px; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background-color: #f9f9f9;">
-    <div class="comp-intro" style="font-size: 1.1em; line-height: 1.6;">
+    <div class="comp-intro" style="font-size: 1.1em; line-height: 1.6;" data-i18n="fb_rel_pair_intro">
       You were randomly paired with a previous participant.
     </div> <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
-    
+
     <div class="comp-result" id="pair-result-text-rel" style="font-weight: bold; font-size: 1.2em; color: #2c3e50;">
       </div>
   </div>
 
   <br>
-  <button class="btn-center" id="finish-btn-pairing">Continue &gt;&gt;</button>
+  <button class="btn-center" id="finish-btn-pairing" data-i18n="fb_btn_continue">Continue &gt;&gt;</button>
 </div>
 
 
@@ -995,49 +1010,50 @@
 ════════════════════════════════════════════════ -->
 <div id="screen-distribution" class="screen">
 
-  <h2>Part 2: Distribution Phase</h2>
+  <h2 data-i18n="dist_h2">Part 2: Distribution Phase</h2>
 
-  <p>Two previous participants, <strong>Worker A</strong> and <strong>Worker B</strong>, were recruited to conduct the exact same task you just completed. <span id="dist-scenario-text"></span></p>
-  
-  <p><strong> Your Role:</strong></p>
-  <p>
-  Your task is to decide <strong>how to distribute a total payment of $8</strong> between the workers. 
+  <p data-i18n-html="dist_participants">Two previous participants, <strong>Worker A</strong> and <strong>Worker B</strong>, were recruited to conduct the exact same task you just completed.</p>
+  <p><span id="dist-scenario-text"></span></p>
+
+  <p data-i18n-html="dist_role_title"><strong> Your Role:</strong></p>
+  <p data-i18n-html="dist_role_desc">
+  Your task is to decide <strong>how to distribute a total payment of $8</strong> between the workers.
   You can choose to give all the money to one worker, split it equally, or any other division you see fit.
-  Your decision is anonymous and may be the one that determines their final payment. 
-  Since we collect decisions from several participants, we will randomly select one person's choice to be implemented. 
+  Your decision is anonymous and may be the one that determines their final payment.
+  Since we collect decisions from several participants, we will randomly select one person's choice to be implemented.
   If yours is selected, the workers will be paid exactly as you decide.
   </p>
 
-  <p><strong> Your Decision:</strong></p>
-  <p>Remember that <span id="dist-outcome-text"></span> <strong>How would you allocate a total of $8 between Worker A and Worker B?</strong></p>
+  <p data-i18n-html="dist_decision_title"><strong> Your Decision:</strong></p>
+  <p><span data-i18n="dist_decision_remember">Remember that</span> <span id="dist-outcome-text"></span> <strong data-i18n-html="dist_decision_question">How would you allocate a total of $8 between Worker A and Worker B?</strong></p>
 
   <!-- Visual: worker cards + bar chart -->
   <div class="worker-cards">
     <div class="worker-card">
-      <div class="wc-name">Worker A</div>
+      <div class="wc-name" data-i18n="dist_worker_a">Worker A</div>
       <div class="wc-amount" id="wc-a-amount">$8</div>
-      <div class="wc-label">earnings from assignment</div>
+      <div class="wc-label" data-i18n="dist_earnings">earnings from assignment</div>
     </div>
     <div class="worker-card">
-      <div class="wc-name">Worker B</div>
+      <div class="wc-name" data-i18n="dist_worker_b">Worker B</div>
       <div class="wc-amount zero" id="wc-b-amount">$0</div>
-      <div class="wc-label">earnings from assignment</div>
+      <div class="wc-label" data-i18n="dist_earnings">earnings from assignment</div>
     </div>
   </div>
 
   <div class="dist-bar-wrap">
     <div class="dist-bar-col">
       <div class="dist-bar bar-a" id="bar-a" style="height:80px;"></div>
-      <div class="dist-bar-lbl">Worker A</div>
+      <div class="dist-bar-lbl" data-i18n="dist_worker_a">Worker A</div>
     </div>
     <div class="dist-bar-col">
       <div class="dist-bar bar-b" id="bar-b" style="height:2px;"></div>
-      <div class="dist-bar-lbl">Worker B</div>
+      <div class="dist-bar-lbl" data-i18n="dist_worker_b">Worker B</div>
     </div>
   </div>
 
   <!-- Options -->
-  <div class="dist-options-label">Please select one of the following alternatives:</div>
+  <div class="dist-options-label" data-i18n="dist_options_label">Please select one of the following alternatives:</div>
   <div class="dist-options" id="dist-options-list"></div>
 
   <div class="clearfix">
@@ -1050,37 +1066,37 @@
 ════════════════════════════════════════════════ -->
 <div id="screen-demographics" class="screen">
 
-  <h2>Background Information</h2>
-  <p class="sr-intro">Thank you for completing the task. To help us understand the results, please answer the following background questions.</p>
+  <h2 data-i18n="demo_h2">Background Information</h2>
+  <p class="sr-intro" data-i18n="demo_intro">Thank you for completing the task. To help us understand the results, please answer the following background questions.</p>
 
   <!-- Education Level -->
   <div class="sr-block">
-    <div class="sr-question">What is your highest level of education?</div>
+    <div class="sr-question" data-i18n="demo_education">What is your highest level of education?</div>
     <div class="radio-group">
-      <label><input type="radio" name="demo-education" value="high-school"> High School</label>
-      <label><input type="radio" name="demo-education" value="some-college"> Some College</label>
-      <label><input type="radio" name="demo-education" value="bachelor"> Bachelor's Degree</label>
-      <label><input type="radio" name="demo-education" value="master"> Master's Degree</label>
-      <label><input type="radio" name="demo-education" value="phd"> PhD or higher</label>
+      <label><input type="radio" name="demo-education" value="high-school"> <span data-i18n="demo_edu_hs">High School</span></label>
+      <label><input type="radio" name="demo-education" value="some-college"> <span data-i18n="demo_edu_sc">Some College</span></label>
+      <label><input type="radio" name="demo-education" value="bachelor"> <span data-i18n="demo_edu_ba">Bachelor's Degree</span></label>
+      <label><input type="radio" name="demo-education" value="master"> <span data-i18n="demo_edu_ma">Master's Degree</span></label>
+      <label><input type="radio" name="demo-education" value="phd"> <span data-i18n="demo_edu_phd">PhD or higher</span></label>
     </div>
   </div>
 
   <!-- Parents' Education -->
   <div class="sr-block">
-    <div class="sr-question">What is the highest level of education of your parents?</div>
+    <div class="sr-question" data-i18n="demo_parent_edu">What is the highest level of education of your parents?</div>
     <div class="radio-group">
-      <label><input type="radio" name="demo-parent-education" value="high-school"> High School or less</label>
-      <label><input type="radio" name="demo-parent-education" value="some-college"> Some College</label>
-      <label><input type="radio" name="demo-parent-education" value="bachelor"> Bachelor's Degree</label>
-      <label><input type="radio" name="demo-parent-education" value="master"> Master's Degree or higher</label>
+      <label><input type="radio" name="demo-parent-education" value="high-school"> <span data-i18n="demo_parent_hs">High School or less</span></label>
+      <label><input type="radio" name="demo-parent-education" value="some-college"> <span data-i18n="demo_edu_sc">Some College</span></label>
+      <label><input type="radio" name="demo-parent-education" value="bachelor"> <span data-i18n="demo_edu_ba">Bachelor's Degree</span></label>
+      <label><input type="radio" name="demo-parent-education" value="master"> <span data-i18n="demo_parent_ma">Master's Degree or higher</span></label>
     </div>
   </div>
 
   <!-- Country of Origin -->
   <div class="sr-block">
-    <div class="sr-question">Country of Origin</div>
+    <div class="sr-question" data-i18n="demo_country_origin">Country of Origin</div>
     <select id="early-demo-country-origin" style="width: 100%; max-width: 400px;">
-      <option value="">-- Select a country --</option>
+      <option value="" data-i18n="select_country">-- Select a country --</option>
       <option value="France">France</option>
       <option value="Colombia">Colombia</option>
       <option value="Afghanistan">Afghanistan</option>
@@ -1281,41 +1297,41 @@
 
   <!-- Current Occupation -->
   <div class="sr-block">
-    <div class="sr-question">What best describes your current occupation status?</div>
+    <div class="sr-question" data-i18n="demo_occupation">What best describes your current occupation status?</div>
     <select id="demo-occupation-status" style="padding: 8px; font-size: 14px;">
-      <option value="">-- Please select --</option>
-       <option value="employed">Employed</option>
-      <option value="self-employed">Self-employed</option>
-      <option value="student">Student</option>
-      <option value="working-and-studying">Working and studying</option>
-      <option value="unemployed">Unemployed</option>
+      <option value="" data-i18n="demo_occ_select">-- Please select --</option>
+      <option value="employed" data-i18n="demo_occ_employed">Employed</option>
+      <option value="self-employed" data-i18n="demo_occ_self">Self-employed</option>
+      <option value="student" data-i18n="demo_occ_student">Student</option>
+      <option value="working-and-studying" data-i18n="demo_occ_ws">Working and studying</option>
+      <option value="unemployed" data-i18n="demo_occ_unemployed">Unemployed</option>
     </select>
   </div>
 
   <!-- Field of Work/Study -->
   <div class="sr-block" id="occupationfield-block">
-    <div class="sr-question">What field do you work or study in?</div>
-    <input type="text" id="demo-occupation-field" placeholder="e.g. Engineering, Healthcare, Business">
+    <div class="sr-question" data-i18n="demo_field">What field do you work or study in?</div>
+    <input type="text" id="demo-occupation-field" placeholder="e.g. Engineering, Healthcare, Business" data-i18n-placeholder="demo_field_placeholder">
   </div>
 
   <!-- Effort vs Luck -->
   <div class="sr-block">
-    <div class="sr-question">To what extent do you think the initial income assigned to the participants in the previous task — before any redistribution — was determined by effort versus luck?</div>
+    <div class="sr-question" data-i18n="demo_effort_luck_q">To what extent do you think the initial income assigned to the participants in the previous task — before any redistribution — was determined by effort versus luck?</div>
     <div class="slider-row">
-      <span style="font-size:12px;color:#7a5a5a;">0% Effort</span>
-      <input type="range" id="demo-effort-luck" min="0" max="100" value="0"
+      <span style="font-size:12px;color:#7a5a5a;" data-i18n="demo_effort_label">100% Effort</span>
+      <input type="range" id="demo-effort-luck" min="0" max="100" value="50"
              oninput="document.getElementById('effort-luck-val').textContent = this.value">
-      <span class="slider-val" id="effort-luck-val">0</span>
-      <span style="font-size:12px;color:#7a5a5a;">100% Effort</span>
+      <span class="slider-val" id="effort-luck-val">50</span>
+      <span style="font-size:12px;color:#7a5a5a;" data-i18n="demo_luck_label">100% Luck</span>
     </div>
-    <div class="slider-ends"><span>(100% Luck)</span><span>(0% Luck)</span></div>
+    <div class="slider-ends"><span data-i18n="demo_effort_label">100% Effort</span><span data-i18n="demo_luck_label">100% Luck</span></div>
   </div>
 
   <!-- Comments -->
   <div class="sr-block">
-    <div class="sr-question">Additional Comments</div>
-    <p class="sr-intro" style="font-size: 12px; margin-top: -5px;">If you have any comments, suggestions, or feedback about this study, please share them below. Was anything unclear? How could we improve?</p>
-    <textarea id="demo-comments" style="width: 100%; height: 100px; padding: 8px; border: 1px solid #a08070; background: #f5f0e4; color: #311a1a; font-family: Georgia, serif; font-size: 13px; resize: vertical;" placeholder="Your feedback here..."></textarea>
+    <div class="sr-question" data-i18n="demo_comments">Additional Comments</div>
+    <p class="sr-intro" style="font-size: 12px; margin-top: -5px;" data-i18n="demo_comments_desc">If you have any comments, suggestions, or feedback about this study, please share them below. Was anything unclear? How could we improve?</p>
+    <textarea id="demo-comments" style="width: 100%; height: 100px; padding: 8px; border: 1px solid #a08070; background: #f5f0e4; color: #311a1a; font-family: Georgia, serif; font-size: 13px; resize: vertical;" placeholder="Your feedback here..." data-i18n-placeholder="demo_comments_placeholder"></textarea>
   </div>
 
   <div class="clearfix">
@@ -1327,10 +1343,10 @@
      SCREEN 7 – STUDY COMPLETE
 ════════════════════════════════════════════════ -->
 <div id="screen-complete" class="screen feedback-screen">
-  <h2>Study Complete</h2>
+  <h2 data-i18n="complete_h2">Study Complete</h2>
   <div class="complete-box" style="padding:40px 60px;">
-    <div class="complete-text">Thank you for your participation.</div>
-    <p style="margin-top:16px; font-size:13px; color:#7a5a5a; font-weight:normal;">
+    <div class="complete-text" data-i18n="complete_thanks">Thank you for your participation.</div>
+    <p style="margin-top:16px; font-size:13px; color:#7a5a5a; font-weight:normal;" data-i18n="complete_recorded">
       Your responses have been recorded.
     </p>
   </div>
@@ -1339,6 +1355,291 @@
 <!-- ══════════════════════════════════════════════
      JAVASCRIPT
 ════════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────────
+   LANGUAGE / i18n
+───────────────────────────────────────────── */
+let LANG = 'en';
+
+const T = {
+  en: {
+    welcome_title: 'Welcome',
+    welcome_intro: 'Thank you for taking part in this study on decision-making in economics. The study consists of the following two parts:',
+    welcome_part1_tag: 'Part 1:',
+    welcome_part1_title: 'Performance Task',
+    welcome_part1_desc: 'You will perform a brief task that requires no previous knowledge',
+    welcome_part2_tag: 'Part 2:',
+    welcome_part2_title: 'Decision Task',
+    welcome_part2_desc: 'You will have to make a decision that might affect how much two participants will get paid.',
+    welcome_duration: 'The entire study will take approximately <strong>7–10 minutes</strong> to complete.',
+    welcome_consent: '<strong>Participant Information &amp; Consent</strong><br>This study is conducted by Isabella Valencia at the Paris School of Economics, under the supervision of Professor Andrea FM Martinangeli, to study decision-making in economics. Your participation is entirely voluntary and you may withdraw at any time by closing this browser window. Data is collected anonymously under GDPR regulations and will be used for academic purposes only. No identifying information is stored. If you have any questions about the study, please contact Isabella Valencia by clicking <a href="mailto:valenciaisabellap@gmail.com">here</a>.<br>By clicking "Accept and Start Experiment", you confirm you are at least 18 years old and consent to these terms.',
+    welcome_btn: 'Accept and Start Experiment',
+    early_h2: 'Background Information',
+    early_intro: 'Before we begin, please answer a few quick questions.',
+    early_gender: 'Gender',
+    early_gender_male: 'Male',
+    early_gender_female: 'Female',
+    early_gender_nonbinary: 'Non-binary',
+    early_gender_prefernot: 'Prefer not to say',
+    early_age: 'Age',
+    early_age_placeholder: 'e.g. 25',
+    early_country_res: 'Country of Residence',
+    select_country: '-- Select a country --',
+    instr_part1: 'Part 1:',
+    instr_task_desc: 'You are now asked to work on a code recognition task for a total of 4 minutes. We will measure your performance by the number of points you receive.',
+    instr_scoring: '<strong>The scoring works as follows:</strong><ul style="margin-top:5px;margin-left:40px;"><li><span style="color:#28a745;">+1 point</span> for each correct code found.</li><li><span style="color:#dc3545;">-1 point</span> for each wrong code checked.</li><li>No penalty for missing a code.</li></ul>',
+    instr_rounds: 'The task involves <strong>5 rounds</strong>, each lasting <strong>45 seconds</strong> and displaying a different target code. Your goal is to select as many cells containing the target code as you can within the time limit. After the final round, you\'ll complete a brief survey about your experience before starting the second part of the study.',
+    instr_press: 'Press >> to get a simplified example and a practice round before starting the real task.',
+    example_intro: 'Here is a simplified example of the task:',
+    example_label: 'This is a simplified example:',
+    example_target: 'If the code you must check off is: <strong>123</strong>, you must find and click as many "123" instances as possible in the grid.',
+    example_practice_warn: 'Before starting the real task, you will have the opportunity to practice for 20 seconds to familiarize yourself with the interface. This won\'t affect your score in any way, but we encourage you to try your best in the practice round to get a real feel for the task.',
+    example_ready: 'When you are ready, press >> to start the short practice session.',
+    practice_header: 'Practice Round',
+    practice_reminder: '<em>This is a practice session and will not affect your total score.</em>',
+    task_target_prefix: 'The code you must check off is:',
+    practice_round_label: 'Practice Round',
+    practice_fb_h2: 'Practice Results',
+    fb_correct: 'Correct markings',
+    fb_wrong: 'Wrong markings',
+    fb_total: '<strong>Total score</strong> (correct − wrong)',
+    practice_score_label: 'Points obtained in practice',
+    practice_fb_btn: 'Start Real Task >>',
+    task_header: 'Code Recognition Task',
+    task_round_prefix: 'Round',
+    task_round_of: 'of',
+    sr_h2: 'Before you see your results',
+    sr_intro: 'Please answer the following questions before continuing.',
+    sr_q1: '1. How much effort did you put into the task?',
+    sr_q1_low: 'No effort at all',
+    sr_q1_high: 'Maximum effort',
+    sr_q2_1: '2. The maximum amount of points you could have obtained was 200. How many do you think you got?',
+    sr_q2_2: '3. In a group of 100 participants, how many do you think performed better than you?',
+    sr_q3: '4. If you were randomly paired with another participant, do <strong>you</strong> think you would likely perform <strong>better</strong> or <strong>worse</strong> than them?',
+    sr_q3_better: 'I would perform <strong>better or the same</strong> as the other participant',
+    sr_q3_worse: 'I would perform <strong>worse</strong> than the other participant',
+    fb_none_h2: 'You are done with Part 1',
+    fb_none_desc: 'You can now proceed to the second part of the study.',
+    fb_btn_continue: 'Continue >>',
+    fb_results_h2: 'Your Results',
+    fb_score_label: 'Points obtained',
+    fb_full_pair_intro: 'You were randomly paired with a previous participant.<br>Their score: <strong id="pair-score-display">—</strong> points',
+    fb_rel_pair_intro: 'You were randomly paired with a previous participant.',
+    dist_h2: 'Part 2: Distribution Phase',
+    dist_participants: 'Two previous participants, <strong>Worker A</strong> and <strong>Worker B</strong>, were recruited to conduct the exact same task you just completed.',
+    dist_role_title: '<strong>Your Role:</strong>',
+    dist_role_desc: 'Your task is to decide <strong>how to distribute a total payment of $8</strong> between the workers. You can choose to give all the money to one worker, split it equally, or any other division you see fit. Your decision is anonymous and may be the one that determines their final payment. Since we collect decisions from several participants, we will randomly select one person\'s choice to be implemented. If yours is selected, the workers will be paid exactly as you decide.',
+    dist_decision_title: '<strong>Your Decision:</strong>',
+    dist_decision_remember: 'Remember that',
+    dist_decision_question: 'How would you allocate a total of $8 between Worker A and Worker B?',
+    dist_worker_a: 'Worker A',
+    dist_worker_b: 'Worker B',
+    dist_earnings: 'earnings from assignment',
+    dist_options_label: 'Please select one of the following alternatives:',
+    dist_no_redist: 'I do not redistribute:',
+    dist_redist: 'I redistribute $',
+    dist_scenario_luck: 'After completing it, they were informed that their assignment earnings would be initially determined by a <strong>lottery</strong>. The worker winning the lottery would receive <strong>8 USD</strong>, while the other worker would receive <strong>nothing</strong>.</p><p><strong>The results:</strong><ul style="margin-top:5px;margin-left:40px;"><li><strong>Worker A</strong> won the lottery and earned <strong>$8 USD</strong>.</li><li><strong>Worker B</strong> did not win the lottery and earned <strong>$0 USD</strong>.</li></ul></p><p>They were also told that a third person would be informed about the outcome of the lottery and would be given the opportunity to redistribute the earnings, thereby determining their final payments.',
+    dist_outcome_luck: '<strong>Worker A won the lottery</strong> and earned 8 USD for the assignment; thus Worker B earned nothing for the assignment.',
+    dist_scenario_merit: 'After completing it, they were informed that their assignment earnings would be initially determined by their <strong>relative performance in the code recognition task</strong>. The worker with the highest score would receive <strong>8 USD</strong>, while the other worker would receive <strong>nothing</strong>.</p><p><strong>The results:</strong><ul style="margin-top:5px;margin-left:40px;"><li><strong>Worker A</strong> got the highest score and earned <strong>$8 USD</strong>.</li><li><strong>Worker B</strong> performed worse than Worker A and earned <strong>$0 USD</strong>.</li></ul></p><p>They were also told that a third person would be informed about their relative performance and would be given the opportunity to redistribute the earnings, thereby determining their final payments.',
+    dist_outcome_merit: '<strong>Worker A got the highest score</strong> and earned 8 USD for the assignment; thus Worker B earned nothing for the assignment.',
+    demo_h2: 'Background Information',
+    demo_intro: 'Thank you for completing the task. To help us understand the results, please answer the following background questions.',
+    demo_education: 'What is your highest level of education?',
+    demo_edu_hs: 'High School',
+    demo_edu_sc: 'Some College',
+    demo_edu_ba: "Bachelor's Degree",
+    demo_edu_ma: "Master's Degree",
+    demo_edu_phd: 'PhD or higher',
+    demo_parent_edu: 'What is the highest level of education of your parents?',
+    demo_parent_hs: 'High School or less',
+    demo_parent_ma: "Master's Degree or higher",
+    demo_country_origin: 'Country of Origin',
+    demo_occupation: 'What best describes your current occupation status?',
+    demo_occ_select: '-- Please select --',
+    demo_occ_employed: 'Employed',
+    demo_occ_self: 'Self-employed',
+    demo_occ_student: 'Student',
+    demo_occ_ws: 'Working and studying',
+    demo_occ_unemployed: 'Unemployed',
+    demo_field: 'What field do you work or study in?',
+    demo_field_placeholder: 'e.g. Engineering, Healthcare, Business',
+    demo_effort_luck_q: 'To what extent do you think the initial income assigned to the participants in the previous task — before any redistribution — was determined by effort versus luck?',
+    demo_effort_label: '100% Effort',
+    demo_luck_label: '100% Luck',
+    demo_comments: 'Additional Comments',
+    demo_comments_desc: 'If you have any comments, suggestions, or feedback about this study, please share them below. Was anything unclear? How could we improve?',
+    demo_comments_placeholder: 'Your feedback here...',
+    complete_h2: 'Study Complete',
+    complete_thanks: 'Thank you for your participation.',
+    complete_recorded: 'Your responses have been recorded.',
+    pair_better: 'You performed better than them.',
+    pair_worse: 'You performed worse than them.',
+    alert_gender: 'Please select a gender.',
+    alert_age: 'Please enter your age.',
+    alert_age_range: 'Age must be between 18 and 99.',
+    alert_country_res: 'Please select your country of residence.',
+    alert_edu: 'Please select your education level.',
+    alert_parent_edu: "Please select your parents' education level.",
+    alert_occ: 'Please select your occupation status.',
+    alert_field: 'Please enter the field you work or study in.',
+    alert_dist: 'Please select one of the allocation alternatives.',
+    alert_sr_guess: 'Please enter how many points you think you obtained (Question 2).',
+    alert_sr_guess_range: 'Question 2: Please enter a value between 0 and 100.',
+    alert_sr_perf: 'Please select an answer for Question 3.',
+  },
+  es: {
+    welcome_title: 'Bienvenido/a',
+    welcome_intro: 'Gracias por participar en este estudio sobre toma de decisiones en economía. El estudio consta de las siguientes dos partes:',
+    welcome_part1_tag: 'Parte 1:',
+    welcome_part1_title: 'Tarea de Rendimiento',
+    welcome_part1_desc: 'Realizarás una breve tarea que no requiere conocimientos previos',
+    welcome_part2_tag: 'Parte 2:',
+    welcome_part2_title: 'Tarea de Decisión',
+    welcome_part2_desc: 'Deberás tomar una decisión que podría afectar el pago de dos participantes.',
+    welcome_duration: 'El estudio completo tomará aproximadamente <strong>7–10 minutos</strong>.',
+    welcome_consent: '<strong>Información para el participante y consentimiento</strong><br>Este estudio es realizado por Isabella Valencia en la Paris School of Economics, bajo la supervisión del Profesor Andrea FM Martinangeli, para estudiar la toma de decisiones en economía. Tu participación es completamente voluntaria y puedes retirarte en cualquier momento cerrando esta ventana del navegador. Los datos se recopilan de forma anónima bajo las regulaciones del RGPD y se utilizarán únicamente con fines académicos. No se almacena ninguna información identificable. Si tienes preguntas sobre el estudio, por favor contacta a Isabella Valencia haciendo clic <a href="mailto:valenciaisabellap@gmail.com">aquí</a>.<br>Al hacer clic en "Aceptar e iniciar el experimento", confirmas que tienes al menos 18 años y consientes estos términos.',
+    welcome_btn: 'Aceptar e iniciar el experimento',
+    early_h2: 'Información básica',
+    early_intro: 'Antes de comenzar, por favor responde algunas preguntas breves.',
+    early_gender: 'Género',
+    early_gender_male: 'Hombre',
+    early_gender_female: 'Mujer',
+    early_gender_nonbinary: 'No binario/a',
+    early_gender_prefernot: 'Prefiero no decir',
+    early_age: 'Edad',
+    early_age_placeholder: 'p. ej. 25',
+    early_country_res: 'País de residencia',
+    select_country: '-- Selecciona un país --',
+    instr_part1: 'Parte 1:',
+    instr_task_desc: 'Se te pedirá trabajar en una tarea de reconocimiento de código durante 4 minutos en total. Mediremos tu rendimiento por el número de puntos que obtengas.',
+    instr_scoring: '<strong>La puntuación funciona de la siguiente manera:</strong><ul style="margin-top:5px;margin-left:40px;"><li><span style="color:#28a745;">+1 punto</span> por cada código correcto encontrado.</li><li><span style="color:#dc3545;">-1 punto</span> por cada código marcado incorrectamente.</li><li>Sin penalización por no encontrar un código.</li></ul>',
+    instr_rounds: 'La tarea incluye <strong>5 rondas</strong>, cada una de <strong>45 segundos</strong> y muestra un código objetivo diferente. Tu objetivo es seleccionar el mayor número de celdas que contengan el código objetivo dentro del tiempo límite. Después de la última ronda, completarás una breve encuesta sobre tu experiencia antes de comenzar la segunda parte del estudio.',
+    instr_press: 'Presiona >> para obtener un ejemplo simplificado y una ronda de práctica antes de comenzar la tarea real.',
+    example_intro: 'Aquí tienes un ejemplo simplificado de la tarea:',
+    example_label: 'Este es un ejemplo simplificado:',
+    example_target: 'Si el código que debes marcar es: <strong>123</strong>, debes encontrar y hacer clic en el mayor número posible de instancias de "123" en la cuadrícula.',
+    example_practice_warn: 'Antes de comenzar la tarea real, tendrás la oportunidad de practicar durante 20 segundos para familiarizarte con la interfaz. Esto no afectará tu puntuación de ninguna manera, pero te animamos a hacerlo lo mejor posible en la ronda de práctica para tener una idea real de la tarea.',
+    example_ready: 'Cuando estés listo/a, presiona >> para comenzar la breve sesión de práctica.',
+    practice_header: 'Ronda de Práctica',
+    practice_reminder: '<em>Esta es una sesión de práctica y no afectará tu puntuación total.</em>',
+    task_target_prefix: 'El código que debes marcar es:',
+    practice_round_label: 'Ronda de Práctica',
+    practice_fb_h2: 'Resultados de Práctica',
+    fb_correct: 'Marcas correctas',
+    fb_wrong: 'Marcas incorrectas',
+    fb_total: '<strong>Puntuación total</strong> (correctas − incorrectas)',
+    practice_score_label: 'Puntos obtenidos en la práctica',
+    practice_fb_btn: 'Comenzar Tarea Real >>',
+    task_header: 'Tarea de Reconocimiento de Código',
+    task_round_prefix: 'Ronda',
+    task_round_of: 'de',
+    sr_h2: 'Antes de ver tus resultados',
+    sr_intro: 'Por favor responde las siguientes preguntas antes de continuar.',
+    sr_q1: '1. ¿Cuánto esfuerzo pusiste en la tarea?',
+    sr_q1_low: 'Ningún esfuerzo',
+    sr_q1_high: 'Máximo esfuerzo',
+    sr_q2_1: '2. El máximo de puntos que podías obtener era 200. ¿Cuántos crees que obtuviste?',
+    sr_q2_2: '3. En un grupo de 100 participantes, ¿cuántos crees que tuvieron mejor rendimiento que tú?',
+    sr_q3: '4. Si fueras emparejado/a al azar con otro participante, ¿crees que tendrías un rendimiento <strong>mejor</strong> o <strong>peor</strong> que el de ellos?',
+    sr_q3_better: 'Tendría un rendimiento <strong>igual o mejor</strong> que el otro participante',
+    sr_q3_worse: 'Tendría un rendimiento <strong>peor</strong> que el otro participante',
+    fb_none_h2: 'Has completado la Parte 1',
+    fb_none_desc: 'Ahora puedes continuar con la segunda parte del estudio.',
+    fb_btn_continue: 'Continuar >>',
+    fb_results_h2: 'Tus Resultados',
+    fb_score_label: 'Puntos obtenidos',
+    fb_full_pair_intro: 'Fuiste emparejado/a al azar con un participante anterior.<br>Su puntuación: <strong id="pair-score-display">—</strong> puntos',
+    fb_rel_pair_intro: 'Fuiste emparejado/a al azar con un participante anterior.',
+    dist_h2: 'Parte 2: Fase de Distribución',
+    dist_participants: 'Dos participantes anteriores, <strong>Trabajador A</strong> y <strong>Trabajador B</strong>, fueron contratados para realizar la misma tarea que acabas de completar.',
+    dist_role_title: '<strong>Tu Rol:</strong>',
+    dist_role_desc: 'Tu tarea es decidir <strong>cómo distribuir un pago total de $8</strong> entre los trabajadores. Puedes dar todo el dinero a un trabajador, dividirlo por igual, o cualquier otra división que consideres apropiada. Tu decisión es anónima y puede ser la que determine su pago final. Como recopilamos decisiones de varios participantes, seleccionaremos aleatoriamente la decisión de una persona para ser implementada. Si se selecciona la tuya, los trabajadores recibirán exactamente lo que decidas.',
+    dist_decision_title: '<strong>Tu Decisión:</strong>',
+    dist_decision_remember: 'Recuerda que',
+    dist_decision_question: '¿Cómo asignarías un total de $8 entre el Trabajador A y el Trabajador B?',
+    dist_worker_a: 'Trabajador A',
+    dist_worker_b: 'Trabajador B',
+    dist_earnings: 'ingresos de la tarea',
+    dist_options_label: 'Por favor selecciona una de las siguientes alternativas:',
+    dist_no_redist: 'No redistribuyo:',
+    dist_redist: 'Redistribuyo $',
+    dist_scenario_luck: 'Después de completarla, se les informó que sus ingresos inicialmente serían determinados por una <strong>lotería</strong>. El trabajador que ganara la lotería recibiría <strong>8 USD</strong>, mientras que el otro trabajador no recibiría <strong>nada</strong>.</p><p><strong>Los resultados:</strong><ul style="margin-top:5px;margin-left:40px;"><li>El <strong>Trabajador A</strong> ganó la lotería y obtuvo <strong>$8 USD</strong>.</li><li>El <strong>Trabajador B</strong> no ganó la lotería y obtuvo <strong>$0 USD</strong>.</li></ul></p><p>También se les informó que una tercera persona conocería el resultado de la lotería y tendría la oportunidad de redistribuir los ingresos, determinando así sus pagos finales.',
+    dist_outcome_luck: 'el <strong>Trabajador A ganó la lotería</strong> y obtuvo 8 USD por la tarea; por lo tanto, el Trabajador B no obtuvo nada.',
+    dist_scenario_merit: 'Después de completarla, se les informó que sus ingresos inicialmente serían determinados por su <strong>rendimiento relativo en la tarea de reconocimiento de código</strong>. El trabajador con la mayor puntuación recibiría <strong>8 USD</strong>, mientras que el otro trabajador no recibiría <strong>nada</strong>.</p><p><strong>Los resultados:</strong><ul style="margin-top:5px;margin-left:40px;"><li>El <strong>Trabajador A</strong> obtuvo la mayor puntuación y ganó <strong>$8 USD</strong>.</li><li>El <strong>Trabajador B</strong> tuvo un rendimiento inferior al Trabajador A y ganó <strong>$0 USD</strong>.</li></ul></p><p>También se les informó que una tercera persona conocería su rendimiento relativo y tendría la oportunidad de redistribuir los ingresos, determinando así sus pagos finales.',
+    dist_outcome_merit: 'el <strong>Trabajador A obtuvo la mayor puntuación</strong> y ganó 8 USD por la tarea; por lo tanto, el Trabajador B no obtuvo nada.',
+    demo_h2: 'Información básica',
+    demo_intro: 'Gracias por completar la tarea. Para ayudarnos a entender los resultados, por favor responde las siguientes preguntas de contexto.',
+    demo_education: '¿Cuál es tu nivel de educación más alto?',
+    demo_edu_hs: 'Bachillerato',
+    demo_edu_sc: 'Algunos estudios universitarios',
+    demo_edu_ba: 'Licenciatura',
+    demo_edu_ma: 'Maestría',
+    demo_edu_phd: 'Doctorado o superior',
+    demo_parent_edu: '¿Cuál es el nivel de educación más alto de tus padres?',
+    demo_parent_hs: 'Bachillerato o menos',
+    demo_parent_ma: 'Maestría o superior',
+    demo_country_origin: 'País de origen',
+    demo_occupation: '¿Qué describe mejor tu situación laboral actual?',
+    demo_occ_select: '-- Por favor selecciona --',
+    demo_occ_employed: 'Empleado/a',
+    demo_occ_self: 'Autónomo/a',
+    demo_occ_student: 'Estudiante',
+    demo_occ_ws: 'Trabajando y estudiando',
+    demo_occ_unemployed: 'Desempleado/a',
+    demo_field: '¿En qué campo trabajas o estudias?',
+    demo_field_placeholder: 'p. ej. Ingeniería, Salud, Negocios',
+    demo_effort_luck_q: '¿En qué medida crees que el ingreso inicial en esta tarea, antes de cualquier redistribución, fue determinado por esfuerzo versus suerte?',
+    demo_effort_label: '100% Esfuerzo',
+    demo_luck_label: '100% Suerte',
+    demo_comments: 'Comentarios adicionales',
+    demo_comments_desc: 'Si tienes algún comentario, sugerencia o retroalimentación sobre este estudio, por favor compártelos a continuación. ¿Algo no fue claro? ¿Cómo podríamos mejorar?',
+    demo_comments_placeholder: 'Tu comentario aquí...',
+    complete_h2: 'Estudio Completado',
+    complete_thanks: 'Gracias por tu participación.',
+    complete_recorded: 'Tus respuestas han sido registradas.',
+    pair_better: 'Tuviste un mejor rendimiento que ellos.',
+    pair_worse: 'Tuviste un peor rendimiento que ellos.',
+    alert_gender: 'Por favor selecciona un género.',
+    alert_age: 'Por favor ingresa tu edad.',
+    alert_age_range: 'La edad debe estar entre 18 y 99.',
+    alert_country_res: 'Por favor selecciona tu país de residencia.',
+    alert_edu: 'Por favor selecciona tu nivel de educación.',
+    alert_parent_edu: 'Por favor selecciona el nivel de educación de tus padres.',
+    alert_occ: 'Por favor selecciona tu situación laboral.',
+    alert_field: 'Por favor ingresa el campo en el que trabajas o estudias.',
+    alert_dist: 'Por favor selecciona una de las alternativas de distribución.',
+    alert_sr_guess: 'Por favor ingresa cuántos puntos crees que obtuviste (Pregunta 2).',
+    alert_sr_guess_range: 'Pregunta 2: Por favor ingresa un valor entre 0 y 100.',
+    alert_sr_perf: 'Por favor selecciona una respuesta para la Pregunta 3.',
+  }
+};
+
+function applyLang(lang) {
+  LANG = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (T[lang][key] !== undefined) el.textContent = T[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (T[lang][key] !== undefined) el.innerHTML = T[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (T[lang][key] !== undefined) el.placeholder = T[lang][key];
+  });
+}
+
+document.getElementById('lang-en-btn').addEventListener('click', () => {
+  applyLang('en');
+  showScreen('screen-welcome');
+});
+document.getElementById('lang-es-btn').addEventListener('click', () => {
+  applyLang('es');
+  showScreen('screen-welcome');
+});
+</script>
+
 <script>
 /* ─────────────────────────────────────────────
    DEVICE DETECTION    
@@ -1366,8 +1667,8 @@ window.addEventListener('resize', applyMatrixGridColumns);
    CONFIGURATION    
 ───────────────────────────────────────────── */
 const CONFIG = {
-  ROUND_SECONDS : 20,
-  PRACTICE_SECONDS : 45,
+  ROUND_SECONDS : 45,
+  PRACTICE_SECONDS : 20,
   TOTAL_ROUNDS  : 5,
   MATRIX_COLS   : isMobileDevice() ? 7 : 20,
   MATRIX_ROWS   : isMobileDevice() ? 46 : 16,
@@ -1649,15 +1950,15 @@ document.getElementById('sr-submit-btn').addEventListener('click', () => {
   const relPerf = document.querySelector('input[name="rel-perf"]:checked');
 
   if (guess === '') {
-    alert('Please enter how many points you think you obtained (Question 2).');
+    alert(T[LANG].alert_sr_guess);
     return;
   }
   if (parseInt(guess) < 0 || parseInt(guess) > 100) {
-    alert('Question 2: Please enter a value between 0 and 100.');
+    alert(T[LANG].alert_sr_guess_range);
     return;
   }
   if (!relPerf) {
-    alert('Please select an answer for Question 3.');
+    alert(T[LANG].alert_sr_perf);
     return;
   }
 
@@ -1706,38 +2007,38 @@ function showFeedback() {
         const el = document.getElementById('pair-result-text');
         if (el) {
             if (state.totalScore > ps) {
-              el.textContent = 'You performed better than them.';
+              el.textContent = T[LANG].pair_better;
               el.className   = 'comp-result comp-above';
               pairResult.result = 'above';
             } else if (state.totalScore < ps) {
-              el.textContent = 'You performed worse than them.';
+              el.textContent = T[LANG].pair_worse;
               el.className   = 'comp-result comp-below';
               pairResult.result = 'below';
             } else {
-              el.textContent = 'You performed better than them.';
+              el.textContent = T[LANG].pair_better;
               el.className   = 'comp-result comp-equal';
               pairResult.result = 'equal';
             }
         }
-        showScreen('screen-fb-full'); // Muestra la 4-C (con tabla)
+        showScreen('screen-fb-full');
     } else {
         const el = document.getElementById('pair-result-text-rel');
         if (el) {
             if (state.totalScore > ps) {
-              el.textContent = 'You performed better than them.';
+              el.textContent = T[LANG].pair_better;
               el.className   = 'comp-result comp-above';
               pairResult.result = 'above';
             } else if (state.totalScore < ps) {
-              el.textContent = 'You performed worse than them.';
+              el.textContent = T[LANG].pair_worse;
               el.className   = 'comp-result comp-below';
               pairResult.result = 'below';
             } else {
-              el.textContent = 'You performed better than them.';
+              el.textContent = T[LANG].pair_better;
               el.className   = 'comp-result comp-equal';
               pairResult.result = 'equal';
             }
         }
-        showScreen('screen-fb-relative'); // Muestra la 4-D (solo comparación)
+        showScreen('screen-fb-relative');
     }
   }
 }
@@ -1859,37 +2160,11 @@ function showDistribution() {
   const outcomeEl  = document.getElementById('dist-outcome-text');
 
   if (DIST_TREATMENT === 'luck') {
-    scenarioEl.innerHTML = 'After completing it, they were informed that their assignment earnings would be initially ' +
-      'determined by a <strong>lottery</strong>. The worker winning the lottery would receive ' +
-      '<strong>8 USD</strong>, while the other worker would receive <strong>nothing</strong>.</p>' +
-    '<p><strong>The results:</strong>' +
-    '<ul style="margin-top: 5px; margin-left: 40px;">' +
-      '<li> <strong>Worker A</strong> won the lottery and earned <strong>$8 USD</strong>.</li>' +
-      '<li> <strong>Worker B</strong> did not win the lottery and earned <strong>$0 USD</strong>.</li>' +
-    '</ul>' +
-  '</p>' +
-      '<p>They were also told that a third person would be informed about the outcome of the lottery ' +
-      'and would be given the opportunity to redistribute the earnings, thereby determining their final payments.</p>';
-    outcomeEl.innerHTML =
-      '<strong>Worker A won the lottery</strong> and earned 8 USD for the assignment; ' +
-      'thus Worker B earned nothing for the assignment.';
+    scenarioEl.innerHTML = T[LANG].dist_scenario_luck;
+    outcomeEl.innerHTML  = T[LANG].dist_outcome_luck;
   } else {
-    scenarioEl.innerHTML = 'After completing it, they were informed that their assignment earnings would be initially ' +
-      'determined by their <strong>relative performance in the code recognition task</strong>. The worker with the highest score would receive ' +
-      '<strong>8 USD</strong>, while the other worker would receive <strong>nothing</strong>.</p>' +
-      
-        '<p><strong>The results:</strong>' +
-    '<ul style="margin-top: 5px; margin-left: 40px;">' +
-      '<li> <strong>Worker A</strong> got the highest score and earned <strong>$8 USD</strong>.</li>' +
-      '<li> <strong>Worker B</strong> performed worse than Worker A and earned <strong>$0 USD</strong>.</li>' +
-    '</ul>' +
-  '</p>' +
-
-      '<p>They were also told that a third person would be informed about their relative performance ' +
-      'and would be given the opportunity to redistribute the earnings, thereby determining their final payments.</p>';
-    outcomeEl.innerHTML =
-      '<strong>Worker A got the highest score</strong> and earned 8 USD for the assignment; ' +
-      'thus Worker B earned nothing for the assignment.';
+    scenarioEl.innerHTML = T[LANG].dist_scenario_merit;
+    outcomeEl.innerHTML  = T[LANG].dist_outcome_merit;
   }
 
   /* ── Build option rows – two columns (5 left, 4 right) ── */
@@ -1915,19 +2190,21 @@ function showDistribution() {
     const txt = document.createElement('div');
     txt.className = 'opt-text';
 
+    const wA = T[LANG].dist_worker_a;
+    const wB = T[LANG].dist_worker_b;
     if (opt.noRedist) {
       txt.innerHTML =
-        '<span class="opt-no-redist">I do not redistribute:</span>' +
+        `<span class="opt-no-redist">${T[LANG].dist_no_redist}</span>` +
         '<div class="opt-amounts">' +
-        `<span class="opt-a">Worker A: $${opt.a}</span>` +
-        `<span class="opt-b">Worker B: $${opt.b}</span>` +
+        `<span class="opt-a">${wA}: $${opt.a}</span>` +
+        `<span class="opt-b">${wB}: $${opt.b}</span>` +
         '</div>';
     } else {
       txt.innerHTML =
-        '<span style="font-weight: bold;">I redistribute $' + (8 - opt.a) + ':</span>' +
+        `<span style="font-weight:bold;">${T[LANG].dist_redist}${8 - opt.a}:</span>` +
         '<div class="opt-amounts">' +
-        `<span class="opt-a">Worker A: $${opt.a}</span>` +
-        `<span class="opt-b">Worker B: $${opt.b}</span>` +
+        `<span class="opt-a">${wA}: $${opt.a}</span>` +
+        `<span class="opt-b">${wB}: $${opt.b}</span>` +
         '</div>';
     }
 
@@ -1975,7 +2252,7 @@ function updateWorkerCards(opt) {
 ───────────────────────────────────────────── */
 document.getElementById('dist-submit-btn').addEventListener('click', () => {
   if (distChoice === null) {
-    alert('Please select one of the allocation alternatives.');
+    alert(T[LANG].alert_dist);
     return;
   }
   showScreen('screen-demographics');
@@ -1990,19 +2267,19 @@ document.getElementById('early-demo-submit-btn').addEventListener('click', () =>
   const country_residence = document.getElementById('early-demo-country-residence').value;
 
   if (!gender) {
-    alert('Please select a gender.');
+    alert(T[LANG].alert_gender);
     return;
   }
   if (age === '') {
-    alert('Please enter your age.');
+    alert(T[LANG].alert_age);
     return;
   }
   if (parseInt(age) < 18 || parseInt(age) > 99) {
-    alert('Age must be between 18 and 99.');
+    alert(T[LANG].alert_age_range);
     return;
   }
   if (!country_residence || country_residence === '') {
-    alert('Please select your country of residence.');
+    alert(T[LANG].alert_country_res);
     return;
   }
 
@@ -2044,19 +2321,19 @@ document.getElementById('demo-submit-btn').addEventListener('click', () => {
   earlyDemoData.country_origin = country_origin || null;
 
   if (!education) {
-    alert('Please select your education level.');
+    alert(T[LANG].alert_edu);
     return;
   }
   if (!parentEducation) {
-    alert('Please select your parents\' education level.');
+    alert(T[LANG].alert_parent_edu);
     return;
   }
   if (occupationStatus === '') {
-    alert('Please select your occupation status.');
+    alert(T[LANG].alert_occ);
     return;
   }
   if (occupationField === '') {
-    alert('Please enter the field you work or study in.');
+    alert(T[LANG].alert_field);
     return;
   }
 

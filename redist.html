@@ -1318,13 +1318,16 @@
   <div class="sr-block">
     <div class="sr-question" data-i18n="demo_effort_luck_q">To what extent do you think the initial income assigned to the participants in the previous task — before any redistribution — was determined by effort versus luck?</div>
     <div class="slider-row">
-      <span style="font-size:12px;color:#7a5a5a;" data-i18n="demo_effort_label">100% Effort</span>
+      <span style="font-size:12px;color:#7a5a5a;" data-i18n="demo_effort_0">0% Effort</span>
       <input type="range" id="demo-effort-luck" min="0" max="100" value="50"
              oninput="document.getElementById('effort-luck-val').textContent = this.value">
       <span class="slider-val" id="effort-luck-val">50</span>
-      <span style="font-size:12px;color:#7a5a5a;" data-i18n="demo_luck_label">100% Luck</span>
+      <span style="font-size:12px;color:#7a5a5a;" data-i18n="demo_effort_100">100% Effort</span>
     </div>
-    <div class="slider-ends"><span data-i18n="demo_effort_label">100% Effort</span><span data-i18n="demo_luck_label">100% Luck</span></div>
+    <div class="slider-ends">
+      <span data-i18n="demo_luck_100">100% Luck</span>
+      <span data-i18n="demo_luck_0">0% Luck</span>
+    </div>
   </div>
 
   <!-- Comments -->
@@ -1464,8 +1467,10 @@ const T = {
     demo_field: 'What field do you work or study in?',
     demo_field_placeholder: 'e.g. Engineering, Healthcare, Business',
     demo_effort_luck_q: 'To what extent do you think the initial income assigned to the participants in the previous task — before any redistribution — was determined by effort versus luck?',
-    demo_effort_label: '100% Effort',
-    demo_luck_label: '100% Luck',
+    demo_effort_0: '0% Effort',
+    demo_effort_100: '100% Effort',
+    demo_luck_100: '100% Luck',
+    demo_luck_0: '0% Luck',
     demo_comments: 'Additional Comments',
     demo_comments_desc: 'If you have any comments, suggestions, or feedback about this study, please share them below. Was anything unclear? How could we improve?',
     demo_comments_placeholder: 'Your feedback here...',
@@ -1588,9 +1593,11 @@ const T = {
     demo_occ_unemployed: 'Desempleado/a',
     demo_field: '¿En qué campo trabajas o estudias?',
     demo_field_placeholder: 'p. ej. Ingeniería, Salud, Negocios',
-    demo_effort_luck_q: '¿En qué medida crees que el ingreso inicial en esta tarea, antes de cualquier redistribución, fue determinado por esfuerzo versus suerte?',
-    demo_effort_label: '100% Esfuerzo',
-    demo_luck_label: '100% Suerte',
+    demo_effort_luck_q: 'En una escala de 0 a 100, donde 0 significa "completamente determinado por la suerte" y 100 significa "completamente determinado por el esfuerzo", ¿cómo evaluarías los ingresos iniciales obtenidos por los dos participantes antes de cualquier redistribución?',
+    demo_effort_0: '0% Esfuerzo',
+    demo_effort_100: '100% Esfuerzo',
+    demo_luck_100: '100% Suerte',
+    demo_luck_0: '0% Suerte',
     demo_comments: 'Comentarios adicionales',
     demo_comments_desc: 'Si tienes algún comentario, sugerencia o retroalimentación sobre este estudio, por favor compártelos a continuación. ¿Algo no fue claro? ¿Cómo podríamos mejorar?',
     demo_comments_placeholder: 'Tu comentario aquí...',
@@ -1667,8 +1674,8 @@ window.addEventListener('resize', applyMatrixGridColumns);
    CONFIGURATION    
 ───────────────────────────────────────────── */
 const CONFIG = {
-  ROUND_SECONDS : 45,
-  PRACTICE_SECONDS : 20,
+  ROUND_SECONDS : 1,
+  PRACTICE_SECONDS : 1,
   TOTAL_ROUNDS  : 5,
   MATRIX_COLS   : isMobileDevice() ? 7 : 20,
   MATRIX_ROWS   : isMobileDevice() ? 46 : 16,

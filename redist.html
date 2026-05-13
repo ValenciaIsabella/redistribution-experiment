@@ -1503,7 +1503,7 @@ const T = {
     alert_field: 'Please enter the field you work or study in.',
     alert_dist: 'Please select one of the allocation alternatives.',
     alert_sr_guess: 'Please enter how many points you think you obtained (Question 2).',
-    alert_sr_guess_range: 'Question 2: Please enter a value between 0 and 100.',
+    alert_sr_guess_range: 'Question 2: Please enter a value between -200 and 200.',
     alert_sr_perf: 'Please select an answer for Question 3.',
   },
   es: {
@@ -1633,7 +1633,7 @@ const T = {
     alert_field: 'Por favor ingresa el campo en el que trabajas o estudias.',
     alert_dist: 'Por favor selecciona una de las alternativas de distribución.',
     alert_sr_guess: 'Por favor ingresa cuántos puntos crees que obtuviste (Pregunta 2).',
-    alert_sr_guess_range: 'Pregunta 2: Por favor ingresa un valor entre 0 y 100.',
+    alert_sr_guess_range: 'Pregunta 2: Por favor ingresa un valor entre -200 y 200.',
     alert_sr_perf: 'Por favor selecciona una respuesta para la Pregunta 3.',
   }
 };
@@ -1977,7 +1977,7 @@ document.getElementById('sr-submit-btn').addEventListener('click', () => {
     alert(T[LANG].alert_sr_guess);
     return;
   }
-  if (parseInt(guess) < 0 || parseInt(guess) > 100) {
+  if (parseInt(guess) < -200 || parseInt(guess) > 200) {
     alert(T[LANG].alert_sr_guess_range);
     return;
   }

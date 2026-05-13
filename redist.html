@@ -1347,12 +1347,23 @@
 ════════════════════════════════════════════════ -->
 <div id="screen-complete" class="screen feedback-screen">
   <h2 data-i18n="complete_h2">Study Complete</h2>
-  <div class="complete-box" style="padding:40px 60px;">
-    <div class="complete-text" data-i18n="complete_thanks">Thank you for your participation.</div>
-    <p style="margin-top:16px; font-size:13px; color:#7a5a5a; font-weight:normal;" data-i18n="complete_recorded">
-      Your responses have been recorded.
-    </p>
+
+  <p style="margin-bottom:6px;" data-i18n="complete_thanks">Thank you for your participation.</p>
+  <p style="margin-bottom:20px;" data-i18n="complete_recorded">Your responses have been recorded.</p>
+
+  <p style="margin-bottom:12px;" data-i18n="complete_feedback_intro">Here is your feedback in case you'd like to know:</p>
+
+  <div class="breakdown-table" style="max-width:360px;">
+    <span class="bk-label" data-i18n="fb_correct">Correct markings</span>
+    <span class="bk-value" id="complete-fb-hits">—</span>
+    <span class="bk-label" data-i18n="fb_wrong">Wrong markings</span>
+    <span class="bk-value" id="complete-fb-wrong">—</span>
+    <div class="bk-divider"></div>
+    <span class="bk-label" data-i18n-html="fb_total"><strong>Total score</strong> (correct − wrong)</span>
+    <span class="bk-value" id="complete-fb-total" style="font-size:18px;">—</span>
   </div>
+
+  <div id="complete-pair-info" style="display:none; margin:24px auto 0; max-width:360px;"></div>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -1477,6 +1488,9 @@ const T = {
     complete_h2: 'Study Complete',
     complete_thanks: 'Thank you for your participation.',
     complete_recorded: 'Your responses have been recorded.',
+    complete_feedback_intro: 'Here is your feedback in case you\'d like to know:',
+    complete_paired_best: 'You were randomly paired with the participant with the <strong>highest score</strong> so far. Their score was <strong>SCORE points</strong>.',
+    complete_paired_worst: 'You were randomly paired with the participant with the <strong>lowest score</strong> so far. Their score was <strong>SCORE points</strong>.',
     pair_better: 'You performed better than them.',
     pair_worse: 'You performed worse than them.',
     alert_gender: 'Please select a gender.',
@@ -1604,6 +1618,9 @@ const T = {
     complete_h2: 'Estudio Completado',
     complete_thanks: 'Gracias por tu participación.',
     complete_recorded: 'Tus respuestas han sido registradas.',
+    complete_feedback_intro: 'Aquí te dejamos el Feedback en caso de que lo quieras saber:',
+    complete_paired_best: 'Fuiste emparejado/a al azar con el participante con la <strong>puntuación más alta</strong> hasta ahora. Su puntuación fue de <strong>SCORE puntos</strong>.',
+    complete_paired_worst: 'Fuiste emparejado/a al azar con el participante con la <strong>puntuación más baja</strong> hasta ahora. Su puntuación fue de <strong>SCORE puntos</strong>.',
     pair_better: 'Tuviste un mejor rendimiento que él.',
     pair_worse: 'Tuviste un peor rendimiento que él.',
     alert_gender: 'Por favor selecciona un género.',
@@ -1674,8 +1691,8 @@ window.addEventListener('resize', applyMatrixGridColumns);
    CONFIGURATION    
 ───────────────────────────────────────────── */
 const CONFIG = {
-  ROUND_SECONDS : 1,
-  PRACTICE_SECONDS : 1,
+  ROUND_SECONDS : 45,
+  PRACTICE_SECONDS : 20,
   TOTAL_ROUNDS  : 5,
   MATRIX_COLS   : isMobileDevice() ? 7 : 20,
   MATRIX_ROWS   : isMobileDevice() ? 46 : 16,
@@ -1698,7 +1715,7 @@ const CONFIG = {
   return 'full';
 })();
 ───────────────────────────────────────────── */
-const PAIR_SCORES = [10,200];
+const PAIR_SCORES = [16,198];
 
 const GROUP = (() => {
   const r = Math.random();
@@ -2352,7 +2369,20 @@ document.getElementById('demo-submit-btn').addEventListener('click', () => {
   lateDemoData.knowSelection = knowSelection ? knowSelection.value : null;
   lateDemoData.effortLuck = parseInt(document.getElementById('demo-effort-luck').value);
 
-  // Show completion screen first
+  // Populate and show completion screen
+  document.getElementById('complete-fb-hits').textContent  = state.totalCorrect;
+  document.getElementById('complete-fb-wrong').textContent = state.totalWrong;
+  document.getElementById('complete-fb-total').textContent = state.totalScore;
+
+  const pairInfoEl = document.getElementById('complete-pair-info');
+  if (GROUP !== 'none' && pairResult.score !== null) {
+    const isMax = pairResult.score === Math.max(...PAIR_SCORES);
+    const tpl = isMax ? T[LANG].complete_paired_best : T[LANG].complete_paired_worst;
+    pairInfoEl.innerHTML = tpl.replace('SCORE', pairResult.score);
+    pairInfoEl.style.display = 'block';
+    pairInfoEl.className = 'comparison-box';
+  }
+
   showScreen('screen-complete');
 
   // Then submit data to JATOS

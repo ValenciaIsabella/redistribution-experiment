@@ -84,7 +84,7 @@ Complete explanation of all variables collected in the JATOS study results.
 ### `pair_score` (number)
 - **Type**: Integer
 - **Meaning**: Score of the randomly paired previous participant for comparison
-- **Only populated if**: `group == "relative"`
+- **Only populated if**: `group == "relative"` or `group == "full"`
 - **Example**: 200 (the pair scored 200 points)
 
 ### `pair_result` (string)
@@ -94,6 +94,7 @@ Complete explanation of all variables collected in the JATOS study results.
   - `"above"` → Participant scored HIGHER than pair
   - `"below"` → Participant scored LOWER than pair
   - `null` → If `group == "none"` (no pairing shown)
+- **Only populated if**: `group == "relative"` or `group == "full"`
 - **Example**: `"below"` (participant's 19 < pair's 200)
 
 ---
@@ -139,6 +140,41 @@ Complete explanation of all variables collected in the JATOS study results.
 
 ---
 
+## Second Distribution Decision (Part 2: Luck-Based Scenario)
+
+This second allocation task is always luck-based: Worker C earned $8 and Worker D earned $0 via lottery (no relation to performance).
+
+### `dist2_choice_idx` (number)
+- **Type**: Integer (0-based index)
+- **Meaning**: Which allocation option the participant selected for the second distribution task
+- **How to interpret**: Index into the DIST_OPTIONS array (same options as the first task)
+- **Example**: 4 (means they selected the 5th option in the list)
+
+### `dist2_worker_c_usd` (number)
+- **Type**: Float/Currency
+- **Unit**: USD
+- **Meaning**: Amount allocated to Worker C in the second distribution task
+- **Range**: 0 to 8
+- **Example**: 4 (allocated $4.00 to Worker C)
+
+### `dist2_worker_d_usd` (number)
+- **Type**: Float/Currency
+- **Unit**: USD
+- **Meaning**: Amount allocated to Worker D in the second distribution task
+- **Range**: 0 to 8
+- **Note**: Worker C + Worker D should equal 8 (or less if no redistribution)
+- **Example**: 4 (allocated $4.00 to Worker D)
+
+### `dist2_no_redist` (boolean)
+- **Type**: Boolean
+- **Meaning**: Whether participant chose "no redistribution" in the second distribution task
+- **Values**:
+  - `true` → Participant chose not to redistribute any money
+  - `false` → Participant chose one of the redistribution options
+- **Example**: `false` (they did redistribute)
+
+---
+
 ## Demographics (Part 2: Background Information)
 
 ### `demo_gender` (string)
@@ -153,11 +189,18 @@ Complete explanation of all variables collected in the JATOS study results.
 - **Range**: 18+
 - **Example**: 22
 
-### `demo_country` (string)
+### `demo_country_residence` (string)
 - **Type**: Categorical (Country selection)
 - **Question**: Country of Residence
 - **Values**: Any country from dropdown list
 - **Example**: `"Bahrain"`
+
+### `demo_country_origin` (string or null)
+- **Type**: Categorical (Country selection) or null
+- **Question**: Country of Origin
+- **Values**: Any country from dropdown list, or `null` if not provided
+- **Note**: Optional field; `null` if participant did not select a country
+- **Example**: `"Mexico"`
 
 ### `demo_education` (string)
 - **Type**: Categorical
@@ -197,12 +240,6 @@ Complete explanation of all variables collected in the JATOS study results.
 - **Values**: Free text (e.g., Engineering, Healthcare, Business)
 - **Example**: `"Economics"`
 
-### `demo_emailResults` (string or null)
-- **Type**: Email string or null
-- **Question**: Would you like us to let you know if your allocation decision was selected? (Optional)
-- **Meaning**: Email address to contact participant if their decision was selected
-- **Example**: `null` (participant did not provide email)
-
 ### `demo_comments` (string or null)
 - **Type**: Text or null
 - **Question**: Additional Comments (Optional)
@@ -214,6 +251,13 @@ Complete explanation of all variables collected in the JATOS study results.
 - **Question**: Would you like to know if your allocation decision was selected? (Optional)
 - **Values**: `"yes"`, `"no"`, or `null` (if not answered)
 - **Example**: `null`
+
+### `demo_effortLuck` (number)
+- **Type**: Integer (0–100 slider)
+- **Question**: "To what extent do you think the initial income assigned to the participants in the previous task — before any redistribution — was determined by effort versus luck?"
+- **Range**: 0 (100% Luck) to 100 (100% Effort)
+- **Meaning**: Participant's belief about how much of the initial income distribution was due to effort vs. luck
+- **Example**: 50 (believes income was equally determined by effort and luck)
 
 ---
 

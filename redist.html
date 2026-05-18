@@ -506,6 +506,8 @@
 
   <p data-i18n-html="welcome_duration">The entire study will take approximately <strong>7–10 minutes</strong> to complete.</p>
 
+  <p data-i18n="welcome_honesty">There are no correct answers and no trick questions. Our goal is to understand how people make decisions. We ask that you answer as honestly as possible.</p>
+
   <p class="welcome-meta" data-i18n-html="welcome_consent"><strong>Participant Information &amp; Consent</strong><br>
     This study is conducted by Isabella Valencia at the Paris School of Economics, under the supervision of Professor Andrea FM Martinangeli, to study decision-making in economics.
     Your participation is entirely voluntary and you may withdraw at any time by closing this browser window.
@@ -1017,7 +1019,7 @@
 
   <p data-i18n-html="dist_role_title"><strong> Your Role:</strong></p>
   <p data-i18n-html="dist_role_desc">
-  Your task is to decide <strong>how to distribute a total payment of $8</strong> between the workers.
+  Your task is to decide <strong>whether (and how) to distribute a total payment of $8</strong> between the workers.
   You can choose to give all the money to one worker, split it equally, or any other division you see fit.
   Your decision is anonymous and may be the one that determines their final payment.
   Since we collect decisions from several participants, we will randomly select one person's choice to be implemented.
@@ -1351,7 +1353,7 @@
 
   <p data-i18n-html="dist2_intro">Now consider a second pair of workers. <strong>Worker C</strong> and <strong>Worker D</strong> completed the same task. This time, initial earnings were assigned by a <strong>lottery</strong> with no regard for performance — Worker C won and received <strong>$8 USD</strong>; Worker D received <strong>$0</strong>.</p>
 
-  <p data-i18n-html="dist2_role_desc">Your task is to decide <strong>how to distribute a total payment of $8</strong> between these workers. Your decision is anonymous and may be the one implemented for their final payment.</p>
+  <p data-i18n-html="dist2_role_desc">Your task is to decide <strong>whether (and how) to distribute a total payment of $8</strong> between these workers. Your decision is anonymous and may be the one implemented for their final payment.</p>
 
   <p><strong data-i18n="dist2_question">How would you reallocate the total of $8 between Worker C and Worker D?</strong></p>
 
@@ -1433,6 +1435,7 @@ const T = {
     welcome_part2_title: 'Decision Task',
     welcome_part2_desc: 'You will have to make a decision that might affect how much two participants will get paid.',
     welcome_duration: 'The entire study will take approximately <strong>7–10 minutes</strong> to complete.',
+    welcome_honesty: 'There are no correct answers and no trick questions. Our goal is to understand how people make decisions. We ask that you answer as honestly as possible.',
     welcome_consent: '<strong>Participant Information &amp; Consent</strong><br>This study is conducted by Isabella Valencia at the Paris School of Economics, under the supervision of Professor Andrea FM Martinangeli, to study decision-making in economics. Your participation is entirely voluntary and you may withdraw at any time by closing this browser window. Data is collected anonymously under GDPR regulations and will be used for academic purposes only. No identifying information is stored. If you have any questions about the study, please contact Isabella Valencia by clicking <a href="mailto:valenciaisabellap@gmail.com">here</a>.<br>By clicking "Accept and Start Experiment", you confirm you are at least 18 years old and consent to these terms.',
     welcome_btn: 'Accept and Start Experiment',
     early_h2: 'Background Information',
@@ -1570,6 +1573,7 @@ const T = {
     welcome_part2_title: 'Tarea de Decisión',
     welcome_part2_desc: 'Deberás tomar una decisión que podría afectar el pago de dos participantes.',
     welcome_duration: 'El estudio completo tomará aproximadamente <strong>7–10 minutos</strong>.',
+    welcome_honesty: 'No hay respuestas correctas ni ninguna pregunta capciosa. Nuestro objetivo es entender cómo las personas toman decisiones. Te pedimos que respondas lo más honestamente posible.',
     welcome_consent: '<strong>Información para el participante y consentimiento</strong><br>Este estudio es realizado por Isabella Valencia en la Paris School of Economics, bajo la supervisión del Profesor Andrea FM Martinangeli, para estudiar la toma de decisiones en economía. Tu participación es completamente voluntaria y puedes retirarte en cualquier momento cerrando esta ventana del navegador. Los datos se recopilan de forma anónima bajo las regulaciones del RGPD y se utilizarán únicamente con fines académicos. No se almacena ninguna información identificable. Si tienes preguntas sobre el estudio, por favor contacta a Isabella Valencia haciendo clic <a href="mailto:valenciaisabellap@gmail.com">aquí</a>.<br>Al hacer clic en "Aceptar e iniciar el experimento", confirmas que tienes al menos 18 años y consientes estos términos.',
     welcome_btn: 'Aceptar e iniciar el experimento',
     early_h2: 'Información básica',
@@ -1626,7 +1630,7 @@ const T = {
     dist_h2: 'Parte 2: Fase de Distribución',
     dist_participants: 'Dos participantes anteriores, <strong>Trabajador A</strong> y <strong>Trabajador B</strong>, realizaron la misma tarea que acabas de completar.',
     dist_role_title: '<strong>Tu Rol:</strong>',
-    dist_role_desc: 'Tu tarea es decidir <strong>cómo distribuir un pago total de $8</strong> entre los trabajadores. Puedes dar todo el dinero a un trabajador, dividirlo por igual, o cualquier otra división que consideres apropiada. Tu decisión es anónima y puede ser la que determine su pago final. Como recopilamos decisiones de varios participantes, seleccionaremos aleatoriamente la decisión de una persona para ser implementada. Si se selecciona la tuya, los trabajadores recibirán exactamente lo que decidas.',
+    dist_role_desc: 'Tu tarea es decidir <strong>si (y como) distribuir un pago total de $8</strong> entre los trabajadores. Puedes dar todo el dinero a un trabajador, dividirlo por igual, o cualquier otra división que consideres apropiada. Tu decisión es anónima y puede ser la que determine su pago final. Como recopilamos decisiones de varios participantes, seleccionaremos aleatoriamente la decisión de una persona para ser implementada. Si se selecciona la tuya, los trabajadores recibirán exactamente lo que decidas.',
     dist_decision_title: '<strong>Tu Decisión:</strong>',
     dist_decision_remember: 'Recuerda que',
     dist_decision_question: '¿Cómo reasignarías un total de $8 entre el Trabajador A y el Trabajador B?',
@@ -1691,7 +1695,7 @@ const T = {
     alert_sr_perf: 'Por favor selecciona una respuesta para la Pregunta 3.',
     dist2_h2: 'Parte 2: Fase de Distribución (Continuación)',
     dist2_intro: 'Ahora considera una segunda pareja de trabajadores. El <strong>Trabajador C</strong> y el <strong>Trabajador D</strong> realizaron la misma tarea. En este caso, los ingresos iniciales se asignaron mediante una <strong>lotería</strong> sin considerar el rendimiento — el Trabajador C ganó y recibió <strong>$8 USD</strong>; el Trabajador D recibió <strong>$0</strong>.',
-    dist2_role_desc: 'Tu tarea es decidir <strong>cómo distribuir un pago total de $8</strong> entre estos trabajadores. Tu decisión es anónima y podría ser la que determine su pago final.',
+    dist2_role_desc: 'Tu tarea es decidir <strong>si (y cómo) distribuir un pago total de $8</strong> entre estos trabajadores. Tu decisión es anónima y podría ser la que determine su pago final.',
     dist2_question: '¿Cómo reasignarías un total de $8 entre el Trabajador C y el Trabajador D?',
     dist2_worker_c: 'Trabajador C',
     dist2_worker_d: 'Trabajador D',

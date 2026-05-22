@@ -21,8 +21,17 @@ select <- dplyr::select
 # 1. DATA LOADING AND PREPARATION
 # =============================================================================
 
-lines  <- readLines("Results_19_05.txt")
-df_raw <- map_dfr(lines, ~ fromJSON(.x, flatten = TRUE))
+lines  <- readLines("C:\\Users\\User\\Downloads\\Results_21_05.txt")
+
+# fromJSON expands the `roundResults` field (5 rounds per participant) into
+# 5 rows when binding. We drop it before binding so 1 line = 1 participant row.
+df_raw <- map_dfr(lines, function(line) {
+  obj <- fromJSON(line)
+  obj$roundResults <- NULL
+  # JSON null becomes NULL in R; replace with NA so as_tibble() accepts it
+  obj[sapply(obj, is.null)] <- NA
+  as_tibble(obj)
+})
 
 df <- df_raw %>%
   mutate(

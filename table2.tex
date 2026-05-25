@@ -1,0 +1,36 @@
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+caption={OLS Regressions: Effort--Luck Belief and Merit Redistribution \label{tab:regressions}},
+note{}={* p \num{< 0.05}, ** p \num{< 0.01}},
+note{ }={HC3 robust standard errors in parentheses. Baseline: no feedback (cols 1--4); relative group only (col 5). * $p<0.05$, ** $p<0.01$.},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]Q[]},
+hline{2}={1-6}{solid, black, 0.05em},
+hline{16}={1-6}{solid, black, 0.05em},
+hline{1}={1-6}{solid, black, 0.08em},
+hline{19}={1-6}{solid, black, 0.08em},
+column{2-6}={}{halign=c},
+column{1}={}{halign=l},
+}                     %% tabularray inner close
+& (1) & (2) & (3) & (4) & (5) \\
+Told: Above & \num{0.782} & \num{0.785} & \num{-59.278}* & \num{-55.514}* &  \\
+& (\num{0.453}) & (\num{0.456}) & (\num{27.295}) & (\num{27.387}) &  \\
+Told: Below & \num{-0.510} & \num{-0.540} & \num{-7.875} & \num{-9.502} &  \\
+& (\num{0.495}) & (\num{0.511}) & (\num{27.315}) & (\num{28.953}) &  \\
+Positively surprised &  &  &  &  & \num{29.804} \\
+&  &  &  &  & (\num{76.668}) \\
+Negatively surprised &  &  &  &  & \num{52.661} \\
+&  &  &  &  & (\num{30.034}) \\
+Age &  & \num{0.027} &  & \num{-1.323} &  \\
+&  & (\num{0.015}) &  & (\num{0.952}) &  \\
+Female &  & \num{0.148} &  & \num{7.878} &  \\
+&  & (\num{0.421}) &  & (\num{24.362}) &  \\
+Task score &  & \num{-0.003} &  & \num{-0.710} &  \\
+&  & (\num{0.008}) &  & (\num{0.524}) &  \\
+$N$ & \num{131} & \num{131} & \num{134} & \num{134} & \num{91} \\
+$R^{2}$ & \num{0.054} & \num{0.093} & \num{0.041} & \num{0.065} & \num{0.034} \\
+Controls (age, female, score) & No & Yes & No & Yes & No \\
+\end{talltblr}
+\end{table}

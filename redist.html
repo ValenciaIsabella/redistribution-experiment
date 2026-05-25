@@ -1344,52 +1344,9 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     SCREEN 7 – DISTRIBUTION (ROUND 2)
-════════════════════════════════════════════════ -->
-<div id="screen-distribution-2" class="screen">
-
-  <h2 data-i18n="dist2_h2">Part 2: Distribution Phase (Continued)</h2>
-
-  <p data-i18n-html="dist2_intro">Now consider a second pair of workers. <strong>Worker C</strong> and <strong>Worker D</strong> completed the same task. This time, initial earnings were assigned by a <strong>lottery</strong> with no regard for performance — Worker C won and received <strong>$8 USD</strong>; Worker D received <strong>$0</strong>.</p>
-
-  <p data-i18n-html="dist2_role_desc">Your task is to decide <strong>whether (and how) to distribute a total payment of $8</strong> between these workers. Your decision is anonymous and may be the one implemented for their final payment.</p>
-
-  <p><strong data-i18n="dist2_question">How would you reallocate the total of $8 between Worker C and Worker D?</strong></p>
-
-  <!-- Visual: worker cards + bar chart -->
-  <div class="worker-cards">
-    <div class="worker-card">
-      <div class="wc-name" data-i18n="dist2_worker_c">Worker C</div>
-      <div class="wc-amount" id="wc-c-amount">$8</div>
-      <div class="wc-label" data-i18n="dist_earnings">earnings from assignment</div>
-    </div>
-    <div class="worker-card">
-      <div class="wc-name" data-i18n="dist2_worker_d">Worker D</div>
-      <div class="wc-amount zero" id="wc-d-amount">$0</div>
-      <div class="wc-label" data-i18n="dist_earnings">earnings from assignment</div>
-    </div>
-  </div>
-
-  <div class="dist-bar-wrap">
-    <div class="dist-bar-col">
-      <div class="dist-bar bar-c" id="bar-c" style="height:80px;"></div>
-      <div class="dist-bar-lbl" data-i18n="dist2_worker_c">Worker C</div>
-    </div>
-    <div class="dist-bar-col">
-      <div class="dist-bar bar-d" id="bar-d" style="height:2px;"></div>
-      <div class="dist-bar-lbl" data-i18n="dist2_worker_d">Worker D</div>
-    </div>
-  </div>
-
-  <!-- Options -->
-  <div class="dist-options-label" data-i18n="dist_options_label">Please select one of the following alternatives:</div>
-  <div class="dist-options" id="dist2-options-list"></div>
-
-  <div class="clearfix">
-    <button class="btn-next" id="dist2-submit-btn">&gt;&gt;</button>
-  </div>
-</div>
+<!-- SCREEN 7 (screen-distribution-2) removed in May 2026 experiment version.
+     See DIST_TREATMENT in the JS section to re-enable a second distribution
+     question (luck scenario) for future versions. -->
 
 <!-- ══════════════════════════════════════════════
      SCREEN 8 – STUDY COMPLETE
@@ -1555,13 +1512,6 @@ const T = {
     alert_sr_guess: 'Please enter how many points you think you obtained (Question 2).',
     alert_sr_guess_range: 'Question 2: Please enter a value between -200 and 200.',
     alert_sr_perf: 'Please select an answer for Question 3.',
-    dist2_h2: 'Part 2: Distribution Phase (Continued)',
-    dist2_intro: 'Now consider a second pair of workers. <strong>Worker C</strong> and <strong>Worker D</strong> completed the same task. This time, initial earnings were assigned by a <strong>lottery</strong> with no regard for performance — Worker C won and received <strong>$8 USD</strong>; Worker D received <strong>$0</strong>.',
-    dist2_role_desc: 'Your task is to decide <strong>how to distribute a total payment of $8</strong> between these workers. Your decision is anonymous and may be the one implemented for their final payment.',
-    dist2_question: 'How would you reallocate the total of $8 between Worker C and Worker D?',
-    dist2_worker_c: 'Worker C',
-    dist2_worker_d: 'Worker D',
-    alert_dist2: 'Please select one of the allocation alternatives.',
   },
   es: {
     welcome_title: 'Bienvenido/a',
@@ -1693,13 +1643,6 @@ const T = {
     alert_sr_guess: 'Por favor ingresa cuántos puntos crees que obtuviste (Pregunta 2).',
     alert_sr_guess_range: 'Pregunta 2: Por favor ingresa un valor entre -200 y 200.',
     alert_sr_perf: 'Por favor selecciona una respuesta para la Pregunta 3.',
-    dist2_h2: 'Parte 2: Fase de Distribución (Continuación)',
-    dist2_intro: 'Ahora considera una segunda pareja de trabajadores. El <strong>Trabajador C</strong> y el <strong>Trabajador D</strong> realizaron la misma tarea. En este caso, los ingresos iniciales se asignaron mediante una <strong>lotería</strong> sin considerar el rendimiento — el Trabajador C ganó y recibió <strong>$8 USD</strong>; el Trabajador D recibió <strong>$0</strong>.',
-    dist2_role_desc: 'Tu tarea es decidir <strong>si (y cómo) distribuir un pago total de $8</strong> entre estos trabajadores. Tu decisión es anónima y podría ser la que determine su pago final.',
-    dist2_question: '¿Cómo reasignarías un total de $8 entre el Trabajador C y el Trabajador D?',
-    dist2_worker_c: 'Trabajador C',
-    dist2_worker_d: 'Trabajador D',
-    alert_dist2: 'Por favor selecciona una de las alternativas de distribución.',
   }
 };
 
@@ -2224,6 +2167,16 @@ document.getElementById('welcome-btn').addEventListener('click', () => {
    PART 2 – TREATMENT ASSIGNMENT
    'luck'  → earnings determined by lottery
    'merit' → earnings determined by productivity
+   To randomize between treatments, change the condition below,
+   e.g.: Math.random() < 0.5 ? 'luck' : 'merit'
+
+   NOTE (May 2026 experiment): This version does NOT ask participants
+   about the luck scenario. All participants see only the merit framing
+   (Math.random() < 0 is always false → always 'merit'). The luck/merit
+   infrastructure is preserved here so a future researcher can re-enable
+   randomization by changing the condition. Luck was dropped for power
+   reasons — a single framing doubles effective N per condition compared
+   to a between-subjects luck vs. merit design.
 ───────────────────────────────────────────── */
 const DIST_TREATMENT = Math.random() < 0 ? 'luck' : 'merit';
 
@@ -2240,8 +2193,7 @@ const DIST_OPTIONS = [
   { a: 0, b: 8, noRedist: false },
 ];
 
-let distChoice  = null;   // index of selected option (distribution 1)
-let distChoice2 = null;   // index of selected option (distribution 2)
+let distChoice = null;   // index of selected option (distribution 1)
 
 /* Build and show the distribution screen */
 function showDistribution() {
@@ -2335,82 +2287,6 @@ function updateWorkerCards(opt) {
 
   document.getElementById('bar-a').style.height = Math.max(aH, 2) + 'px';
   document.getElementById('bar-b').style.height = Math.max(bH, 2) + 'px';
-}
-
-/* Build and show the second distribution screen */
-function showDistribution2() {
-  const list = document.getElementById('dist2-options-list');
-  list.innerHTML = '';
-
-  const colLeft  = document.createElement('div');
-  const colRight = document.createElement('div');
-  colLeft.className  = 'dist-options-col';
-  colRight.className = 'dist-options-col';
-
-  DIST_OPTIONS.forEach((opt, idx) => {
-    const row = document.createElement('div');
-    row.className = 'dist-option';
-    row.dataset.idx = idx;
-
-    const rb = document.createElement('input');
-    rb.type  = 'radio';
-    rb.name  = 'dist2-choice';
-    rb.value = idx;
-    rb.id    = `dopt2_${idx}`;
-
-    const txt = document.createElement('div');
-    txt.className = 'opt-text';
-
-    const wC = T[LANG].dist2_worker_c;
-    const wD = T[LANG].dist2_worker_d;
-    if (opt.noRedist) {
-      txt.innerHTML =
-        `<span class="opt-no-redist">${T[LANG].dist_no_redist}</span>` +
-        '<div class="opt-amounts">' +
-        `<span class="opt-a">${wC}: $${opt.a}</span>` +
-        `<span class="opt-b">${wD}: $${opt.b}</span>` +
-        '</div>';
-    } else {
-      txt.innerHTML =
-        `<span style="font-weight:bold;">${T[LANG].dist_redist}${8 - opt.a}:</span>` +
-        '<div class="opt-amounts">' +
-        `<span class="opt-a">${wC}: $${opt.a}</span>` +
-        `<span class="opt-b">${wD}: $${opt.b}</span>` +
-        '</div>';
-    }
-
-    row.appendChild(rb);
-    row.appendChild(txt);
-
-    if (idx < 5) colLeft.appendChild(row);
-    else         colRight.appendChild(row);
-
-    row.addEventListener('click', () => {
-      rb.checked = true;
-      document.querySelectorAll('#dist2-options-list .dist-option').forEach(r => r.classList.remove('selected'));
-      row.classList.add('selected');
-      distChoice2 = idx;
-      updateWorkerCards2(opt);
-    });
-  });
-
-  list.appendChild(colLeft);
-  list.appendChild(colRight);
-
-  showScreen('screen-distribution-2');
-}
-
-/* Update worker-card visuals for distribution screen 2 */
-function updateWorkerCards2(opt) {
-  const MAX_H = 80;
-  const cH = Math.round((opt.a / 8) * MAX_H);
-  const dH = Math.round((opt.b / 8) * MAX_H);
-
-  document.getElementById('wc-c-amount').textContent = '$' + opt.a;
-  document.getElementById('wc-d-amount').textContent = '$' + opt.b;
-
-  document.getElementById('bar-c').style.height = Math.max(cH, 2) + 'px';
-  document.getElementById('bar-d').style.height = Math.max(dH, 2) + 'px';
 }
 
 /* ─────────────────────────────────────────────
@@ -2511,18 +2387,6 @@ document.getElementById('demo-submit-btn').addEventListener('click', () => {
   lateDemoData.knowSelection = knowSelection ? knowSelection.value : null;
   lateDemoData.effortLuck = parseInt(document.getElementById('demo-effort-luck').value);
 
-  showDistribution2();
-});
-
-/* ─────────────────────────────────────────────
-   DISTRIBUTION 2 SUBMIT
-───────────────────────────────────────────── */
-document.getElementById('dist2-submit-btn').addEventListener('click', () => {
-  if (distChoice2 === null) {
-    alert(T[LANG].alert_dist2);
-    return;
-  }
-
   // Populate and show completion screen
   document.getElementById('complete-fb-hits').textContent  = state.totalCorrect;
   document.getElementById('complete-fb-wrong').textContent = state.totalWrong;
@@ -2539,8 +2403,7 @@ document.getElementById('dist2-submit-btn').addEventListener('click', () => {
 
   showScreen('screen-complete');
 
-  const chosen  = DIST_OPTIONS[distChoice];
-  const chosen2 = DIST_OPTIONS[distChoice2];
+  const chosen = DIST_OPTIONS[distChoice];
 
   const fullPayload = {
     group        : GROUP,
@@ -2561,10 +2424,6 @@ document.getElementById('dist2-submit-btn').addEventListener('click', () => {
     dist_worker_a_usd : chosen.a,
     dist_worker_b_usd : chosen.b,
     dist_no_redist    : chosen.noRedist,
-    dist2_choice_idx   : distChoice2,
-    dist2_worker_c_usd : chosen2.a,
-    dist2_worker_d_usd : chosen2.b,
-    dist2_no_redist    : chosen2.noRedist,
     demo_gender   : earlyDemoData.gender,
     demo_age      : earlyDemoData.age,
     demo_country_residence : earlyDemoData.country_residence,

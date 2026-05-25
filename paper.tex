@@ -16,6 +16,9 @@
 \usepackage{subcaption}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
+\usepackage{tabularray}
+\usepackage{siunitx}
+\UseTblrLibrary{booktabs}
 
 \hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue}
 \onehalfspacing
@@ -25,13 +28,15 @@
 
 \title{\textbf{Relative Performance Feedback and Redistribution Preferences:
 Evidence from an Online Experiment}\thanks{I am grateful to Professor
-Andrea FM Martinangeli for supervision and guidance. All errors are my own.}}
+Andrea FM Martinangeli for supervision and guidance. All errors are my own.
+This experiment builds on the design of \citet{Almas2020} and is inspired
+by the research question of \citet{Cassar2019}.}}
 
 \author{Isabella Valencia\\
 \small Paris School of Economics\\
 \small \href{mailto:valenciaisabellap@gmail.com}{valenciaisabellap@gmail.com}}
 
-\date{May 2026 — Preliminary, please do not cite}
+\date{May 2026 --- Preliminary, please do not cite}
 
 \maketitle
 
@@ -46,20 +51,22 @@ are randomly assigned to one of three feedback conditions: no feedback, told
 they performed \emph{above} a randomly matched peer, or told they performed
 \emph{below} a randomly matched peer.
 They then act as impartial spectators and distribute a fixed sum between two
-workers whose inequality arose from either performance (merit scenario) or a
-lottery (luck scenario).
+workers whose inequality arose from either differential performance (merit
+scenario) or a lottery (luck scenario).
 Participants told they outperformed their peer redistribute approximately
-\$0.60 less to the lower-earning worker in the merit scenario compared to the
-no-feedback baseline, and score 0.8 points higher on an effort-attribution
-belief scale (0--10).
+\$0.59 less to the lower-earning worker in the merit scenario compared to the
+no-feedback baseline --- a 24 percent reduction from the mean --- and score
+0.78 points higher on an effort-attribution belief scale (0--10).
+No significant effect is found for participants told they underperformed, and
+the luck scenario serves as a placebo with no treatment effects.
 These results are consistent with self-serving attribution: learning that
-one outperformed a peer leads to stronger beliefs that inequality reflects
-effort, which in turn reduces redistribution demand.
+one outperformed a peer reinforces beliefs that inequality reflects effort,
+which in turn reduces redistribution demand in merit-relevant contexts.
 \end{abstract}
 
 \bigskip
-\noindent\textbf{Keywords:} redistribution, relative performance, self-serving
-attribution, fairness, online experiment\\
+\noindent\textbf{Keywords:} redistribution, relative performance feedback,
+self-serving attribution, fairness, online experiment\\
 \noindent\textbf{JEL codes:} C91, D31, D63, D91
 
 \newpage
@@ -67,14 +74,52 @@ attribution, fairness, online experiment\\
 % ============================================================
 \section{Introduction}
 
-A long-standing question in political economy is why individuals differ in
-their preferences for redistribution.
-One prominent explanation emphasises the role of \emph{beliefs about income
-determinants}: people who believe that inequality arises from effort and talent
-tend to favour less redistribution, while those who attribute it to luck or
-circumstance tend to favour more
+Free-market economies inherently generate unequal outcomes, and while modern
+democratic societies rely on redistribution to mitigate these disparities,
+there is persistent disagreement over which inequalities are considered
+legitimate \citep{AlesinGiulian2011, Piketty2014}.
+A central dimension of this debate concerns the \emph{source} of inequality:
+outcomes attributed to effort are typically viewed as more deserving than those
+arising from luck.
+This intuition is formalised in the accountability framework, which models
+redistributive preferences as judgments about deservingness and predicts lower
+redistribution when inequality reflects effort rather than chance
+\citep{Konow2000, Cappelen2007}.
+Underlying this framework is a well-documented empirical regularity: beliefs
+about income determinants drive redistribution preferences
 \citep{Piketty1995, Alesina2005, Benabou2006}.
+People who believe inequality arises from effort tend to favour less
+redistribution; those who attribute it to luck or circumstance tend to favour
+more.
 
+To isolate such normative judgments from material self-interest, studies
+often employ impartial spectator designs in which allocators distribute income
+between others and receive no payoffs themselves \citep{Almas2020}.
+While this approach successfully removes monetary incentives, it does not imply
+psychological neutrality.
+A growing body of evidence shows that recent experiences of success or failure
+can shape how individuals evaluate deservingness, even when they subsequently
+make allocation decisions on behalf of others
+\citep{Cassar2019, Deffains2016}.
+In this sense, impartiality is material rather than cognitive, and spectators’
+own experiences may influence how they apply the accountability principle.
+
+The stakes of understanding what shapes these beliefs extend to political
+polarization.
+\citet{Deffains2016} argue that the experience of success and failure is
+itself a driver of redistributive polarization through the self-serving bias
+(SSB): individuals who succeed at a task attribute their success to effort
+and favour less redistribution, while those who fail attribute failure to
+circumstance and shift toward more.
+Because success and wealth are correlated, this mechanism creates a systematic
+wedge between rich and poor in their perceived causes of inequality.
+Wealthy individuals, as \citet{Deffains2016} put it, ``do not only oppose
+redistribution because they expect to be net payers, but also because the SSB
+systematically shifts their fairness principles.’’
+The implication is stark: anything that alters an individual’s sense of
+their own relative standing could reshape redistribution preferences --- not
+through material self-interest, but through belief updating about whether
+inequality reflects effort or luck.
 A natural follow-up question is what shapes those beliefs.
 Social comparisons are ubiquitous: workers learn their rank in a wage
 distribution, students receive class rankings, and online platforms
@@ -93,21 +138,48 @@ distribute a fixed monetary sum between two workers, in two scenarios: one
 where inequality arose from differential performance (merit), and one where it
 arose from a lottery (luck).
 
-The key findings are:
-(1) Participants told they outperformed a peer attribute significantly more of
-their own task outcome to effort (\(\overline{EL}_{\text{above}} = 7.6\))
-compared to both the no-feedback (\(\overline{EL}_{\text{nofb}} = 6.8\)) and
-below (\(\overline{EL}_{\text{below}} = 6.3\)) groups on a 0--10 scale.
-(2) The same group redistributes less in the merit scenario
-(\$1.87 vs.\ \$2.47 and \$2.39 in the other groups).
-(3) The effect on redistribution is not statistically significant for the
-below group relative to the no-feedback baseline, suggesting the response is
-asymmetric.
+The key findings are three.
+First, participants told they outperformed a peer redistribute significantly
+less in the merit scenario: \$1.87 on average versus \$2.47 in the
+no-feedback group, a difference of \$0.59 that is statistically significant
+at the 5 percent level in OLS regressions with and without controls.
+Second, the same group scores approximately 0.78 points higher on an
+effort-attribution scale (0--10), consistent with self-serving belief
+updating, though this difference is only marginally significant individually
+($p \approx 0.086$) while the joint test across groups is significant
+($p = 0.028$, ANOVA).
+Third, the effect is asymmetric: participants told they underperformed do not
+significantly change their redistribution or belief scores relative to the
+no-feedback baseline.
+Taken together, these results suggest that positive performance signals
+trigger self-serving attribution that translates into reduced redistributive
+generosity --- but that negative signals do not produce a symmetric reverse
+effect.
 
-These results are consistent with self-serving attribution
-\citep{Hastorf1954,Miller1975}: individuals who learn they outperformed a peer
-update upward their beliefs about the role of effort, and this updated belief
-translates into lower redistribution in the merit scenario.
+These results are consistent with the self-serving attribution account of
+redistribution developed by \citet{Deffains2016}: individuals who perform well
+relative to others update their beliefs about the role of effort in generating
+inequality and become less redistributive.
+Our design extends their framework by using \emph{randomly assigned comparative
+feedback}, providing clean causal identification and isolating the relative
+rather than absolute performance channel.
+One notable difference is that \citet{Deffains2016} find SSB effects on both
+sides --- success reduces redistribution and failure increases it --- whereas
+our evidence is concentrated on the winning side.
+The absence of a significant response among participants told they underperformed
+suggests that the SSB in our setting is more asymmetric: learning one beat a
+peer is enough to trigger meritocratic updating, but learning one lost does
+not produce a symmetric shift toward redistribution.
+The absence of any treatment effect in the luck scenario further supports
+the attribution channel over non-specific mood or attention effects.
+
+The paper most directly relates to \citet{Almas2020}, from whose spectator
+design we adapt both the merit and luck redistribution tasks, and to
+\citet{Cassar2019}, whose focus on how performance comparisons shape
+distributive preferences motivates our research question.
+Our contribution is to provide clean experimental identification of the
+direction and asymmetry of this effect using randomly assigned relative
+feedback.
 
 The rest of the paper is structured as follows.
 Section~\ref{sec:lit} reviews the related literature.
@@ -153,22 +225,44 @@ bargaining inflate self-assessments of a fair outcome in a self-serving
 direction.
 Closer to our design, \citet{Deffains2016} show that individuals who
 experience unfair treatment become more supportive of redistribution.
-We add to this literature by focusing on the \emph{comparative} dimension:
-the same absolute performance level can produce different attribution
-depending on whether one learns one stands above or below a peer.
+\citet{Cassar2019} show that framing one's own performance as a failure
+(relative to a counterfactual) shapes distributive preferences; our design
+extends this insight by using randomly assigned comparative feedback,
+allowing clean causal identification.
+We add to this literature by focusing on the \emph{comparative} and
+\emph{asymmetric} dimension: the same absolute performance level can produce
+different attribution and redistribution depending on whether one learns one
+stands above or below a peer, and the effect appears concentrated on the
+winning side.
 
 % ============================================================
 \section{Experimental Design}
 \label{sec:design}
 
-The experiment was conducted online using JATOS and Prolific.
-Participants completed two parts: a performance task (Part~1) and a
-distribution task (Part~2).
-The study took approximately 7--10 minutes and participants were compensated
-according to standard Prolific rates plus a bonus determined by a randomly
-selected distribution decision.
+The experiment was conducted online using JATOS and involved two distinct
+roles: \emph{workers} and \emph{spectators}.
 
-\subsection{Part 1: Code Recognition Task}
+\textbf{Workers} ($n = 2$) completed the code-recognition task under real
+monetary incentives.
+They were told in advance that their earnings would depend on their relative
+performance against each other, and that a third party (a spectator) would
+subsequently decide whether and how much to redistribute between them.
+Workers received real monetary payments determined by both their relative task
+performance and a randomly selected spectator's redistribution decision.
+
+\textbf{Spectators} ($n = 134$) were recruited through personal networks
+(friends, family, and colleagues from two workplaces), completed the full
+experiment online in approximately 7--10 minutes, and received no monetary
+compensation.
+Spectators were informed before making their redistribution decisions that the
+workers were real individuals who had completed the same task and would
+receive actual monetary payouts determined by one randomly selected
+spectator's allocation.
+The impartial-spectator design thus combines the removal of material
+self-interest (spectators have no stake in the allocation) with real stakes
+for the workers, ensuring that decisions carry genuine consequences.
+
+\subsection{Part 1: Code-Recognition Task}
 
 Participants completed a code-recognition task over five rounds of 45~seconds
 each.
@@ -177,149 +271,208 @@ Participants were shown a grid of codes and had to check as many instances of
 the target as possible.
 Scoring: $+1$~point per correct identification, $-1$~point per false alarm,
 $0$~points for a miss.
-The maximum possible score was 200~points.
+The maximum possible score was 200~points; sample means range from 91 to 97
+points across treatment groups (Table~\ref{tab:balance}).
 
 Before seeing their results, participants answered three pre-feedback
 self-report questions:
 (i) effort exerted (slider, 0--10);
 (ii) guessed score (numeric, range $-200$ to $200$);
-(iii) relative performance prediction (``I would perform better or the same''
-vs.\ ``I would perform worse than the other participant'').
+(iii) relative performance prediction (``I would perform better than or the
+same as the other participant'' vs.\ ``I would perform worse'').
 
 \subsection{Treatments: Relative Performance Feedback}
+\label{sec:treatments}
 
 After the self-report, participants were randomly assigned to one of three
 feedback conditions.
 
 \begin{enumerate}
-  \item \textbf{No feedback.} Participants were simply informed they could
-    proceed to Part~2.
+  \item \textbf{No feedback.} Participants were informed they could proceed to
+    Part~2 without seeing their score or any comparison information.
   \item \textbf{Above.} Participants were shown their score and told:
     ``You performed above your randomly matched peer.''
   \item \textbf{Below.} Participants were shown their score and told:
     ``You performed below your randomly matched peer.''
 \end{enumerate}
 
-Matching was done using previously collected scores from a pilot wave,
-ensuring that the ``above'' vs.\ ``below'' assignment was credible given each
-participant's actual score.
+Each spectator in the relative-feedback group was matched to one of the two
+workers and shown their own score together with whether they outperformed or
+underperformed that specific worker.
+The comparison was thus based on real task scores from a real counterpart,
+making the feedback both credible and consequential: the worker a spectator
+was compared to was also the worker whose payoff their redistribution decision
+would partly determine.
 Approximately half of the relative-feedback group was told they outperformed
-(above) and half that they underperformed (below).
+their matched worker (above) and half that they underperformed (below).
 
 \subsection{Part 2: Distribution Decisions}
+\label{sec:distdecisions}
 
 After the feedback screen, all participants acted as impartial spectators and
-made two sequential redistribution decisions.
+made two sequential redistribution decisions adapted from \citet{Almas2020}.
 
 \subsubsection*{Decision 1 --- Merit Scenario}
-Participants read:
-\begin{quote}
-  ``Two previous participants, Worker~A and Worker~B, completed the same task
-  you just completed. \emph{[Worker A earned \$8; Worker B earned \$0 because
-  they performed worse].}
-  You must decide how to distribute a total of \$8 between them.''
-\end{quote}
-The distribution was presented as 9 discrete options ranging from \$0 to
-Worker~B (keeping full inequality) to \$8 to Worker~B (reversing inequality),
-with \$4 each as the equal split.
-The outcome variable is the amount allocated to the lower earner, Worker~B
-(\texttt{redist\_merit}, range \$0--\$8).
+
+Participants read that two real participants --- the two workers who had
+previously completed the same task --- were identified as Worker~A and
+Worker~B.
+Worker~A had received a larger initial payment because they performed better;
+Worker~B received less because they performed worse.
+Participants were asked to decide how to redistribute a total endowment
+between the two workers.
+The decision was presented as a set of discrete options covering
+the full range from keeping full inequality to reversing it, with an equal
+split as the midpoint.
+The primary outcome variable is the amount allocated to the lower-earning
+Worker~B (\texttt{redist\_merit}, in USD).
 
 \subsubsection*{Decision 2 --- Luck Scenario}
+
 After completing a demographics survey (including the effort--luck belief
-slider), participants saw a second decision:
-\begin{quote}
-  ``Worker~C and Worker~D completed the same task. This time, earnings were
-  assigned by a \textbf{lottery} with no regard for performance --- Worker~C
-  won and received \$8; Worker~D received \$0.
-  How would you reallocate the total of \$8?''
-\end{quote}
-The outcome variable is the amount allocated to Worker~D (\texttt{redist\_luck}).
+slider), participants saw a second decision.
+The scenario was identical in structure but attributed the earnings difference
+to a lottery with no regard for performance.
+The primary outcome variable is the amount allocated to the lottery loser,
+Worker~D (\texttt{redist\_luck}, in USD).
 
 \subsection{Key Outcome and Mediator Variables}
 
 \begin{itemize}
-  \item \textbf{Redistribution (merit):} dollars allocated to Worker~B
-    (\$0--\$8).
-  \item \textbf{Redistribution (luck):} dollars allocated to Worker~D
-    (\$0--\$8).
+  \item \textbf{Redistribution (merit):} USD allocated to Worker~B.
+  \item \textbf{Redistribution (luck):} USD allocated to Worker~D.
   \item \textbf{Effort--luck belief (\texttt{effort\_luck}):}
-    a slider recorded after the merit decision: ``To what extent do you think
-    the initial income of participants in the previous task was determined by
-    effort versus luck?'' (0 = 100\% luck, 10 = 100\% effort).
-    This variable serves as the hypothesised mediator.
+    Recorded after the merit decision via the question: ``To what extent do
+    you think the initial income of participants in the previous task was
+    determined by effort versus luck?'' (slider: 0 = 100\% luck,
+    10 = 100\% effort).
+    This variable serves as the hypothesised mediator between feedback and
+    redistribution.
 \end{itemize}
 
 \subsection{Sample}
 
-The analysis sample consists of $N = 134$ participants after excluding
-those with zero score and zero clicks (non-engagers) and those with
-implausibly high scores ($>$\$5 allocated to Worker~B).
+Spectators were recruited through the researcher's personal networks: friends,
+family, and employees at two workplaces.
+The analysis sample consists of $N = 134$ spectators after excluding
+non-engagers (zero score and zero clicks) and statistical outliers.
+This is a convenience sample and is therefore not nationally representative;
+the main implication for external validity is that findings describe the
+direction of the self-serving attribution effect under incentivized conditions
+but may not generalise to other populations in terms of magnitudes.
+Importantly, treatment assignment was random within this sample, so internal
+validity is not compromised.
+
 Table~\ref{tab:balance} presents descriptive statistics by treatment group.
+Groups are balanced on pre-determined covariates: age ($p = 0.99$), gender
+($p = 0.14$), task score ($p = 0.57$), and prior belief about relative
+performance ($p = 0.43$), confirming that randomisation was successful.
+The effort--luck belief score differs significantly across groups ($p = 0.028$),
+which is itself a key outcome; importantly, this measure is elicited
+\emph{after} the feedback treatment, so it cannot confound treatment
+assignment.
 
 % ============================================================
 \section{Results}
 \label{sec:results}
 
 \subsection{Effort--Luck Beliefs}
+\label{sec:beliefs}
 
 Figure~\ref{fig:main} (left panel) shows mean effort--luck belief by treatment
 group.
 Participants told they outperformed a peer score markedly higher on the
-effort-attribution scale ($\overline{EL} = 7.6$) relative to the no-feedback
-group ($\overline{EL} = 6.8$) and the below group ($\overline{EL} = 6.3$).
+effort-attribution scale ($\overline{EL}_{\text{above}} = 7.6$, SD = 2.3)
+relative to the no-feedback group ($\overline{EL}_{\text{nofb}} = 6.8$, SD = 1.9)
+and the below group ($\overline{EL}_{\text{below}} = 6.3$, SD = 2.6).
+A one-way ANOVA rejects equality of group means at the 5 percent level
+($F(2,128) = 3.78$, $p = 0.028$).
 
 Table~\ref{tab:regressions} (columns 1--2) presents OLS regressions of
-\texttt{effort\_luck} on treatment dummies (baseline: no feedback), with and
-without demographic controls.
+\texttt{effort\_luck} on treatment dummies, with no-feedback as the baseline.
 Being told one outperformed a peer increases the effort-attribution score by
-approximately [XX] points (SE = [XX], $p$ = [XX]), while being told one
-underperformed decreases it by approximately [XX] points, though this
-coefficient is [not] statistically significant.
-The pattern is consistent with self-serving attribution: winners attribute
-the outcome to effort; losers do not systematically update in the opposite
-direction.
+0.78 points (SE = 0.45, $p = 0.086$), while being told one underperformed
+decreases it by 0.51 points (SE = 0.50, $p = 0.306$).
+Neither pairwise coefficient reaches the 5 percent significance threshold,
+but the pattern is consistent with a self-serving attribution mechanism:
+the feedback most likely to be flattering (above) raises effort attribution,
+while the feedback that implies underperformance (below) produces little
+symmetric updating.
+Controlling for age, gender, and task score leaves both coefficients
+essentially unchanged (column 2), ruling out demographic confounding.
+Three participants did not complete the effort--luck slider; the belief
+regressions use $N = 131$.
 
 \subsection{Redistribution in the Merit Scenario}
+\label{sec:merit}
 
 The right panel of Figure~\ref{fig:main} shows mean redistribution in the
 merit scenario.
-The above group redistributes the least (\$1.87), compared to the
-no-feedback baseline (\$2.47) and the below group (\$2.39).
+The above group redistributes the least (\$1.87, SD = \$1.38), compared to
+the no-feedback baseline (\$2.47, SD = \$1.18) and the below group
+(\$2.39, SD = \$1.33).
+The one-way ANOVA yields $p = 0.065$, marginally failing the conventional
+threshold at the omnibus level.
 
-Columns 3--4 of Table~\ref{tab:regressions} report OLS regressions of
-\texttt{redist\_merit} on treatment dummies.
-Being told one outperformed reduces redistribution by approximately [XX]
-cents (SE = [XX], $p$ = [XX]) relative to the no-feedback group, corresponding
-to a [XX]\% reduction from the no-feedback mean.
-The below coefficient is small and statistically indistinguishable from zero,
-confirming the asymmetry visible in Figure~\ref{fig:main}.
-Results are robust to controlling for age, gender, and task score (column 4).
+Columns 3--4 of Table~\ref{tab:regressions} report the main OLS regressions.
+Being told one outperformed reduces redistribution by \$0.59 (SE = \$0.27,
+$p < 0.05$) relative to the no-feedback group, corresponding to a 24 percent
+reduction from the no-feedback mean.
+This estimate is robust to adding demographic and performance controls
+(column 4: coefficient $-\$0.56$, SE = \$0.27, $p < 0.05$).
+In contrast, the below coefficient is small ($-\$0.08$, SE = \$0.27,
+$p = 0.77$) and statistically indistinguishable from zero,
+confirming the asymmetric pattern visible in Figure~\ref{fig:main}.
 
-\subsection{Heterogeneity: Surprise}
-
-To probe the mechanism further, we classify participants in the relative
-group by whether the feedback was surprising.
-\emph{Positively surprised} participants predicted they would perform worse
-than or the same as their peer but were told they outperformed
-(\texttt{above\_positively\_surprised} = 1).
-\emph{Negatively surprised} participants predicted they would outperform
-but were told they underperformed (\texttt{below\_negatively\_surprised} = 1).
-
-If the self-serving attribution channel is operative, the redistribution
-effect should be driven primarily by those who were unexpectedly told they
-outperformed, as these individuals face the largest positive surprise.
-Column 5 of Table~\ref{tab:regressions} reports this regression.
-[Results to be discussed once final sample is available.]
+These results establish a clear causal chain from relative feedback to
+redistribution in the expected direction, but concentrated on the winning
+side: participants who learn they outperformed a peer become measurably less
+redistributive in a merit context, whereas participants who learn they
+underperformed do not respond significantly.
 
 \subsection{Redistribution in the Luck Scenario}
+\label{sec:luck}
 
-As a placebo and secondary outcome, we examine redistribution in the luck
-scenario where earnings are explicitly attributed to a lottery.
-If feedback affects redistribution through effort-attribution beliefs,
-its effect should be attenuated (or absent) in the luck scenario, where
-performance is irrelevant by design.
-[Results to be reported.]
+As a placebo, we examine redistribution in the luck scenario, where earnings
+are explicitly attributed to a lottery and performance feedback is normatively
+irrelevant.
+If feedback affected redistribution through a non-specific channel --- such as
+mood, engagement, or demand effects --- we would expect treatment differences
+in both scenarios.
+Table~\ref{tab:balance} shows that group means in the luck scenario are
+\$3.16, \$2.70, and \$3.05 for the no-feedback, above, and below groups,
+respectively, and the one-way ANOVA cannot reject equality ($p = 0.379$).
+The null result in the luck scenario is consistent with the merit-redistribution
+effect operating through performance-specific attribution beliefs rather than
+a general mood or engagement channel.
+
+\subsection{Heterogeneity by Surprise}
+\label{sec:surprise}
+
+To probe the attribution mechanism further, we classify participants in the
+relative-feedback group by whether the feedback was surprising.
+\emph{Positively surprised} participants predicted they would not outperform
+their peer but were told they did.
+\emph{Negatively surprised} participants predicted they would outperform but
+were told they underperformed.
+
+If self-serving attribution drives the result, the redistribution effect
+should be sharpest among those for whom the positive signal was unexpected ---
+unexpected confirmation of high standing is arguably more diagnostic and
+self-affirming than expected confirmation.
+Column~5 of Table~\ref{tab:regressions} reports OLS regressions of merit
+redistribution on these surprise indicators, estimated within the
+relative-feedback group ($N = 91$).
+Relative to confirmed-outcome participants (those whose feedback matched their
+prior expectation), negatively surprised participants redistribute \$0.53 more
+(SE = \$0.30, $p = 0.082$), a marginally significant result in the expected
+direction.
+Positively surprised participants do not differ significantly from the baseline
+(\$0.30, SE = \$0.77, $p = 0.70$).
+We interpret the marginal result for negatively surprised participants as
+suggestive that unexpected bad news about relative standing may trigger
+compensatory redistribution, though the relative-group sample is underpowered
+for this analysis and caution is warranted.
 
 % ============================================================
 \section{Conclusion}
@@ -329,10 +482,23 @@ This paper provides experimental evidence that relative performance feedback
 shapes both beliefs about the role of effort in generating inequality and
 downstream redistribution preferences.
 Participants told they outperformed a peer attribute more of the task
-outcome to effort and redistribute less in a merit scenario, consistent with
-self-serving attribution updating meritocratic beliefs.
-The effect is asymmetric: underperformers do not significantly increase
-redistribution relative to a no-feedback baseline.
+outcome to effort and redistribute \$0.59 less per round in a merit scenario
+relative to a no-feedback baseline --- a 24 percent reduction.
+The effect is asymmetric: underperformers do not significantly change either
+beliefs or redistribution.
+A luck scenario, where performance feedback is normatively irrelevant by
+design, yields no treatment effects, suggesting the mechanism is specific to
+merit-relevant attribution rather than a general engagement or mood effect.
+
+Taken together, these findings support a self-serving attribution account of
+redistribution preferences: receiving positive comparative feedback leads
+individuals to update the belief that inequality reflects effort, and this
+updated belief reduces their willingness to redistribute in settings where
+merit is salient.
+The asymmetry --- winners become less redistributive, losers do not become
+more so --- mirrors the well-documented asymmetry in self-serving attribution
+in psychology \citep{Mezulis2004} and has implications for the design of
+performance information systems.
 
 These findings have implications for the study of inequality and redistribution
 in a world where performance comparisons are increasingly salient --- on
@@ -342,11 +508,13 @@ visibility of performance rankings could systematically reduce support for
 redistribution among those who ``win'' such comparisons, potentially
 contributing to the polarisation of redistribution preferences.
 
-Future work should (i) increase sample size to improve precision, particularly
-for the heterogeneity analysis; (ii) test whether the effect persists when
-participants are given their absolute score alongside relative feedback; and
-(iii) examine whether the mediation through effort--luck beliefs is statistically
-confirmed with a formal mediation analysis.
+Future work should (i) increase sample size to improve power, particularly
+for the heterogeneity and mediation analyses; (ii) test whether the effect
+persists when participants receive absolute score information alongside
+relative feedback, to disentangle comparative and informational channels;
+and (iii) conduct a formal mediation analysis to quantify the share of the
+redistribution effect that operates through the effort-attribution belief
+measure.
 
 % ============================================================
 
@@ -355,87 +523,26 @@ confirmed with a formal mediation analysis.
 % ============================================================
 \section*{Tables and Figures}
 
-\begin{table}[h!]
-\centering
-\caption{Descriptive Statistics by Treatment Group}
-\label{tab:balance}
-\begin{tabular}{lcccc}
-\toprule
- & No Feedback & Above & Below & $p$-value \\
- & (1) & (2) & (3) & (4) \\
-\midrule
-Redistribution --- merit (\$)    & 2.47 & 1.87 & 2.39 & [XX]  \\
-Redistribution --- luck (\$)     & [XX] & [XX] & [XX] & [XX]  \\
-Effort--luck belief (0--10)      & 6.8  & 7.6  & 6.3  & [XX]  \\
-Score (task points)              & [XX] & [XX] & [XX] & [XX]  \\
-Age                              & [XX] & [XX] & [XX] & [XX]  \\
-Female (\%)                      & [XX] & [XX] & [XX] & [XX]  \\
-Predicted better (\%)           & [XX] & [XX] & [XX] & [XX]  \\
-\midrule
-$N$                              & [XX] & [XX] & [XX] & 134   \\
-\bottomrule
-\end{tabular}
-\vspace{4pt}
-\footnotesize\textit{Notes.} Column (4) reports the $p$-value from a one-way
-ANOVA (continuous) or chi-squared test (binary). Redistribution values are
-in USD.
-\end{table}
+\input{table1}
 
 \bigskip
 
-\begin{table}[h!]
-\centering
-\caption{OLS Regressions: Effort--Luck Belief and Merit Redistribution}
-\label{tab:regressions}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lccccc}
-\toprule
- & \multicolumn{2}{c}{Outcome: effort--luck belief} &
-   \multicolumn{3}{c}{Outcome: redistribution --- merit (\$)} \\
-\cmidrule(lr){2-3}\cmidrule(lr){4-6}
- & (1) & (2) & (3) & (4) & (5) \\
-\midrule
-Told: Above
-  & [XX]$^{*}$ & [XX]$^{*}$ & [XX]$^{*}$ & [XX]$^{*}$ & --- \\
-  & ([XX])     & ([XX])     & ([XX])     & ([XX])     &     \\[4pt]
-Told: Below
-  & [XX]       & [XX]       & [XX]       & [XX]       & --- \\
-  & ([XX])     & ([XX])     & ([XX])     & ([XX])     &     \\[4pt]
-Positively surprised (above $\times \neg$pred)
-  & --- & --- & --- & --- & [XX] \\
-  &     &     &     &     & ([XX]) \\[4pt]
-Negatively surprised (below $\times$ pred)
-  & --- & --- & --- & --- & [XX] \\
-  &     &     &     &     & ([XX]) \\[4pt]
-Age       & No & Yes & No & Yes & No \\
-Female    & No & Yes & No & Yes & No \\
-Score     & No & Yes & No & Yes & No \\
-\midrule
-$N$       & [XX] & [XX] & [XX] & [XX] & [XX] \\
-$R^{2}$   & [XX] & [XX] & [XX] & [XX] & [XX] \\
-\bottomrule
-\end{tabular}}
-\vspace{4pt}
-\footnotesize\textit{Notes.} Heteroskedasticity-robust standard errors (HC3)
-in parentheses. Baseline category: no feedback. $^{*}$ $p < 0.05$.
-Column (5) restricts to the relative-feedback group and replaces treatment
-dummies with the surprise indicators.
-\end{table}
+\input{table2}
 
 \bigskip
 
 \begin{figure}[h!]
 \centering
-\caption{Mean Effort Attribution and Merit Redistribution by Treatment}
+\caption{Effort Attribution and Merit Redistribution by Treatment Group}
 \label{fig:main}
 \includegraphics[width=\textwidth]{figure2.pdf}
 \vspace{4pt}
-\footnotesize\textit{Notes.} Bar heights correspond to group means.
-Whiskers represent $\pm 1$ standard error of the mean.
-Left panel: effort--luck belief slider (0 = 100\% luck; 10 = 100\% effort).
-Right panel: amount allocated to the lower-earning worker in the merit
-scenario (USD, range \$0--\$5).
-$N = 134$.
+\footnotesize\textit{Notes.}
+Left panel: mean effort--luck belief slider (0 = 100\% luck; 10 = 100\% effort),
+measured after the merit redistribution decision.
+Right panel: mean amount allocated (in USD) to the lower-earning worker in the
+merit scenario. Bar heights correspond to group means; whiskers represent
+$\pm 1$ standard error. $N = 134$.
 \end{figure}
 
 % ============================================================
@@ -443,35 +550,58 @@ $N = 134$.
 \bibliographystyle{aer}
 \begin{thebibliography}{99}
 
+\bibitem[Alesina and Giuliano(2011)]{AlesinGiulian2011}
+Alesina, Alberto, and Paola Giuliano. 2011.
+``Preferences for Redistribution.''
+In \textit{Handbook of Social Economics}, Vol.~1A, edited by Jess Benhabib,
+Alberto Bisin, and Matthew O. Jackson, 93--131. Amsterdam: North-Holland.
+
 \bibitem[Alesina and Angeletos(2005)]{Alesina2005}
 Alesina, Alberto, and George-Marios Angeletos. 2005.
 ``Fairness and Redistribution.''
 \textit{American Economic Review}, 95(4): 960--980.
+
+\bibitem[Alm\aa{}s et al.(2020)]{Almas2020}
+Alm\aa{}s, Ingvild, Alexander W.\ Cappelen, and Bertil Tungodden. 2020.
+``Cutthroat Capitalism versus Cuddly Socialism: Are Americans More
+Meritocratic and Efficiency-Seeking than Scandinavians?''
+\textit{Journal of Political Economy}, 128(5): 1753--1788.
 
 \bibitem[Babcock and Loewenstein(1995)]{Babcock1995}
 Babcock, Linda, and George Loewenstein. 1995.
 ``Explaining Bargaining Impasse: The Role of Self-Serving Biases.''
 \textit{Journal of Economic Perspectives}, 9(1): 109--126.
 
-\bibitem[Bénabou and Tirole(2006)]{Benabou2006}
-Bénabou, Roland, and Jean Tirole. 2006.
+\bibitem[B\'enabou and Tirole(2006)]{Benabou2006}
+B\'enabou, Roland, and Jean Tirole. 2006.
 ``Belief in a Just World and Redistributive Politics.''
 \textit{Quarterly Journal of Economics}, 121(2): 699--746.
 
+\bibitem[Konow(2000)]{Konow2000}
+Konow, James. 2000.
+``Fair Shares: Accountability and Cognitive Dissonance in Allocation
+Decisions.''
+\textit{American Economic Review}, 90(4): 1072--1091.
+
 \bibitem[Cappelen et al.(2007)]{Cappelen2007}
-Cappelen, Alexander W., Astri Drange Hole, Erik Ø. Sørensen, and Bertil
+Cappelen, Alexander W., Astri Drange Hole, Erik \O. S\o{}rensen, and Bertil
 Tungodden. 2007.
 ``The Pluralism of Fairness Ideals: An Experimental Approach.''
 \textit{American Economic Review}, 97(3): 818--827.
 
 \bibitem[Cappelen et al.(2013)]{Cappelen2013}
-Cappelen, Alexander W., James Konow, Erik Ø. Sørensen, and Bertil
+Cappelen, Alexander W., James Konow, Erik \O. S\o{}rensen, and Bertil
 Tungodden. 2013.
 ``Just Luck: An Experimental Study of Risk-Taking and Fairness.''
 \textit{American Economic Review}, 103(4): 1398--1413.
 
+\bibitem[Cassar and Klein(2019)]{Cassar2019}
+Cassar, Lea, and Arnd H. Klein. 2019.
+``A Matter of Perspective: How Failure Shapes Distributive Preferences.''
+\textit{Management Science}, 65(11): 5050--5064.
+
 \bibitem[Deffains et al.(2016)]{Deffains2016}
-Deffains, Bruno, Romain Espinosa, and Christian Thöni. 2016.
+Deffains, Bruno, Romain Espinosa, and Christian Th\"oni. 2016.
 ``Political Self-Serving Bias and Redistribution.''
 \textit{Journal of Public Economics}, 134: 67--74.
 
@@ -491,6 +621,11 @@ Attributional Bias.''
 Miller, Dale T., and Michael Ross. 1975.
 ``Self-Serving Biases in the Attribution of Causality: Fact or Fiction?''
 \textit{Psychological Bulletin}, 82(2): 213--225.
+
+\bibitem[Piketty(2014)]{Piketty2014}
+Piketty, Thomas. 2014.
+\textit{Capital in the Twenty-First Century}.
+Cambridge, MA: Harvard University Press.
 
 \bibitem[Piketty(1995)]{Piketty1995}
 Piketty, Thomas. 1995.

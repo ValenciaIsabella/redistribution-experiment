@@ -40,9 +40,15 @@ dt <- dt_raw[, .(
   pred_better  = (sr_relPerf == "much_better"),
   guess_error  = sr_guess - totalScore,
 
-  age          = demo_age,
-  female       = (demo_gender == "female"),
-  country      = demo_country_origin,
+  age              = demo_age,
+  female           = (demo_gender == "female"),
+  country          = demo_country_origin,
+  education        = factor(demo_education,
+                            levels  = c("high-school","some-college","bachelor","master","phd"),
+                            ordered = TRUE),
+  parent_education = factor(demo_parent_education,
+                            levels  = c("high-school","some-college","bachelor","master"),
+                            ordered = TRUE),
 
   # for exclusion filters only
   n_correct    = totalCorrect,
@@ -80,7 +86,7 @@ dt[, redist_gap := redist_merit - redist_luck]
 # H1: effort attribution (redist_merit) is correlated with distributive prefereces in the merit based condition (redist_merit ~ effor_luck)
 summary(dt$redist_merit)
 summary(dt$effort_luck)
-h1 <- lm(redist_merit ~ effort_luck, data = dt)
+h1 <- lm(redist_merit ~ pred_better, data = dt)
 print(coeftest(h1, vcov = vcovHC(h1, "HC3")))
 h1 <- lm(log_redist_merit ~ log_effort_luck, data = dt)
 print(coeftest(h1, vcov = vcovHC(h1, "HC3")))
@@ -330,4 +336,86 @@ modelsummary(
   escape    = FALSE
 )
 cat("Saved: table1.tex, table2.tex, figure1.pdf, figure2.pdf\n")
+
+# =============================================================================
+# TABLE 0: BACKGROUND CHARACTERISTICS BY TREATMENT GROUP
+# =============================================================================
+
+# Binary indicators for each education/nationality category
+dt[, colombian  := (!is.na(country) & country == "Colombia")]
+dt[, edu_hs     := (!is.na(education) & education == "high-school")]
+dt[, edu_sc     := (!is.na(education) & education == "some-college")]
+dt[, edu_ba     := (!is.na(education) & education == "bachelor")]
+dt[, edu_ma     := (!is.na(education) & education == "master")]
+dt[, edu_phd    := (!is.na(education) & education == "phd")]
+dt[, peduc_hs   := (!is.na(parent_education) & parent_education == "high-school")]
+dt[, peduc_sc   := (!is.na(parent_education) & parent_education == "some-college")]
+dt[, peduc_ba   := (!is.na(parent_education) & parent_education == "bachelor")]
+dt[, peduc_ma   := (!is.na(parent_education) & parent_education == "master")]
+
+# Format helpers
+fmt_ms  <- function(x) sprintf("%.1f (%.1f)", mean(x, na.rm=TRUE), sd(x, na.rm=TRUE))
+fmt_pct <- function(x) sprintf("%.1f",         mean(x, na.rm=TRUE) * 100)
+
+build_row <- function(label, fn, var, pval = "") {
+  data.table(
+    Variable      = label,
+    `No Feedback` = fn(dt[treatment == "no_feedback"][[var]]),
+    `Told: Above` = fn(dt[treatment == "above"][[var]]),
+    `Told: Below` = fn(dt[treatment == "below"][[var]]),
+    Total         = fn(dt[[var]]),
+    `$p$-value`   = pval
+  )
+}
+
+blank_row <- function(label, pval = "") {
+  data.table(Variable=label, `No Feedback`="", `Told: Above`="", `Told: Below`="", Total="", `$p$-value`=pval)
+}
+
+# p-values
+p_age    <- sprintf("%.3f", summary(aov(age    ~ treatment, data=dt))[[1]][["Pr(>F)"]][1])
+p_female <- sprintf("%.3f", tryCatch(chisq.test(table(dt$female,    dt$treatment))$p.value, error=function(e) NA_real_))
+p_col    <- sprintf("%.3f", tryCatch(chisq.test(table(dt$colombian, dt$treatment))$p.value, error=function(e) NA_real_))
+p_edu    <- sprintf("%.3f", tryCatch(chisq.test(table(dt$education, dt$treatment))$p.value, error=function(e) NA_real_))
+p_pedu   <- sprintf("%.3f", tryCatch(chisq.test(table(dt$parent_education, dt$treatment))$p.value, error=function(e) NA_real_))
+
+tbl0 <- rbindlist(list(
+  build_row("Age",                       fmt_ms,  "age",      p_age),
+  build_row("Female (\\%)",              fmt_pct, "female",   p_female),
+  build_row("Colombian (\\%)",           fmt_pct, "colombian",p_col),
+  blank_row("Education (\\%)",           p_edu),
+  build_row("\\quad High School",        fmt_pct, "edu_hs",   ""),
+  build_row("\\quad Some College",       fmt_pct, "edu_sc",   ""),
+  build_row("\\quad Bachelor's",         fmt_pct, "edu_ba",   ""),
+  build_row("\\quad Master's",           fmt_pct, "edu_ma",   ""),
+  build_row("\\quad PhD+",               fmt_pct, "edu_phd",  ""),
+  blank_row("Parents' Education (\\%)",  p_pedu),
+  build_row("\\quad High School or less",fmt_pct, "peduc_hs", ""),
+  build_row("\\quad Some College",       fmt_pct, "peduc_sc", ""),
+  build_row("\\quad Bachelor's",         fmt_pct, "peduc_ba", ""),
+  build_row("\\quad Master's or higher", fmt_pct, "peduc_ma", ""),
+  data.table(
+    Variable      = "$N$",
+    `No Feedback` = as.character(nrow(dt[treatment=="no_feedback"])),
+    `Told: Above` = as.character(nrow(dt[treatment=="above"])),
+    `Told: Below` = as.character(nrow(dt[treatment=="below"])),
+    Total         = as.character(nrow(dt)),
+    `$p$-value`   = ""
+  )
+))
+
+tbl0_tex <- kable(tbl0, format = "latex", booktabs = TRUE, escape = FALSE,
+      caption = "Background Characteristics by Treatment Group \\label{tab:background}",
+      col.names = c("", "No Feedback", "Told: Above", "Told: Below", "Total", "$p$-value")) |>
+  kable_styling(latex_options = "hold_position") |>
+  row_spec(which(tbl0$Variable %in% c("Education (\\%)", "Parents' Education (\\%)")),
+           bold = TRUE) |>
+  add_footnote(
+    "Age: mean (SD). All other variables: column percentages. $p$-values from one-way ANOVA (age) or chi-squared test (all others). Colombian: country of origin = Colombia.",
+    notation = "none", escape = FALSE
+  )
+
+cat(tbl0_tex)
+writeLines(tbl0_tex, "table0.tex")
+cat("Saved: table0.tex\n")
 

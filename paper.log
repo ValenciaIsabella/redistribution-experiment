@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.21)  26 MAY 2026 11:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.21)  26 MAY 2026 18:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -615,48 +615,69 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 {C:/Users/User/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}{C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}] [2]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 146.
+(Font)              <8> on input line 143.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 146.
+(Font)              <6> on input line 143.
  [3{C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}] [4] [5] [6]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 345.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 342.
  (C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 353.
- [7] [8] [9] [10] (table1.tex) (table2.tex
-LaTeX Font Info:    Trying to load font information for T1+lmss on input line 35.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 350.
+ [7] [8]
+
+LaTeX Warning: Reference `tab:mechanism' on page 9 undefined on input line 451.
+
+
+LaTeX Warning: Reference `tab:mechanism' on page 9 undefined on input line 458.
+
+[9] [10] (table1.tex
+Overfull \hbox (43.90135pt too wide) in paragraph at lines 5--22
+ [][] 
+ []
+
+) (table2.tex
+LaTeX Font Info:    Trying to load font information for T1+lmss on input line 31.
  (C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-))
+)
+Overfull \hbox (17.06781pt too wide) in paragraph at lines 31--32
+ [][] 
+ []
+
+)
 
 pdfTeX warning: pdflatex (file ./figure2.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<figure2.pdf, id=210, 722.7pt x 361.35pt>
+<figure2.pdf, id=211, 722.7pt x 361.35pt>
 File: figure2.pdf Graphic file (type pdf)
 <use figure2.pdf>
-Package pdftex.def Info: figure2.pdf  used on input line 526.
+Package pdftex.def Info: figure2.pdf  used on input line 525.
 (pdftex.def)             Requested size: 469.75502pt x 234.88023pt.
 [11 <./figure2.pdf>] [12] [13] [14] (paper.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: 6154E7BF521BB06AA5EF0A060035F297;2174.
  ) 
 Here is how much of TeX's memory you used:
- 19416 strings out of 467871
- 403719 string characters out of 5418860
- 786215 words of memory out of 5000000
- 48034 multiletter control sequences out of 15000+600000
+ 19330 strings out of 467871
+ 401661 string characters out of 5418860
+ 783901 words of memory out of 5000000
+ 47947 multiletter control sequences out of 15000+600000
  717109 words of font info for 90 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,12n,112p,425b,1644s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr7.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtk10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
-Output written on paper.pdf (14 pages, 377447 bytes).
+ 75i,12n,112p,466b,1541s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr7.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtk10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
+Output written on paper.pdf (14 pages, 380791 bytes).
 PDF statistics:
- 335 PDF objects out of 1000 (max. 8388607)
- 59 named destinations out of 1000 (max. 500000)
+ 341 PDF objects out of 1000 (max. 8388607)
+ 60 named destinations out of 1000 (max. 500000)
  110 words of extra memory for PDF output out of 10000 (max. 10000000)
 

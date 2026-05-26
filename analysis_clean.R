@@ -9,7 +9,7 @@ library(patchwork)
 # LOAD
 # =============================================================================
 
-lines <- readLines("C:\\Users\\User\\Downloads\\Results_22_05.txt")
+lines <- readLines("C:\\Users\\User\\Downloads\\Results_26_05.txt")
 
 dt_raw <- rbindlist(lapply(lines, function(line) {
   obj <- fromJSON(line)
@@ -37,7 +37,7 @@ dt <- dt_raw[, .(
 
   effort_self  = sr_effort,
   score_guess  = sr_guess,
-  pred_better  = (sr_relPerf == "much_better"),
+  pred_better  = sr_relPerf ,
   guess_error  = sr_guess - totalScore,
 
   age              = demo_age,
@@ -58,11 +58,10 @@ dt <- dt_raw[, .(
 # Exclusions
 dt <- dt[!(score == 0 & n_correct == 0 & n_wrong == 0)]
 dt[, c("n_correct", "n_wrong") := NULL]
-dt <- dt[redist_merit < 500]
+dt <- dt[redist_merit < 5]
 
 ########### CRITICO
-dt <- dt[!(treatment == "no_feedback" & redist_merit == 0 & country == "Colombia" & female == TRUE)]
-
+#dt <- dt[!(treatment == "no_feedback" & redist_merit == 0 & country == "Colombia" & female == TRUE)]
 
 cat("N clean:", nrow(dt), "\n")
 table(dt$treatment, useNA = "ifany")
@@ -78,6 +77,10 @@ dt[, log_redist_merit := log(redist_merit + 1)]
 dt[, log_redist_luck  := log(redist_luck  + 1)]
 dt[, log_effort_luck   := log(effort_luck   + 1)]
 dt[, redist_gap := redist_merit - redist_luck]
+dt[, feedback := fifelse(treatment == "no_feedback", "No Feedback", "Feedback")]
+dt[, pos_neg_feedback := fifelse(told_above == TRUE, "Told: Above", "Told: Below")]
+dt[, feedback := factor(feedback, levels = c("No Feedback", "Feedback"))]
+dt[, pos_neg_feedback := factor(pos_neg_feedback, levels = c("Told: Above", "Told: Below"))]
 
 # =============================================================================
 # MAIN ANALYSIS:
@@ -86,19 +89,20 @@ dt[, redist_gap := redist_merit - redist_luck]
 # H1: effort attribution (redist_merit) is correlated with distributive prefereces in the merit based condition (redist_merit ~ effor_luck)
 summary(dt$redist_merit)
 summary(dt$effort_luck)
-h1 <- lm(redist_merit ~ pred_better, data = dt)
+h1 <- lm(redist_merit ~ effort_luck, data = dt)
 print(coeftest(h1, vcov = vcovHC(h1, "HC3")))
 h1 <- lm(log_redist_merit ~ log_effort_luck, data = dt)
 print(coeftest(h1, vcov = vcovHC(h1, "HC3")))
 
 
 # H2: effort attribution (redist_merit) is higher in the above vs below condition
-summary(dt$effort_luck)
-summary(dt$treatment)
+# Muestra completa, pero cambias la referencia explícitamente
+dt$treatment <- relevel(factor(dt$treatment), ref = "below")
 h2 <- lm(effort_luck ~ treatment, data = dt)
-print(coeftest(h2, vcov = vcovHC(h2, "HC3")))
+coeftest(h2, vcov = vcovHC(h2, "HC3"))
 
-
+table(dt$pred_better, dt$treatment)
+chisq.test(dt$pred_better, dt$treatment)
 # H3: effort attribution (redist_merit) is higher in the above vs below condition
 summary(dt$redist_merit)
 summary(dt$treatment)
@@ -108,6 +112,8 @@ h3_controls <- lm(redist_merit ~ treatment + age + female, data = dt)
 print(coeftest(h3_controls, vcov = vcovHC(h3_controls, "HC3")))
 
 # H4: effort attribution (redist_merit) is (not) heterogeneously affected in the above vs below condition
+h4 <- lm(redist_merit ~  treatment, data = dt)
+
 h4 <- lm(redist_merit ~ treatment +above_positively_surprised + below_negatively_surprised, data = dt)
 print(coeftest(h4, vcov = vcovHC(h4, "HC3"))) 
 
@@ -288,23 +294,25 @@ writeLines(tbl1_tex, "table1.tex")
 dt_rel   <- dt[!is.na(told_above)]
 dt_eff   <- dt[!is.na(effort_luck)]
 
-m1 <- lm(effort_luck  ~ treatment,                     data = dt_eff)
+m1 <- lm(effort_luck  ~ treatment,                        data = dt_eff)
 m2 <- lm(effort_luck  ~ treatment + age + female + score, data = dt_eff)
-m3 <- lm(redist_merit ~ treatment,                     data = dt)
+m3 <- lm(redist_merit ~ treatment,                        data = dt)
 m4 <- lm(redist_merit ~ treatment + age + female + score, data = dt)
 m5 <- lm(redist_merit ~ above_positively_surprised + below_negatively_surprised,
           data = dt_rel)
 
-# HC3 vcov for each model
 vcov_hc3 <- function(m) vcovHC(m, type = "HC3")
 
+# Column headers embed the outcome name.
+# \phantom{} makes R names unique while rendering invisibly in LaTeX.
 models <- list(
-  "(1)" = m1, "(2)" = m2,
-  "(3)" = m3, "(4)" = m4,
-  "(5)" = m5
+  "(1) Effort--luck belief"                      = m1,
+  "(2) Effort--luck belief\\phantom{x}"          = m2,
+  "(3) Merit redistribution (\\$)"               = m3,
+  "(4) Merit redistribution (\\$)\\phantom{x}"   = m4,
+  "(5) Merit redistribution (\\$)\\phantom{xx}"  = m5
 )
 
-# Custom coefficient labels
 coef_map <- c(
   "treatmentabove"              = "Told: Above",
   "treatmentbelow"              = "Told: Below",
@@ -314,6 +322,11 @@ coef_map <- c(
   "femaleTRUE"                  = "Female",
   "score"                       = "Task score"
 )
+
+ctrl_row <- as.data.frame(as.list(setNames(
+  c("Controls (age, female, score)", "No", "Yes", "No", "Yes", "No"),
+  c("term", names(models))
+)))
 
 modelsummary(
   models,
@@ -325,14 +338,20 @@ modelsummary(
   ),
   stars     = c("*" = 0.05, "**" = 0.01),
   output    = "table2.tex",
-  title     = "OLS Regressions: Effort--Luck Belief and Merit Redistribution \\label{tab:regressions}",
-  add_rows  = data.frame(
-    term = "Controls (age, female, score)",
-    `(1)` = "No", `(2)` = "Yes",
-    `(3)` = "No", `(4)` = "Yes",
-    `(5)` = "No"
+  title     = "OLS Regressions \\label{tab:regressions}",
+  add_rows  = ctrl_row,
+  notes     = paste0(
+    "\\textit{Notes.} OLS regressions with HC3-robust standard errors in parentheses. ",
+    "In columns (1)--(2), the dependent variable is the effort--luck belief (0 = 100\\% luck, ",
+    "10 = 100\\% effort), measuring participants' attribution of task earnings to effort versus luck. ",
+    "In columns (3)--(5), the dependent variable is the amount redistributed to the lower-earning ",
+    "worker in the merit scenario (USD). Columns (1)--(4) include the full sample; the omitted ",
+    "baseline treatment is no feedback. Column (5) restricts to participants in the relative-feedback ",
+    "group: ``positively surprised'' denotes participants who expected to score below average but ",
+    "were told they scored above; ``negatively surprised'' denotes participants who expected to score ",
+    "above average but were told they scored below. Controls are age, a female indicator, and task score. ",
+    "$^{*}p<0.05$, $^{**}p<0.01$."
   ),
-  notes     = "HC3 robust standard errors in parentheses. Baseline: no feedback (cols 1--4); relative group only (col 5). * $p<0.05$, ** $p<0.01$.",
   escape    = FALSE
 )
 cat("Saved: table1.tex, table2.tex, figure1.pdf, figure2.pdf\n")

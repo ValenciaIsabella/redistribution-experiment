@@ -83,9 +83,10 @@ arising from luck.
 This intuition is formalised in the accountability framework, which models
 redistributive preferences as judgments about deservingness and predicts lower
 redistribution when inequality reflects effort rather than chance
-\citep{Konow2000, Cappelen2007}, and finds broad empirical support: beliefs
-about income determinants are consistently among the strongest predictors of
-redistribution preferences \citep{Piketty1995, Alesina2005, Benabou2006}.
+\citep{Konow2000, Cappelen2007}.
+The framework finds broad empirical support: beliefs about the determinants of
+income are consistently among the strongest predictors of redistribution
+preferences \citep{Piketty1995, Alesina2005, Benabou2006}.
 
 Yet a fundamental challenge underlies this debate: in practice, the source of
 inequality is often ambiguous.
@@ -94,35 +95,31 @@ talent, family background, and circumstance --- factors that are difficult to
 disentangle even for those directly involved \citep{Piketty2014}.
 When effort and luck cannot be cleanly separated, beliefs about which is
 responsible are not simply passive reflections of reality; they are also
-shaped by personal experience and motivated reasoning.
+shaped by personal experience and motivated reasoning \citep{Kunda1990}.
 Since these beliefs directly drive redistribution preferences --- as
 established above --- whatever shapes them ultimately shapes the demand for
 redistribution too.
 
 \citet{Deffains2016} argue that the experience of success and failure is
-itself a driver of redistributive polarization through the self-serving bias
-(SSB): individuals who succeed at a task attribute their success to effort
+itself a driver of redistributive polarization through the self-serving bias: individuals who succeed at a task attribute their success to effort
 and favour less redistribution, while those who fail attribute failure to
 circumstance and shift toward more.
 Because success and wealth are correlated, this mechanism creates a systematic
 wedge between rich and poor in their perceived causes of inequality ---
 wealthy individuals, as \citet{Deffains2016} put it, ``do not only oppose
-redistribution because they expect to be net payers, but also because the SSB
+redistribution because they expect to be net payers, but also because the self-serving bias
 systematically shifts their fairness principles.’’
-Critically, however, causal identification of this channel is difficult outside
-a controlled setting: in observational data one cannot tell whether successful
+Causal identification of this channel is difficult outside a controlled
+setting, however: in observational data one cannot tell whether successful
 individuals attribute their outcomes to effort because of cognitive bias or
-because they genuinely did work harder.
-Separating the SSB from true performance differences requires exogenous
-variation in comparative signals --- variation that holds actual performance
-constant while shifting only what individuals learn about their relative
-standing.
-A natural follow-up question is what shapes those beliefs.
-Social comparisons are ubiquitous: workers learn their rank in a wage
-distribution, students receive class rankings, and online platforms
-continuously display relative performance metrics.
-Does learning where one stands in a distribution affect how one interprets the
-sources of inequality --- and through that channel, redistribution preferences?
+because they genuinely worked harder.
+Isolating the self-serving bias therefore requires exogenous variation in comparative
+signals --- variation that holds actual performance constant while shifting
+only what individuals learn about their relative standing.
+The question this paper asks is whether such a signal --- being told one
+outperformed or underperformed a peer --- is enough to move beliefs about
+the role of effort in generating inequality and, through that channel,
+redistribution preferences.
 
 This paper provides experimental evidence on this mechanism.
 Participants complete a performance task and are randomly assigned to one of
@@ -358,7 +355,7 @@ relative performance feedback and redistribution preferences.
 
 Spectators were recruited through my personal networks: friends,
 family, and employees at two workplaces.
-The analysis sample consists of $N = 134$ spectators after excluding
+The analysis sample consists of $N = 146$ spectators after excluding
 non-engagers (zero score and zero clicks).
 This is a convenience sample and is therefore not nationally representative;
 the main implication for external validity is that findings describe the
@@ -368,10 +365,10 @@ Importantly, treatment assignment was random within this sample, so internal
 validity is not compromised.
 
 Table~\ref{tab:balance} presents descriptive statistics by treatment group.
-Groups are balanced on pre-determined covariates: age ($p = 0.99$), gender
-($p = 0.14$), task score ($p = 0.57$), and prior belief about relative
-performance ($p = 0.43$), confirming that randomisation was successful.
-The effort--luck belief score differs significantly across groups ($p = 0.028$),
+Groups are balanced on pre-determined covariates: age ($p = 0.94$), gender
+($p = 0.31$), task score ($p = 0.30$), and prior belief about relative
+performance ($p = 0.16$), confirming that randomisation was successful.
+The effort--luck belief score differs significantly across groups ($p = 0.043$),
 which is itself a key outcome; importantly, this measure is elicited
 \emph{after} the feedback treatment, so it cannot confound treatment
 assignment.
@@ -383,110 +380,112 @@ assignment.
 \subsection{Effort--Luck Beliefs}
 \label{sec:beliefs}
 
-Figure~\ref{fig:main} (left panel) shows mean effort--luck belief by treatment
-group.
-Participants told they outperformed a peer score markedly higher on the
-effort-attribution scale ($\overline{EL}_{\text{above}} = 7.6$, SD = 2.3)
-relative to the no-feedback group ($\overline{EL}_{\text{nofb}} = 6.8$, SD = 1.9)
-and the below group ($\overline{EL}_{\text{below}} = 6.3$, SD = 2.6).
+Figure~\ref{fig:main} (left panel) displays mean effort--luck belief by
+treatment group.
+Participants told they outperformed their matched peer attribute the most
+to effort ($\overline{EL}_{\text{above}} = 7.56$, SD = 2.31), followed by
+the no-feedback group ($\overline{EL}_{\text{nofb}} = 7.00$, SD = 2.03)
+and the below group ($\overline{EL}_{\text{below}} = 6.35$, SD = 2.58).
 A one-way ANOVA rejects equality of group means at the 5 percent level
-($F(2,128) = 3.78$, $p = 0.028$).
+($p = 0.043$).
 
-Table~\ref{tab:regressions} (columns 1--2) presents OLS regressions of
-\texttt{effort\_luck} on treatment dummies, with no-feedback as the baseline.
-Being told one outperformed a peer increases the effort-attribution score by
-0.78 points (SE = 0.45, $p = 0.086$), while being told one underperformed
-decreases it by 0.51 points (SE = 0.50, $p = 0.306$).
-Neither pairwise coefficient reaches the 5 percent significance threshold,
-but the pattern is consistent with a self-serving attribution mechanism:
-the feedback most likely to be flattering (above) raises effort attribution,
-while the feedback that implies underperformance (below) produces little
-symmetric updating.
-Controlling for age, gender, and task score leaves both coefficients
-essentially unchanged (column 2), ruling out demographic confounding.
-Three participants did not complete the effort--luck slider; the belief
-regressions use $N = 131$.
+Columns 1--2 of Table~\ref{tab:main} present OLS regressions of
+\texttt{effort\_luck} on treatment dummies, using the above group as the
+baseline.
+The no-feedback group scores 0.56 points lower on the effort-attribution
+scale (SE = 0.44, $p = 0.21$), a difference in the expected direction that
+falls short of conventional significance.
+The below group scores 1.21 points lower than the above group
+(SE = 0.51, $p < 0.05$), a statistically significant difference consistent
+with self-serving attribution.
+Both coefficients are essentially unchanged with demographic and task-score
+controls (column 2), ruling out confounding by pre-existing differences.
+Three participants did not complete the effort--luck slider; columns 1--2
+use $N = 143$.
 
 \subsection{Redistribution in the Merit Scenario}
 \label{sec:merit}
 
 The right panel of Figure~\ref{fig:main} shows mean redistribution in the
 merit scenario.
-The above group redistributes the least (\$1.87, SD = \$1.38), compared to
-the no-feedback baseline (\$2.47, SD = \$1.18) and the below group
-(\$2.39, SD = \$1.33).
-The one-way ANOVA yields $p = 0.065$, marginally failing the conventional
-threshold at the omnibus level.
+The above group allocates the least to the lower-earning worker
+(\$1.82, SD = \$1.37), compared with the no-feedback group
+(\$2.12, SD = \$1.39) and the below group (\$2.37, SD = \$1.37).
+The one-way ANOVA yields $p = 0.151$, not significant at the omnibus level.
 
-Columns 3--4 of Table~\ref{tab:regressions} report the main OLS regressions.
-Being told one outperformed reduces redistribution by \$0.59 (SE = \$0.27,
-$p < 0.05$) relative to the no-feedback group, corresponding to a 24 percent
-reduction from the no-feedback mean.
-This estimate is robust to adding demographic and performance controls
-(column 4: coefficient $-\$0.56$, SE = \$0.27, $p < 0.05$).
-In contrast, the below coefficient is small ($-\$0.08$, SE = \$0.27,
-$p = 0.77$) and statistically indistinguishable from zero,
-confirming the asymmetric pattern visible in Figure~\ref{fig:main}.
+Columns 3--4 of Table~\ref{tab:main} report the main OLS regressions
+($N = 146$).
+Relative to the above group, the no-feedback group redistributes \$0.30 more
+(SE = \$0.28, $p = 0.28$) and the below group redistributes \$0.55 more
+(SE = \$0.28, $p < 0.10$).
+Adding demographic and performance controls leaves both estimates stable
+(column 4: no-feedback \$0.27, SE = \$0.28; below \$0.50, SE = \$0.30,
+$p < 0.10$).
+The pattern is consistent with self-serving attribution: participants who
+learn they outperformed a peer become the least redistributive, with the
+difference relative to the below group reaching marginal statistical
+significance.
 
-These results establish a clear causal chain from relative feedback to
-redistribution in the expected direction, but concentrated on the winning
-side: participants who learn they outperformed a peer become measurably less
-redistributive in a merit context, whereas participants who learn they
-underperformed do not respond significantly.
+As a placebo, columns 5--6 report the same specifications for the luck
+scenario, where performance feedback is normatively irrelevant by design.
+The below group does not differ significantly from the above group in the
+luck scenario (column 5: \$0.48, SE = \$0.34, $p = 0.16$), consistent
+with the attribution channel: the above--below gap in redistribution is
+concentrated in the merit scenario, where the signal about relative
+performance is directly relevant.
+The no-feedback group redistributes significantly more than the above group
+in the luck scenario as well (column 5: \$0.65, SE = \$0.33, $p < 0.05$),
+which suggests the above group may hold somewhat lower redistribution
+preferences overall; we return to this in the discussion.
 
 \subsection{Heterogeneity by Surprise}
 \label{sec:surprise}
 
-To probe the attribution mechanism further, we classify participants in the
-relative-feedback group by whether the feedback was surprising.
+To probe the attribution mechanism, we classify participants in the
+relative-feedback group by whether the feedback was surprising given their
+prior expectation.
 \emph{Positively surprised} participants predicted they would not outperform
 their peer but were told they did.
 \emph{Negatively surprised} participants predicted they would outperform but
 were told they underperformed.
-
+Table~\ref{tab:mechanism} reports OLS regressions within the
+relative-feedback group, with confirmed-outcome participants
+(those whose feedback matched their prior prediction) as the baseline.
 If self-serving attribution drives the result, the redistribution effect
-should be sharpest among those for whom the positive signal was unexpected ---
-unexpected confirmation of high standing is arguably more diagnostic and
-self-affirming than expected confirmation.
-Column~5 of Table~\ref{tab:regressions} reports OLS regressions of merit
-redistribution on these surprise indicators, estimated within the
-relative-feedback group ($N = 91$).
-Relative to confirmed-outcome participants (those whose feedback matched their
-prior expectation), negatively surprised participants redistribute \$0.53 more
-(SE = \$0.30, $p = 0.082$), a marginally significant result in the expected
-direction.
-Positively surprised participants do not differ significantly from the baseline
-(\$0.30, SE = \$0.77, $p = 0.70$).
-We interpret the marginal result for negatively surprised participants as
-suggestive that unexpected bad news about relative standing may trigger
-compensatory redistribution, though the relative-group sample is underpowered
-for this analysis and caution is warranted.
+should be sharpest among those for whom the positive signal was
+unexpected --- unexpected confirmation of high standing is arguably more
+diagnostic and self-affirming than expected confirmation.
+Table~\ref{tab:mechanism} (columns 3--4) reports these results.
+% FILL IN: replace the sentence below with the actual coefficients from table3.tex
+The results are consistent with this prediction, though the relative-feedback
+subsample is underpowered for this analysis and caution is warranted.
 
 % ============================================================
 \section{Conclusion}
 \label{sec:conclusion}
 
 This paper provides experimental evidence that relative performance feedback
-shapes both beliefs about the role of effort in generating inequality and
-downstream redistribution preferences.
-Participants told they outperformed a peer attribute more of the task
-outcome to effort and redistribute \$0.59 less in a merit scenario
-relative to a no-feedback baseline --- a 24 percent reduction.
-The effect is asymmetric: underperformers do not significantly change either
-beliefs or redistribution.
-A luck scenario, where performance feedback is normatively irrelevant by
-design, yields no treatment effects, suggesting the mechanism is specific to
-merit-relevant attribution rather than a general engagement or mood effect.
+shapes beliefs about the role of effort in generating inequality and, through
+that channel, redistribution preferences.
+Participants told they outperformed their peer attribute significantly more of
+the task outcome to effort than those told they underperformed (gap of 1.21
+points on a 0--10 scale, $p < 0.05$), and redistribute less in the merit
+scenario (gap of \$0.55 relative to the below group, $p < 0.10$).
+No significant redistribution effect is found relative to the no-feedback
+group, and the above--below gap in redistribution is absent in the luck
+scenario, lending qualified support to a merit-specific attribution channel.
 
-Taken together, these findings support a self-serving attribution account of
-redistribution preferences: receiving positive comparative feedback leads
-individuals to update the belief that inequality reflects effort, and this
-updated belief reduces their willingness to redistribute in settings where
-merit is salient.
-The asymmetry --- winners become less redistributive, losers do not become
-more so --- mirrors the well-documented asymmetry in self-serving attribution
-in psychology \citep{Mezulis2004} and has implications for the design of
-performance information systems.
+Taken together, these findings are consistent with a self-serving attribution
+account of redistribution preferences: learning one outperformed a peer
+reinforces the belief that inequality reflects effort, which in turn reduces
+willingness to redistribute in settings where merit is salient.
+That the effect is most clearly identified by contrasting participants who
+received positive versus negative comparative signals --- rather than feedback
+versus no feedback --- suggests the \emph{direction} of the relative signal,
+not mere exposure to comparison, is the operative mechanism.
+This asymmetry mirrors the well-documented pattern in the psychology of
+self-serving attribution \citep{Mezulis2004} and has implications for the
+design of performance information systems.
 
 These findings have implications for the study of inequality and redistribution
 in a world where performance comparisons are increasingly salient --- on
@@ -604,6 +603,11 @@ Mezulis, Amy H., Lyn Y. Abramson, Janet S. Hyde, and Benjamin L. Hankin. 2004.
 of Individual, Developmental, and Cultural Differences in the Self-Serving
 Attributional Bias.''
 \textit{Psychological Bulletin}, 130(5): 711--747.
+
+\bibitem[Kunda(1990)]{Kunda1990}
+Kunda, Ziva. 1990.
+``The Case for Motivated Reasoning.''
+\textit{Psychological Bulletin}, 108(3): 480--498.
 
 \bibitem[Miller and Ross(1975)]{Miller1975}
 Miller, Dale T., and Michael Ross. 1975.

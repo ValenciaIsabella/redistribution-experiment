@@ -30,8 +30,8 @@ dt <- dt_raw[, .(
   ), levels = c("no_feedback", "above", "below")),
   told_above   = fifelse(group == "relative", pair_result == "above", NA),
 
-  redist_merit = dist_worker_b_usd *100,
-  redist_luck  = dist2_worker_d_usd *100,
+  redist_merit = dist_worker_b_usd,
+  redist_luck  = dist2_worker_d_usd,
   score        = totalScore,
   effort_luck  = demo_effortLuck/10,
 

@@ -27,8 +27,7 @@
 \begin{document}
 
 \title{\textbf{Relative Performance Feedback and Redistribution Preferences:
-Evidence from an Online Experiment}\thanks{I am grateful to Professor
-Andrea FM Martinangeli for supervision and guidance. All errors are my own.
+Evidence from an Online Experiment}\thanks{
 This experiment builds on the design of \citet{Almas2020} and is inspired
 by the research question of \citet{Cassar2019}.}}
 
@@ -36,7 +35,7 @@ by the research question of \citet{Cassar2019}.}}
 \small Paris School of Economics\\
 \small \href{mailto:valenciaisabellap@gmail.com}{valenciaisabellap@gmail.com}}
 
-\date{May 2026 --- Preliminary, please do not cite}
+\date{May 2026}
 
 \maketitle
 
@@ -84,42 +83,40 @@ arising from luck.
 This intuition is formalised in the accountability framework, which models
 redistributive preferences as judgments about deservingness and predicts lower
 redistribution when inequality reflects effort rather than chance
-\citep{Konow2000, Cappelen2007}.
-Underlying this framework is a well-documented empirical regularity: beliefs
-about income determinants drive redistribution preferences
-\citep{Piketty1995, Alesina2005, Benabou2006}.
-People who believe inequality arises from effort tend to favour less
-redistribution; those who attribute it to luck or circumstance tend to favour
-more.
+\citep{Konow2000, Cappelen2007}, and finds broad empirical support: beliefs
+about income determinants are consistently among the strongest predictors of
+redistribution preferences \citep{Piketty1995, Alesina2005, Benabou2006}.
 
-To isolate such normative judgments from material self-interest, studies
-often employ impartial spectator designs in which allocators distribute income
-between others and receive no payoffs themselves \citep{Almas2020}.
-While this approach successfully removes monetary incentives, it does not imply
-psychological neutrality.
-A growing body of evidence shows that recent experiences of success or failure
-can shape how individuals evaluate deservingness, even when they subsequently
-make allocation decisions on behalf of others
-\citep{Cassar2019, Deffains2016}.
-In this sense, impartiality is material rather than cognitive, and spectators’
-own experiences may influence how they apply the accountability principle.
+Yet a fundamental challenge underlies this debate: in practice, the source of
+inequality is often ambiguous.
+Individual success depends on a complex combination of hard work, innate
+talent, family background, and circumstance --- factors that are difficult to
+disentangle even for those directly involved \citep{Piketty2014}.
+When effort and luck cannot be cleanly separated, beliefs about which is
+responsible are not simply passive reflections of reality; they are also
+shaped by personal experience and motivated reasoning.
+Since these beliefs directly drive redistribution preferences --- as
+established above --- whatever shapes them ultimately shapes the demand for
+redistribution too.
 
-The stakes of understanding what shapes these beliefs extend to political
-polarization.
 \citet{Deffains2016} argue that the experience of success and failure is
 itself a driver of redistributive polarization through the self-serving bias
 (SSB): individuals who succeed at a task attribute their success to effort
 and favour less redistribution, while those who fail attribute failure to
 circumstance and shift toward more.
 Because success and wealth are correlated, this mechanism creates a systematic
-wedge between rich and poor in their perceived causes of inequality.
-Wealthy individuals, as \citet{Deffains2016} put it, ``do not only oppose
+wedge between rich and poor in their perceived causes of inequality ---
+wealthy individuals, as \citet{Deffains2016} put it, ``do not only oppose
 redistribution because they expect to be net payers, but also because the SSB
 systematically shifts their fairness principles.’’
-The implication is stark: anything that alters an individual’s sense of
-their own relative standing could reshape redistribution preferences --- not
-through material self-interest, but through belief updating about whether
-inequality reflects effort or luck.
+Critically, however, causal identification of this channel is difficult outside
+a controlled setting: in observational data one cannot tell whether successful
+individuals attribute their outcomes to effort because of cognitive bias or
+because they genuinely did work harder.
+Separating the SSB from true performance differences requires exogenous
+variation in comparative signals --- variation that holds actual performance
+constant while shifting only what individuals learn about their relative
+standing.
 A natural follow-up question is what shapes those beliefs.
 Social comparisons are ubiquitous: workers learn their rank in a wage
 distribution, students receive class rankings, and online platforms
@@ -239,42 +236,48 @@ winning side.
 \section{Experimental Design}
 \label{sec:design}
 
-The experiment was conducted online using JATOS and involved two distinct
-roles: \emph{workers} and \emph{spectators}.
+The experiment was conducted online using JATOS and hosted the free, ESCoP-sponsored server Mindprobe.
+The whole design  builds on the spectator design of \citet{Almas2020}.
+It involved two distinct roles: \emph{workers} and \emph{spectators}.
 
-\textbf{Workers} ($n = 2$) completed the code-recognition task under real
-monetary incentives.
-They were told in advance that their earnings would depend on their relative
-performance against each other, and that a third party (a spectator) would
-subsequently decide whether and how much to redistribute between them.
-Workers received real monetary payments determined by both their relative task
-performance and a randomly selected spectator's redistribution decision.
+\textbf{Workers} ($n = 2$) were recruited through Prolific and completed the
+code-recognition task under real monetary incentives.
+They were paid a base fee of \$4 plus a performance-based bonus of up to \$8,
+for a maximum possible payout of \$12 each.
+They were informed in advance that their earnings would initially depend on
+their relative performance against each other---the higher-scoring worker
+would receive \$8 while the other would receive \$0---and that a third party
+(a spectator) would subsequently decide whether and how much to redistribute
+between them.
 
 \textbf{Spectators} ($n = 134$) were recruited through personal networks
 (friends, family, and colleagues from two workplaces), completed the full
-experiment online in approximately 7--10 minutes, and received no monetary
+experiment online in approximately 10 minutes, and received no monetary
 compensation.
+The experiment consisted of two parts: a code-recognition task and a
+redistribution decision task in which they acted as impartial spectators.
 Spectators were informed before making their redistribution decisions that the
 workers were real individuals who had completed the same task and would
 receive actual monetary payouts determined by one randomly selected
 spectator's allocation.
 The impartial-spectator design thus combines the removal of material
 self-interest (spectators have no stake in the allocation) with real stakes
-for the workers, ensuring that decisions carry genuine consequences.
+for the workers, ensuring that decisions carry genuine consequences and
+lending the design greater external validity.
 
 \subsection{Part 1: Code-Recognition Task}
 
-Participants completed a code-recognition task over five rounds of 45~seconds
+Participants (both workers and spectators) completed a code-recognition task over one 20~seconds round of practice and five rounds of 45~seconds
 each.
 In each round, a target code was displayed at the top of the screen.
 Participants were shown a grid of codes and had to check as many instances of
-the target as possible.
+the target as possible. 
 Scoring: $+1$~point per correct identification, $-1$~point per false alarm,
-$0$~points for a miss.
+and no points were subtracted for a miss.
 The maximum possible score was 200~points; sample means range from 91 to 97
-points across treatment groups (Table~\ref{tab:balance}).
+points across treatment groups (Table~\ref{tab:balance}).\footnote{This was the end of the study for the two workers; spectators proceeded to the next stage.}
 
-Before seeing their results, participants answered three pre-feedback
+Just after finishing, participants answered three pre-feedback
 self-report questions:
 (i) effort exerted (slider, 0--10);
 (ii) guessed score (numeric, range $-200$ to $200$);
@@ -290,72 +293,73 @@ feedback conditions.
 \begin{enumerate}
   \item \textbf{No feedback.} Participants were informed they could proceed to
     Part~2 without seeing their score or any comparison information.
-  \item \textbf{Above.} Participants were shown their score and told:
+  \item \textbf{Above.} Participants were told:
     ``You performed above your randomly matched peer.''
-  \item \textbf{Below.} Participants were shown their score and told:
+  \item \textbf{Below.} Participants were told:
     ``You performed below your randomly matched peer.''
 \end{enumerate}
 
-Each spectator in the relative-feedback group was matched to one of the two
-workers and shown their own score together with whether they outperformed or
-underperformed that specific worker.
-The comparison was thus based on real task scores from a real counterpart,
-making the feedback both credible and consequential: the worker a spectator
-was compared to was also the worker whose payoff their redistribution decision
-would partly determine.
-Approximately half of the relative-feedback group was told they outperformed
-their matched worker (above) and half that they underperformed (below).
+Spectators assigned to the above condition were matched to the worst-performing
+worker, and those assigned to the below condition were matched to the
+best-performing worker. This matching was done randomly.
+As a result, a spectator who scored well could nonetheless receive a
+``below'' message --- because their reference point was the highest scorer
+--- and a spectator who scored poorly could receive an ``above'' message.
+Crucially, the feedback was not deceptive: each spectator genuinely did
+outperform or underperform their assigned reference worker.
+What was exogenously manipulated was the identity of that reference, not the
+direction of the comparison itself. 
+Spectators were shown their actual score and informed of the matching
+procedure only during the debriefing phase at the end of the experiment.
 
 \subsection{Part 2: Distribution Decisions}
 \label{sec:distdecisions}
 
-After the feedback screen, all participants acted as impartial spectators and
-made two sequential redistribution decisions adapted from \citet{Almas2020}.
+After the (non)feedback screen, all participants acted as impartial spectators and
+made a redistribution decision adapted from \citet{Almas2020}.
 
-\subsubsection*{Decision 1 --- Merit Scenario}
+\subsubsection*{Redistributive Decision in a Merit Scenario}
 
 Participants read that two real participants --- the two workers who had
 previously completed the same task --- were identified as Worker~A and
 Worker~B.
 Worker~A had received a larger initial payment because they performed better;
-Worker~B received less because they performed worse.
-Participants were asked to decide how to redistribute a total endowment
+Worker~B received nothing because they performed worse.
+Participants were asked to decide whether and how to redistribute the given endowment
 between the two workers.
 The decision was presented as a set of discrete options covering
-the full range from keeping full inequality to reversing it, with an equal
-split as the midpoint.
-The primary outcome variable is the amount allocated to the lower-earning
-Worker~B (\texttt{redist\_merit}, in USD).
+the full range from keeping full inequality to reversing it.
 
-\subsubsection*{Decision 2 --- Luck Scenario}
+After the redistribution decision, participants completed a short demographics
+survey (age, gender, and education) followed by the key belief measure of
+this study.
+They were asked to respond to the following question using a slider:
 
-After completing a demographics survey (including the effort--luck belief
-slider), participants saw a second decision.
-The scenario was identical in structure but attributed the earnings difference
-to a lottery with no regard for performance.
-The primary outcome variable is the amount allocated to the lottery loser,
-Worker~D (\texttt{redist\_luck}, in USD).
+\begin{quote}
+\textit{``To what extent do you think the initial income of the participants
+in the previous task was determined by effort versus luck?''}
+\end{quote}
+
+\noindent The slider ranged from 0 (``Completely determined by luck'') to
+10 (``Completely determined by effort'').
+This variable (\texttt{effort\_luck}) is the hypothesised mediator between
+relative performance feedback and redistribution preferences.
 
 \subsection{Key Outcome and Mediator Variables}
 
 \begin{itemize}
-  \item \textbf{Redistribution (merit):} USD allocated to Worker~B.
-  \item \textbf{Redistribution (luck):} USD allocated to Worker~D.
-  \item \textbf{Effort--luck belief (\texttt{effort\_luck}):}
-    Recorded after the merit decision via the question: ``To what extent do
-    you think the initial income of participants in the previous task was
-    determined by effort versus luck?'' (slider: 0 = 100\% luck,
-    10 = 100\% effort).
-    This variable serves as the hypothesised mediator between feedback and
-    redistribution.
+  \item \textbf{Redistribution (merit):} USD allocated to Worker~B in the
+    merit scenario. Primary outcome variable.
+  \item \textbf{Effort--luck belief (\texttt{effort\_luck}):} Score on the
+    0--10 slider described above. Hypothesised mediator.
 \end{itemize}
 
 \subsection{Sample}
 
-Spectators were recruited through the researcher's personal networks: friends,
+Spectators were recruited through my personal networks: friends,
 family, and employees at two workplaces.
 The analysis sample consists of $N = 134$ spectators after excluding
-non-engagers (zero score and zero clicks) and statistical outliers.
+non-engagers (zero score and zero clicks).
 This is a convenience sample and is therefore not nationally representative;
 the main implication for external validity is that findings describe the
 direction of the self-serving attribution effect under incentivized conditions
@@ -430,22 +434,6 @@ side: participants who learn they outperformed a peer become measurably less
 redistributive in a merit context, whereas participants who learn they
 underperformed do not respond significantly.
 
-\subsection{Redistribution in the Luck Scenario}
-\label{sec:luck}
-
-As a placebo, we examine redistribution in the luck scenario, where earnings
-are explicitly attributed to a lottery and performance feedback is normatively
-irrelevant.
-If feedback affected redistribution through a non-specific channel --- such as
-mood, engagement, or demand effects --- we would expect treatment differences
-in both scenarios.
-Table~\ref{tab:balance} shows that group means in the luck scenario are
-\$3.16, \$2.70, and \$3.05 for the no-feedback, above, and below groups,
-respectively, and the one-way ANOVA cannot reject equality ($p = 0.379$).
-The null result in the luck scenario is consistent with the merit-redistribution
-effect operating through performance-specific attribution beliefs rather than
-a general mood or engagement channel.
-
 \subsection{Heterogeneity by Surprise}
 \label{sec:surprise}
 
@@ -482,7 +470,7 @@ This paper provides experimental evidence that relative performance feedback
 shapes both beliefs about the role of effort in generating inequality and
 downstream redistribution preferences.
 Participants told they outperformed a peer attribute more of the task
-outcome to effort and redistribute \$0.59 less per round in a merit scenario
+outcome to effort and redistribute \$0.59 less in a merit scenario
 relative to a no-feedback baseline --- a 24 percent reduction.
 The effect is asymmetric: underperformers do not significantly change either
 beliefs or redistribution.

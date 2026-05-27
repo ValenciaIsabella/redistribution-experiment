@@ -251,6 +251,7 @@ cat("Saved: table1.tex\n")
 # =====================================================================
 
 coef_map_main <- c(
+  "(Intercept)"          = "Constant",
   "treatmentno_feedback" = "No Feedback",
   "treatmentbelow"       = "Told: Below",
   "age"                  = "Age",
@@ -259,14 +260,13 @@ coef_map_main <- c(
 )
 
 ctrl_row_main <- as.data.frame(as.list(setNames(
-  c("Controls (age, female, score)", "No", "Yes", "No", "Yes", "No", "Yes"),
-  c("term", "(1)", "(2)", "(3)", "(4)", "(5)", "(6)")
+  c("Controls (age, female, score)", "No", "Yes", "No", "Yes"),
+  c("term", "(1)", "(2)", "(3)", "(4)")
 )))
 
 models_main <- list(
   "(1)" = m1, "(2)" = m2,
-  "(3)" = m3, "(4)" = m4,
-  "(5)" = m5, "(6)" = m6
+  "(3)" = m3, "(4)" = m4
 )
 
 modelsummary(
@@ -286,7 +286,6 @@ modelsummary(
     "Baseline: Told Above. ",
     "Cols.~(1)--(2): effort--luck belief (0 = luck, 10 = effort). ",
     "Cols.~(3)--(4): USD redistributed to lower-earning worker (merit scenario). ",
-    "Cols.~(5)--(6): USD redistributed (luck scenario, placebo). ",
     "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
   ),
   escape = FALSE
@@ -300,6 +299,7 @@ cat("Saved: table2.tex\n")
 # =====================================================================
 
 coef_map_mech <- c(
+  "(Intercept)"                = "Constant",
   "treatmentno_feedback"       = "No Feedback",
   "treatmentbelow"             = "Told: Below",
   "effort_luck"                = "Effort--luck belief",

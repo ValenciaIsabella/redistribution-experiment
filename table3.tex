@@ -1,0 +1,36 @@
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+caption={Mediation Analysis \label{tab:mechanism}},
+note{}={* p \num{< 0.1}, ** p \num{< 0.05}, *** p \num{< 0.01}},
+note{ }={\textit{Notes.} OLS with HC3-robust SEs in parentheses. Dependent variable: USD redistributed (merit scenario). Cols.~(1)--(2): full sample; includes effort--luck belief to assess mediation; compare treatment coefficients with Table~\ref{tab:main} cols.~(3)--(4). Cols.~(3)--(4): relative-feedback group only. ``Positively surprised'': told above but predicted below. ``Negatively surprised'': told below but predicted above. $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]},
+hline{2}={1-5}{solid, black, 0.05em},
+hline{16}={1-5}{solid, black, 0.05em},
+hline{1}={1-5}{solid, black, 0.08em},
+hline{19}={1-5}{solid, black, 0.08em},
+column{2-5}={}{halign=c},
+column{1}={}{halign=l},
+}                     %% tabularray inner close
+& (1) & (2) & (3) & (4) \\
+Constant & \num{3.361}*** & \num{4.772}*** & \num{2.083}*** & \num{3.268}*** \\
+& (\num{0.445}) & (\num{0.744}) & (\num{0.143}) & (\num{0.908}) \\
+No Feedback & \num{0.171} & \num{0.144} &  &  \\
+& (\num{0.275}) & (\num{0.274}) &  &  \\
+Told: Below & \num{0.292} & \num{0.239} &  &  \\
+& (\num{0.278}) & (\num{0.292}) &  &  \\
+Effort--luck belief & \num{-0.204}*** & \num{-0.200}*** &  &  \\
+& (\num{0.052}) & (\num{0.053}) &  &  \\
+Age &  & \num{-0.012} &  & \num{-0.015} \\
+&  & (\num{0.009}) &  & (\num{0.013}) \\
+Female &  & \num{-0.094} &  & \num{0.295} \\
+&  & (\num{0.233}) &  & (\num{0.314}) \\
+Task score &  & \num{-0.010}** &  & \num{-0.009} \\
+&  & (\num{0.004}) &  & (\num{0.006}) \\
+$N$ & \num{143} & \num{143} & \num{96} & \num{96} \\
+$R^{2}$ & \num{0.137} & \num{0.169} & \num{0.000} & \num{0.040} \\
+Controls (age, female, score) & No & Yes & No & Yes \\
+\end{talltblr}
+\end{table}

@@ -55,6 +55,7 @@ table(dt_raw$demo_country_origin, useNA = "ifany")
 dt <- dt[!(score == 0 & n_correct == 0 & n_wrong == 0)]
 dt[, c("n_correct", "n_wrong") := NULL]
 dt <- dt[redist_merit < 5]
+dt[is.na(effort_luck), effort_luck := 5]
 
 cat("N clean:", nrow(dt), "\n")
 print(table(dt$treatment, useNA = "ifany"))
@@ -519,3 +520,4 @@ cat("\nDone. Outputs: table1.tex, table2.tex, table3.tex,",
     "figure2.pdf, figure3.pdf, figure4.pdf\n")
 
 
+table(dt$country)

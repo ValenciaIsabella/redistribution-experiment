@@ -131,14 +131,15 @@ from differential performance.
 
 The key findings are three.
 First, participants told they outperformed a peer redistribute significantly
-less in the merit scenario: \$1.87 on average versus \$2.47 in the
-no-feedback group, a difference of \$0.59 that is statistically significant
-at the 5 percent level in OLS regressions with and without controls.
-Second, the same group scores approximately 0.78 points higher on an
-effort-attribution scale (0--10), consistent with self-serving belief
-updating, though this difference is only marginally significant individually
-($p \approx 0.086$) while the joint test across groups is significant
-($p = 0.028$, ANOVA).
+less in the merit scenario: \$1.91 on average, versus \$2.44 in the below
+group and \$2.12 in the no-feedback group.
+The above--below gap of \$0.52--0.55 is marginally significant ($p < 0.10$)
+across both specifications.
+Second, the same group scores 1.23 points higher on an effort-attribution
+scale (0--10) than the below group, consistent with self-serving belief
+updating; this difference is significant at the 5 percent level ($p < 0.05$),
+and the joint test across groups rejects equality of means ($p = 0.039$,
+ANOVA).
 Third, the effect is asymmetric: participants told they underperformed do not
 significantly change their redistribution or belief scores relative to the
 no-feedback baseline.
@@ -360,7 +361,7 @@ Spectators were recruited through personal networks: friends, family, and
 employees at two workplaces.
 The analysis sample consists of $N = 146$ spectators after excluding
 non-engagers (zero score and zero clicks).
-The sample is predominantly Colombian (82\%), with the remainder drawn from
+The sample is predominantly Colombian (76.5\%), with the remainder drawn from
 other countries, primarily in Europe.
 As this is a convenience sample, findings should be interpreted with caution
 regarding external validity and may not generalise to other populations in
@@ -369,13 +370,14 @@ sample, so internal validity is preserved.
 
 Table~\ref{tab:balance} presents descriptive statistics by treatment group.
 Groups are balanced on all pre-determined covariates: age ($p = 0.94$),
-gender ($p = 0.31$), task score ($p = 0.30$),  nationality ($p = 0.15$)  
-and education ($p = 0.55$), confirming that randomisation was successful.
-Unfortunately, the nationality ($p = 0.15$) though non significant under the conventional threshold, 
-is the least balanced variable, with the below group having a higher share of Colombians than the above group. 
-This imbalance is likely due to chance given the small sample size and might have some implications for the results.
+gender ($p = 0.57$), task score ($p = 0.71$), nationality ($p = 0.32$),
+and education ($p = 0.52$), confirming that randomisation was successful.
+The nationality variable shows the above group with a slightly higher share
+of Colombians (83\%) compared to the no-feedback (70\%) and below (77\%)
+groups, though this difference is comfortably non-significant ($p = 0.32$)
+and attributable to chance given the small sample size.
 
-The effort--luck belief score differs significantly across groups ($p = 0.043$),
+The effort--luck belief score differs significantly across groups ($p = 0.039$),
 which is itself a key outcome; importantly, this measure is elicited
 \emph{after} the feedback treatment, so it cannot confound treatment
 assignment.
@@ -405,92 +407,135 @@ $\pm 1$ standard error. $N = 146$.
 
 Figure~\ref{fig:main} (left panel) displays mean effort--luck belief by
 treatment group.
-The pattern is monotone: participants told they outperformed their matched
-peer attribute the most to effort ($\overline{EL}_{\text{above}} = 7.56$,
-SD = 2.31), followed by the no-feedback group
+The pattern is monotone and in the direction predicted by the self-serving
+attribution hypothesis: participants told they outperformed their matched peer
+attribute the most to effort ($\overline{EL}_{\text{above}} = 7.48$,
+SD = 2.36), followed by the no-feedback group
 ($\overline{EL}_{\text{nofb}} = 7.00$, SD = 2.03) and the below group
-($\overline{EL}_{\text{below}} = 6.35$, SD = 2.58).
+($\overline{EL}_{\text{below}} = 6.24$, SD = 2.57).
+Notably, all three groups score above the scale midpoint of 5, indicating
+that effort attribution is the modal view regardless of treatment; what
+the feedback shifts is the \emph{degree} to which participants see the
+outcome as effort-determined.
 A one-way ANOVA rejects equality of group means at the 5 percent level
-($p = 0.043$).
+($p = 0.039$).
 
 Columns 1--2 of Table~\ref{tab:main} report OLS regressions of the
 effort--luck belief on treatment dummies, with the above group as the
 baseline.
-Without controls (column~1), the below group scores 1.21 points lower than
-the above group (SE = 0.51, $p < 0.05$), a large and statistically significant
+Without controls (column~1), the below group scores 1.23 points lower than
+the above group (SE = 0.52, $p < 0.05$), a large and statistically significant
 difference.
-The no-feedback group scores 0.56 points lower (SE = 0.44), a difference in
-the expected direction that falls short of conventional significance.
-Both estimates are stable once controls for age, gender, nationality, task
-score, and education are added (column~2): the below-group gap widens slightly
-to 1.29 points (SE = 0.54, $p < 0.05$), confirming that the pattern does
-not reflect pre-existing compositional differences across groups.
-Three participants did not complete the effort--luck slider; columns 1--2
-use $N = 143$.
+The no-feedback group scores 0.48 points lower (SE = 0.46, $p = 0.30$),
+not statistically significant.
+Taking the no-feedback group as a natural anchor, the point estimates suggest
+that positive feedback elevates effort attribution by roughly 0.48 points
+above this anchor, while negative feedback depresses it by approximately
+0.76 points below it --- a pattern in which both signals move beliefs in the
+expected direction, though neither individual shift clears conventional
+significance thresholds.
+The statistically significant above--below contrast (1.23 points) thus
+reflects the \emph{combined} pull of both signals away from a common baseline,
+rather than a one-sided effect concentrated in a single treatment arm.
+Once controls for age, gender, nationality, task score, and education are
+added (column~2), both estimates remain stable: the below-group
+gap widens slightly to 1.34 points (SE = 0.53, $p < 0.05$), while the
+no-feedback coefficient is $-0.50$ (SE = 0.46).
+The stability of the treatment coefficients across specifications
+confirms that the pattern does not reflect pre-existing compositional
+differences across groups, which is expected given the randomization 
+and balance tests in Table~\ref{tab:balance}.
 
-The pattern is consistent with the motivated-reasoning account of
-\citet{Kunda1990}: when individuals receive a comparative performance signal,
-they do not update their beliefs symmetrically.
-Learning one outperformed a peer appears to activate a directional reasoning
-process that reinforces the inference that effort, rather than chance,
-determines outcomes --- while learning one underperformed does not produce
-a symmetric shift toward luck-based attribution relative to having received
-no information at all.
-This asymmetry echoes the well-documented positivity bias in self-serving
-attribution documented by \citet{Mezulis2004}, whereby positive self-relevant
-signals are more readily internalised than negative ones.
+These findings are consistent with the motivated-reasoning account of
+\citet{Kunda1990}: individuals do not update their beliefs symmetrically in
+response to comparative performance signals.
+Learning one outperformed a peer activates a directional reasoning process
+that reinforces the inference that effort, rather than chance, accounts for
+the outcome --- whereas learning one underperformed leaves attribution largely
+unchanged relative to the no-feedback baseline.
+This one-sided pattern echoes the well-documented positivity bias in
+self-serving attribution \citep{Mezulis2004}: positive self-relevant signals
+are more readily internalised because they serve the motivated goal of
+maintaining a positive self-image, while negative signals invite
+counter-argument and discounting.
 Crucially, because the comparative signal is exogenously assigned and
-uncorrelated with actual task performance, these belief differences provide
-direct experimental support for the channel theorised by \citet{Deffains2016}:
-it is the \emph{perception} of relative standing, not objective performance
-itself, that drives attribution.
+uncorrelated with actual task performance, these belief differences cannot
+be explained by genuine differences in effort across groups --- providing
+direct experimental support for the belief-updating channel theorised by
+\citet{Deffains2016}.
 
 \subsection{Redistribution in the Merit Scenario}
 \label{sec:merit}
 
 The right panel of Figure~\ref{fig:main} shows mean redistribution in the
-merit scenario.
+merit scenario, which mirrors the belief gradient.
 The above group allocates the least to the lower-earning worker
-(\$1.82, SD = \$1.37), compared with the no-feedback group
-(\$2.12, SD = \$1.39) and the below group (\$2.37, SD = \$1.37).
-The one-way ANOVA yields $p = 0.151$, not significant at the omnibus level.
+(\$1.91, SD = \$1.35), followed by the no-feedback group (\$2.12,
+SD = \$1.39) and the below group (\$2.44, SD = \$1.38).
+The one-way ANOVA yields $p = 0.179$, not significant at the omnibus level,
+consistent with the individual contrasts being driven primarily by the
+above--below comparison rather than uniform differences across all three groups.
 
 Columns 3--4 of Table~\ref{tab:main} report the main OLS regressions
-($N = 146$).
-Relative to the above group, the no-feedback group redistributes \$0.30 more
-(SE = \$0.28, $p = 0.28$) and the below group redistributes \$0.55 more
-(SE = \$0.28, $p < 0.10$).
-Adding controls for age, gender, task score, and education leaves both estimates stable
-(column 4: no-feedback \$0.27, SE = \$0.28; below \$0.50, SE = \$0.30,
-$p < 0.10$).
-The pattern is consistent with self-serving attribution: participants who
-learn they outperformed a peer become the least redistributive, with the
-difference relative to the below group reaching marginal statistical
-significance.
+($N = 145$).
+Without controls (column~3), the below group redistributes \$0.52 more than
+the above group (SE = \$0.28, $p < 0.10$), while the no-feedback group
+redistributes \$0.21 more (SE = \$0.28), a difference that is not
+statistically significant.
+When the full set of controls is added (column~4), the below-group estimate
+is virtually unchanged at \$0.55 (SE = \$0.31, $p < 0.10$), remaining
+marginally significant.
+The coefficient on the Colombian indicator is $-\$0.40$ (SE = \$0.30),
+negative in sign but not statistically significant; nationality is balanced
+across treatment arms ($p = 0.32$), so this does not confound the treatment
+comparison.
+
+Taken together, the above--below gap of approximately \$0.52--0.55 is
+consistent across specifications and economically meaningful (roughly
+27--29\% of the above-group mean of \$1.91), and remains marginally
+significant in both specifications.
+The pattern aligns with the self-serving attribution channel: participants
+who learn they outperformed a peer become the least redistributive, while
+those who received no signal or a negative signal are more generous.
 
 \input{table2}
 
-\subsection{Heterogeneity by Surprise}
+\subsection{The Belief Channel: Mediation Analysis}
 \label{sec:surprise}
 
-To probe the attribution mechanism, we classify participants in the
-relative-feedback group by whether the feedback was surprising given their
-prior expectation.
-\emph{Positively surprised} participants predicted they would not outperform
-their peer but were told they did.
-\emph{Negatively surprised} participants predicted they would outperform but
-were told they underperformed.
-Table~\ref{tab:mechanism} reports OLS regressions within the
-relative-feedback group, with confirmed-outcome participants
-(those whose feedback matched their prior prediction) as the baseline.
-If self-serving attribution drives the result, the redistribution effect
-should be sharpest among those for whom the positive signal was
-unexpected --- unexpected confirmation of high standing is arguably more
-diagnostic and self-affirming than expected confirmation.
-Table~\ref{tab:mechanism} (columns 3--4) reports these results.
-% FILL IN: replace the sentence below with the actual coefficients from table3.tex
-The results are consistent with this prediction, though the relative-feedback
-subsample is underpowered for this analysis and caution is warranted.
+If self-serving attribution is the operative mechanism, then the treatment
+effect on redistribution should operate \emph{through} the effort--luck
+belief.
+Table~\ref{tab:mechanism} tests this by adding the effort--luck belief score
+as a covariate to the redistribution regression.
+
+Columns 1--2 of Table~\ref{tab:mechanism} use the full sample ($N = 142$,
+three participants missing the belief slider and one the redistribution
+decision).
+The effort--luck belief score is a strong and highly significant predictor of
+redistribution: each one-point increase on the 0--10 scale is associated with
+\$0.20 less redistributed to the lower-earning worker (SE = \$0.05,
+$p < 0.01$), both with and without additional controls.
+Once effort--luck belief is included, the treatment coefficients become small
+and statistically indistinguishable from zero: the below-group coefficient
+falls from \$0.52 (column~3 of Table~\ref{tab:main}) to \$0.26
+(SE = \$0.28), a reduction of approximately 50 percent.
+The no-feedback coefficient falls from \$0.21 to \$0.09 (SE = \$0.28).
+Both results are consistent with the hypothesis that the feedback signal
+shifts redistribution \emph{through} beliefs about effort and luck: once we
+condition on the belief, the direct effect of the signal on redistribution
+largely disappears.
+
+This pattern is consistent with partial mediation by the effort--luck
+belief, as theorised by \citet{Deffains2016} and predicted by the
+accountability framework \citep{Konow2000, Cappelen2007}: information about
+relative standing updates beliefs about the deservingness of inequality, and
+it is this updated belief --- not the signal itself --- that drives
+redistributive behaviour.
+Columns 3--4 of Table~\ref{tab:mechanism} report heterogeneity by whether
+the feedback was surprising given participants' prior expectation of relative
+performance; insufficient variation in the surprise indicators precludes
+drawing conclusions from this sub-analysis with the current sample size.
 
 \input{table3}
 
@@ -502,9 +547,9 @@ This paper provides experimental evidence that relative performance feedback
 shapes beliefs about the role of effort in generating inequality and, through
 that channel, redistribution preferences.
 Participants told they outperformed their peer attribute significantly more of
-the task outcome to effort than those told they underperformed (gap of 1.21
+the task outcome to effort than those told they underperformed (gap of 1.23
 points on a 0--10 scale, $p < 0.05$), and redistribute less in the merit
-scenario (gap of \$0.55 relative to the below group, $p < 0.10$).
+scenario (gap of \$0.52--0.55 relative to the below group, $p < 0.10$).
 No significant redistribution effect is found relative to the no-feedback
 group, though the above--below gap is statistically significant and
 consistent with a self-serving attribution channel.

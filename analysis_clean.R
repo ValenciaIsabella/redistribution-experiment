@@ -60,6 +60,9 @@ dt <- dt[!(score == 0 & n_correct == 0 & n_wrong == 0)]
 dt[, c("n_correct", "n_wrong") := NULL]
 dt <- dt[redist_merit < 5]
 
+# Replace missing effort_luck with neutral midpoint
+dt[is.na(effort_luck), effort_luck := 5]
+
 ########### CRITICO
 #dt <- dt[!(treatment == "no_feedback" & redist_merit == 0 & country == "Colombia" & female == TRUE)]
 

@@ -436,10 +436,10 @@ make_bar <- function(data, title, ylab) {
     )
 }
 
-fig2 <- make_bar(sum_effort, "Effort Attribution by Treatment",
-                 "Effort-luck belief (0=luck, 10=effort)") +
-        make_bar(sum_merit,  "Merit Redistribution by Treatment",
+fig2 <- make_bar(sum_merit,  "Merit Redistribution by Treatment",
                  "USD to Worker B") +
+        make_bar(sum_effort, "Effort Attribution by Treatment",
+                 "Effort-luck belief (0=luck, 10=effort)") +
         plot_annotation(
           caption = sprintf("Notes. Means ± 1 SE. N = %d.", nrow(dt))
         )

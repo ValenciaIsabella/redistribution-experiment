@@ -1722,8 +1722,8 @@ window.addEventListener('resize', applyMatrixGridColumns);
    CONFIGURATION    
 ───────────────────────────────────────────── */
 const CONFIG = {
-  ROUND_SECONDS : 45,
-  PRACTICE_SECONDS : 20,
+  ROUND_SECONDS : 20,
+  PRACTICE_SECONDS : 5,
   TOTAL_ROUNDS  : 5,
   MATRIX_COLS   : isMobileDevice() ? 7 : 20,
   MATRIX_ROWS   : isMobileDevice() ? 46 : 16,
@@ -1750,7 +1750,7 @@ const PAIR_SCORES = [16,198];
 
 const GROUP = (() => {
   const r = Math.random();
-  if (r < 1/5) return 'none';
+  if (r < 1/500) return 'none';
   return 'relative';
 })();
 
@@ -2047,7 +2047,7 @@ function showFeedback() {
     }
 
     // 2. Obtener puntaje aleatorio del par
-    const ps = Math.random() < 0.50 ? Math.max(...PAIR_SCORES) : Math.min(...PAIR_SCORES);
+    const ps = Math.random() < 0.01 ? Math.max(...PAIR_SCORES) : Math.min(...PAIR_SCORES);
     pairResult.score = ps;
 
     // 3. Actualizar el número del par (solo si el elemento existe)

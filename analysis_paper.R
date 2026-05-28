@@ -19,7 +19,7 @@ library(kableExtra)
 # 0.  LOAD & BUILD
 # =====================================================================
 
-lines  <- readLines("C:\\Users\\User\\Downloads\\Final_results.txt")
+lines  <- readLines("C:\\Users\\User\\Downloads\\Results_29_05.txt")
 dt_raw <- rbindlist(lapply(lines, function(line) {
   obj <- fromJSON(line)
   obj$roundResults <- NULL
@@ -50,7 +50,7 @@ dt <- dt_raw[, .(
   n_correct    = totalCorrect,
   n_wrong      = totalWrong
 )]
-table(dt_raw$demo_country_origin)
+table(dt_raw$demo_country_origin, useNA = "ifany")
 # Exclusions
 dt <- dt[!(score == 0 & n_correct == 0 & n_wrong == 0)]
 dt[, c("n_correct", "n_wrong") := NULL]

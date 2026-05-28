@@ -3,32 +3,38 @@
 \begin{talltblr}[         %% tabularray outer open
 caption={Treatment Effects on Effort Attribution and Redistribution \label{tab:main}},
 note{}={* p \num{< 0.1}, ** p \num{< 0.05}, *** p \num{< 0.01}},
-note{ }={\textit{Notes.} OLS with HC3-robust SEs in parentheses. Baseline: Told Above. Cols.~(1)--(2): effort--luck belief (0 = luck, 10 = effort). Cols.~(3)--(4): USD redistributed to lower-earning worker (merit scenario). $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.},
+note{ }={\textit{Notes.} OLS with HC3-robust SEs in parentheses. Baseline: Told Above. Cols.~(1)--(2): effort--luck belief (0 = luck, 10 = effort). Cols.~(3)--(4): USD redistributed to lower-earning worker (merit scenario). Controls: age, female indicator, Colombian indicator, task score, and education (Less than bachelor = baseline). $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.},
 ]                     %% tabularray outer close
 {                     %% tabularray inner open
 colspec={Q[]Q[]Q[]Q[]Q[]},
 hline{2}={1-5}{solid, black, 0.05em},
-hline{14}={1-5}{solid, black, 0.05em},
+hline{20}={1-5}{solid, black, 0.05em},
 hline{1}={1-5}{solid, black, 0.08em},
-hline{17}={1-5}{solid, black, 0.08em},
+hline{23}={1-5}{solid, black, 0.08em},
 column{2-5}={}{halign=c},
 column{1}={}{halign=l},
 }                     %% tabularray inner close
 & (1) & (2) & (3) & (4) \\
-Constant & \num{7.559}*** & \num{6.451}*** & \num{1.820}*** & \num{3.513}*** \\
-& (\num{0.334}) & (\num{1.175}) & (\num{0.195}) & (\num{0.740}) \\
-No Feedback & \num{-0.563} & \num{-0.610} & \num{0.300} & \num{0.272} \\
-& (\num{0.444}) & (\num{0.440}) & (\num{0.279}) & (\num{0.275}) \\
-Told: Below & \num{-1.210}** & \num{-1.283}** & \num{0.550}* & \num{0.498}* \\
-& (\num{0.512}) & (\num{0.530}) & (\num{0.283}) & (\num{0.297}) \\
-Age &  & \num{0.032}** &  & \num{-0.020}** \\
-&  & (\num{0.015}) &  & (\num{0.009}) \\
-Female &  & \num{0.222} &  & \num{-0.136} \\
-&  & (\num{0.406}) &  & (\num{0.240}) \\
-Task score &  & \num{-0.002} &  & \num{-0.010}** \\
-&  & (\num{0.007}) &  & (\num{0.005}) \\
+Constant & \num{7.559}*** & \num{6.229}*** & \num{1.820}*** & \num{3.837}*** \\
+& (\num{0.334}) & (\num{1.261}) & (\num{0.195}) & (\num{0.754}) \\
+No Feedback & \num{-0.563} & \num{-0.563} & \num{0.300} & \num{0.201} \\
+& (\num{0.444}) & (\num{0.449}) & (\num{0.279}) & (\num{0.279}) \\
+Told: Below & \num{-1.210}** & \num{-1.290}** & \num{0.550}* & \num{0.496} \\
+& (\num{0.512}) & (\num{0.537}) & (\num{0.283}) & (\num{0.307}) \\
+Age &  & \num{0.024} &  & \num{-0.011} \\
+&  & (\num{0.017}) &  & (\num{0.011}) \\
+Female &  & \num{0.211} &  & \num{-0.152} \\
+&  & (\num{0.411}) &  & (\num{0.235}) \\
+Colombian &  & \num{0.411} &  & \num{-0.517}* \\
+&  & (\num{0.572}) &  & (\num{0.291}) \\
+Task score &  & \num{-0.003} &  & \num{-0.009}* \\
+&  & (\num{0.008}) &  & (\num{0.005}) \\
+Bachelor's degree &  & \num{0.339} &  & \num{-0.274} \\
+&  & (\num{0.526}) &  & (\num{0.349}) \\
+Master's or above &  & \num{0.413} &  & \num{-0.280} \\
+&  & (\num{0.576}) &  & (\num{0.396}) \\
 $N$ & \num{143} & \num{143} & \num{146} & \num{146} \\
-$R^{2}$ & \num{0.044} & \num{0.091} & \num{0.026} & \num{0.069} \\
-Controls (age, female, score) & No & Yes & No & Yes \\
+$R^{2}$ & \num{0.044} & \num{0.098} & \num{0.026} & \num{0.093} \\
+Controls (age, female, score, Colombian, edu.) & No & Yes & No & Yes \\
 \end{talltblr}
 \end{table}

@@ -19,7 +19,7 @@ library(kableExtra)
 # 0.  LOAD & BUILD
 # =====================================================================
 
-lines  <- readLines("C:\\Users\\User\\Downloads\\Results_26_05.txt")
+lines  <- readLines("C:\\Users\\User\\Downloads\\Final_results.txt")
 dt_raw <- rbindlist(lapply(lines, function(line) {
   obj <- fromJSON(line)
   obj$roundResults <- NULL
@@ -35,7 +35,6 @@ dt <- dt_raw[, .(
   ), levels = c("above", "no_feedback", "below")),   # above = baseline
   told_above   = fifelse(group == "relative", pair_result == "above", NA),
   redist_merit = dist_worker_b_usd,
-  redist_luck  = dist2_worker_d_usd,
   score        = totalScore,
   effort_luck  = demo_effortLuck / 10,
   effort_self  = sr_effort,
@@ -51,7 +50,7 @@ dt <- dt_raw[, .(
   n_correct    = totalCorrect,
   n_wrong      = totalWrong
 )]
-
+table(dt_raw$demo_country_origin)
 # Exclusions
 dt <- dt[!(score == 0 & n_correct == 0 & n_wrong == 0)]
 dt[, c("n_correct", "n_wrong") := NULL]
@@ -61,9 +60,20 @@ cat("N clean:", nrow(dt), "\n")
 print(table(dt$treatment, useNA = "ifany"))
 
 # Derived variables
+dt[, edu_num   := as.integer(education)]   # 1=high-school … 5=PhD
+dt[, colombian := (!is.na(country) & country == "Colombia")]
+dt[, edu_3 := factor(fcase(
+  education %in% c("high-school", "some-college"), "Less than bachelor",
+  education == "bachelor",                          "Bachelor",
+  education %in% c("master", "phd"),               "Master or above"
+), levels = c("Less than bachelor", "Bachelor", "Master or above"))]
+# Binary indicators for Table 1
+dt[, edu_lt_ba := (!is.na(edu_3) & edu_3 == "Less than bachelor")]
+dt[, edu_ba    := (!is.na(edu_3) & edu_3 == "Bachelor")]
+dt[, edu_ma_up := (!is.na(edu_3) & edu_3 == "Master or above")]
+
 dt[, above_positively_surprised := fifelse(told_above == TRUE  & pred_better == FALSE, 1L, 0L)]
 dt[, below_negatively_surprised := fifelse(told_above == FALSE & pred_better == TRUE,  1L, 0L)]
-dt[, redist_gap      := redist_merit - redist_luck]
 dt[, log_redist_merit := log(redist_merit + 1)]
 dt[, log_effort_luck  := log(effort_luck  + 1)]
 
@@ -83,7 +93,6 @@ cat("\n--- Summary by treatment ---\n")
 dt[, .(
   n             = .N,
   redist_merit  = mean(redist_merit, na.rm = TRUE),
-  redist_luck   = mean(redist_luck,  na.rm = TRUE),
   effort_luck   = mean(effort_luck,  na.rm = TRUE),
   score         = mean(score,        na.rm = TRUE),
   age           = mean(age,          na.rm = TRUE),
@@ -93,7 +102,6 @@ dt[, .(
 # ANOVA omnibus p-values
 cat("ANOVA redist_merit:", summary(aov(redist_merit ~ treatment, data = dt))[[1]][["Pr(>F)"]][1], "\n")
 cat("ANOVA effort_luck: ", summary(aov(effort_luck  ~ treatment, data = dt_eff))[[1]][["Pr(>F)"]][1], "\n")
-cat("ANOVA redist_luck: ", summary(aov(redist_luck  ~ treatment, data = dt))[[1]][["Pr(>F)"]][1], "\n")
 
 # Non-parametric check
 cat("Kruskal-Wallis redist_merit:", kruskal.test(redist_merit ~ treatment, data = dt)$p.value, "\n")
@@ -104,20 +112,15 @@ cat("Kruskal-Wallis effort_luck: ", kruskal.test(effort_luck  ~ treatment, data 
 # =====================================================================
 
 # Effort-luck belief
-m1 <- lm(effort_luck  ~ treatment,                        data = dt_eff)
-m2 <- lm(effort_luck  ~ treatment + age + female + score, data = dt_eff)
+m1 <- lm(effort_luck  ~ treatment,                                              data = dt_eff)
+m2 <- lm(effort_luck  ~ treatment + age + female + score + colombian + edu_3,   data = dt_eff)
 
 # Merit redistribution
-m3 <- lm(redist_merit ~ treatment,                        data = dt)
-m4 <- lm(redist_merit ~ treatment + age + female + score, data = dt)
+m3 <- lm(redist_merit ~ treatment,                                              data = dt)
+m4 <- lm(redist_merit ~ treatment + age + female + score + colombian + edu_3,   data = dt)
 
-# Placebo: luck redistribution
-m5 <- lm(redist_luck  ~ treatment,                        data = dt)
-m6 <- lm(redist_luck  ~ treatment + age + female + score, data = dt)
-
-cat("\n=== Effort-luck belief ===\n");      print(ctest(m1))
-cat("\n=== Merit redistribution ===\n");    print(ctest(m3))
-cat("\n=== Luck redistribution (placebo) ===\n"); print(ctest(m5))
+cat("\n=== Effort-luck belief ===\n");   print(ctest(m1))
+cat("\n=== Merit redistribution ===\n"); print(ctest(m3))
 
 # =====================================================================
 # 3.  FORMAL TESTS OF ASYMMETRY
@@ -140,7 +143,7 @@ print(linearHypothesis(m1, "treatmentno_feedback = treatmentbelow", vcov = hc3(m
 
 m9  <- lm(redist_merit ~ treatment + effort_luck,
           data = dt_eff)
-m10 <- lm(redist_merit ~ treatment + effort_luck + age + female + score,
+m10 <- lm(redist_merit ~ treatment + effort_luck + age + female + score + colombian + edu_3,
           data = dt_eff)
 
 cat("\n=== Mechanism: treatment + effort_luck → redist_merit ===\n")
@@ -159,7 +162,7 @@ if (has_surprise) {
   m7 <- lm(redist_merit ~ above_positively_surprised + below_negatively_surprised,
            data = dt_rel)
   m8 <- lm(redist_merit ~ above_positively_surprised + below_negatively_surprised
-           + age + female + score, data = dt_rel)
+           + age + female + score + colombian + edu_3, data = dt_rel)
   cat("\n=== Surprise heterogeneity ===\n"); print(ctest(m7))
 } else {
   cat("\nNOTE: pred_better is missing — surprise models skipped.\n")
@@ -188,16 +191,16 @@ cat("\n=== Robustness: log(redist_merit + 1) ===\n"); print(ctest(m_log))
 #     Column order: Told Above | No Feedback | Told Below | p-value
 # =====================================================================
 
-vars   <- c("redist_merit", "redist_luck", "effort_luck", "score", "age", "female", "pred_better")
+vars   <- c("redist_merit", "effort_luck", "score", "age", "female", "colombian")
 labels <- c(
   "Redistribution -- merit (\\$)",
-  "Redistribution -- luck (\\$)",
   "Effort--luck belief (0--10)",
   "Task score",
   "Age",
   "Female (\\%)",
-  "Predicted better (\\%)"
+  "Colombian (\\%)"
 )
+pct_vars <- c("female", "colombian", "pred_better", "edu_lt_ba", "edu_ba", "edu_ma_up")
 
 fmt_cell <- function(x, pct = FALSE) {
   m <- mean(x, na.rm = TRUE) * if (pct) 100 else 1
@@ -208,7 +211,7 @@ fmt_cell <- function(x, pct = FALSE) {
 
 tbl1 <- rbindlist(lapply(seq_along(vars), function(i) {
   v   <- vars[i]
-  pct <- v %in% c("female", "pred_better")
+  pct <- v %in% pct_vars
   x   <- dt[[v]]
   tr  <- dt$treatment
   pv  <- tryCatch({
@@ -223,6 +226,32 @@ tbl1 <- rbindlist(lapply(seq_along(vars), function(i) {
     `$p$-value`   = ifelse(is.na(pv), "--", sprintf("%.3f", pv))
   )
 }))
+
+# Education group: header row with chi-sq p-value on edu_3, then 3 sub-rows
+p_edu3 <- tryCatch(
+  chisq.test(table(dt$edu_3, dt$treatment))$p.value,
+  error = function(e) NA_real_
+)
+edu_vars   <- c("edu_lt_ba", "edu_ba", "edu_ma_up")
+edu_labels <- c("\\quad Less than bachelor", "\\quad Bachelor's", "\\quad Master's or above")
+
+tbl1 <- rbind(tbl1,
+  data.table(
+    Variable      = "Education (\\%)",
+    `Told: Above` = "", `No Feedback` = "", `Told: Below` = "",
+    `$p$-value`   = ifelse(is.na(p_edu3), "--", sprintf("%.3f", p_edu3))
+  ),
+  rbindlist(lapply(seq_along(edu_vars), function(i) {
+    v <- edu_vars[i]
+    data.table(
+      Variable      = edu_labels[i],
+      `Told: Above` = fmt_cell(dt[treatment == "above"][[v]],       TRUE),
+      `No Feedback` = fmt_cell(dt[treatment == "no_feedback"][[v]], TRUE),
+      `Told: Below` = fmt_cell(dt[treatment == "below"][[v]],       TRUE),
+      `$p$-value`   = ""
+    )
+  }))
+)
 
 tbl1 <- rbind(tbl1, data.table(
   Variable      = "$N$",
@@ -247,20 +276,23 @@ cat("Saved: table1.tex\n")
 
 # =====================================================================
 # 9.  TABLE 2: Main treatment effects
-#     Cols (1)-(2): effort_luck; (3)-(4): redist_merit; (5)-(6): redist_luck
+#     Cols (1)-(2): effort_luck; (3)-(4): redist_merit
 # =====================================================================
 
 coef_map_main <- c(
-  "(Intercept)"          = "Constant",
-  "treatmentno_feedback" = "No Feedback",
-  "treatmentbelow"       = "Told: Below",
-  "age"                  = "Age",
-  "femaleTRUE"           = "Female",
-  "score"                = "Task score"
+  "(Intercept)"                  = "Constant",
+  "treatmentno_feedback"         = "No Feedback",
+  "treatmentbelow"               = "Told: Below",
+  "age"                          = "Age",
+  "femaleTRUE"                   = "Female",
+  "colombianTRUE"                = "Colombian",
+  "score"                        = "Task score",
+  "edu_3Bachelor"                = "Bachelor's degree",
+  "edu_3Master or above"         = "Master's or above"
 )
 
 ctrl_row_main <- as.data.frame(as.list(setNames(
-  c("Controls (age, female, score)", "No", "Yes", "No", "Yes"),
+  c("Controls (age, female, score, Colombian, edu.)", "No", "Yes", "No", "Yes"),
   c("term", "(1)", "(2)", "(3)", "(4)")
 )))
 
@@ -286,6 +318,7 @@ modelsummary(
     "Baseline: Told Above. ",
     "Cols.~(1)--(2): effort--luck belief (0 = luck, 10 = effort). ",
     "Cols.~(3)--(4): USD redistributed to lower-earning worker (merit scenario). ",
+    "Controls: age, female indicator, Colombian indicator, task score, and education (Less than bachelor = baseline). ",
     "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
   ),
   escape = FALSE
@@ -307,13 +340,16 @@ coef_map_mech <- c(
   "below_negatively_surprised" = "Negatively surprised",
   "age"                        = "Age",
   "femaleTRUE"                 = "Female",
-  "score"                      = "Task score"
+  "colombianTRUE"              = "Colombian",
+  "score"                      = "Task score",
+  "edu_3Bachelor"              = "Bachelor's degree",
+  "edu_3Master or above"       = "Master's or above"
 )
 
 if (has_surprise) {
   models_mech   <- list("(1)" = m9, "(2)" = m10, "(3)" = m7, "(4)" = m8)
   ctrl_row_mech <- as.data.frame(as.list(setNames(
-    c("Controls (age, female, score)", "No", "Yes", "No", "Yes"),
+    c("Controls (age, female, score, Colombian, edu.)", "No", "Yes", "No", "Yes"),
     c("term", "(1)", "(2)", "(3)", "(4)")
   )))
   tbl3_notes <- paste0(
@@ -329,7 +365,7 @@ if (has_surprise) {
 } else {
   models_mech   <- list("(1)" = m9, "(2)" = m10)
   ctrl_row_mech <- as.data.frame(as.list(setNames(
-    c("Controls (age, female, score)", "No", "Yes"),
+    c("Controls (age, female, score, Colombian, edu.)", "No", "Yes"),
     c("term", "(1)", "(2)")
   )))
   tbl3_notes <- paste0(
@@ -481,3 +517,5 @@ cat("Saved: figure4.pdf\n")
 
 cat("\nDone. Outputs: table1.tex, table2.tex, table3.tex,",
     "figure2.pdf, figure3.pdf, figure4.pdf\n")
+
+

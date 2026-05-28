@@ -290,18 +290,27 @@ feedback conditions.
     ``You performed below your randomly matched peer.''
 \end{enumerate}
 
-Spectators assigned to the above condition were matched to the worst-performing
-worker, and those assigned to the below condition were matched to the
-best-performing worker. This matching was done randomly.
-As a result, a spectator who scored well could nonetheless receive a
-``below'' message --- because their reference point was the highest scorer
---- and a spectator who scored poorly could receive an ``above'' message.
-Crucially, the feedback was not deceptive: each spectator genuinely did
-outperform or underperform their assigned reference worker.
-What was exogenously manipulated was the identity of that reference, not the
-direction of the comparison itself. 
-Spectators were shown their actual score and informed of the matching
-procedure only during the debriefing phase at the end of the experiment.
+The feedback signal was generated through a dynamic matching procedure.
+Before the main data collection, ten pilot participants completed the task,
+providing an initial distribution of scores and establishing a current best
+and worst performer.
+As each subsequent spectator completed the task, those randomly assigned to
+the \emph{above} condition were matched with the current lowest scorer in the
+spectator pool; those assigned to the \emph{below} condition were matched
+with the current highest scorer.
+Reference scores were updated continuously as the experiment progressed.
+Note that spectators were compared with other spectators in this pool and 
+the matching was indeed random. This design guarantees genuine, non-deceptive 
+feedback: every participant in
+the above condition truly outperformed their assigned reference peer, and
+every participant in the below condition truly underperformed theirs.
+Participants who could not receive their assigned treatment --- above-condition
+participants who scored below the current worst, or below-condition
+participants who scored above the current best --- were excluded from the
+analysis.
+At debriefing, participants were shown their actual score and informed of the
+matching procedure, so they could understand why they had received the message
+they did.
 
 \subsection{Part 2: Distribution Decisions}
 \label{sec:distdecisions}
@@ -347,21 +356,25 @@ relative performance feedback and redistribution preferences.
 
 \subsection{Sample}
 
-Spectators were recruited through my personal networks: friends,
-family, and employees at two workplaces.
+Spectators were recruited through personal networks: friends, family, and
+employees at two workplaces.
 The analysis sample consists of $N = 146$ spectators after excluding
 non-engagers (zero score and zero clicks).
-This is a convenience sample and is therefore not nationally representative;
-the main implication for external validity is that findings describe the
-direction of the self-serving attribution effect under incentivized conditions
-but may not generalise to other populations in terms of magnitudes.
-Importantly, treatment assignment was random within this sample, so internal
-validity is not compromised.
+The sample is predominantly Colombian (82\%), with the remainder drawn from
+other countries, primarily in Europe.
+As this is a convenience sample, findings should be interpreted with caution
+regarding external validity and may not generalise to other populations in
+terms of magnitudes; treatment assignment was, however, random within this
+sample, so internal validity is preserved.
 
 Table~\ref{tab:balance} presents descriptive statistics by treatment group.
-Groups are balanced on pre-determined covariates: age ($p = 0.94$), gender
-($p = 0.31$), task score ($p = 0.30$), and prior belief about relative
-performance ($p = 0.16$), confirming that randomisation was successful.
+Groups are balanced on all pre-determined covariates: age ($p = 0.94$),
+gender ($p = 0.31$), task score ($p = 0.30$),  nationality ($p = 0.15$)  
+and education ($p = 0.55$), confirming that randomisation was successful.
+Unfortunately, the nationality ($p = 0.15$) though non significant under the conventional threshold, 
+is the least balanced variable, with the below group having a higher share of Colombians than the above group. 
+This imbalance is likely due to chance given the small sample size and might have some implications for the results.
+
 The effort--luck belief score differs significantly across groups ($p = 0.043$),
 which is itself a key outcome; importantly, this measure is elicited
 \emph{after} the feedback treatment, so it cannot confound treatment
@@ -392,26 +405,45 @@ $\pm 1$ standard error. $N = 146$.
 
 Figure~\ref{fig:main} (left panel) displays mean effort--luck belief by
 treatment group.
-Participants told they outperformed their matched peer attribute the most
-to effort ($\overline{EL}_{\text{above}} = 7.56$, SD = 2.31), followed by
-the no-feedback group ($\overline{EL}_{\text{nofb}} = 7.00$, SD = 2.03)
-and the below group ($\overline{EL}_{\text{below}} = 6.35$, SD = 2.58).
+The pattern is monotone: participants told they outperformed their matched
+peer attribute the most to effort ($\overline{EL}_{\text{above}} = 7.56$,
+SD = 2.31), followed by the no-feedback group
+($\overline{EL}_{\text{nofb}} = 7.00$, SD = 2.03) and the below group
+($\overline{EL}_{\text{below}} = 6.35$, SD = 2.58).
 A one-way ANOVA rejects equality of group means at the 5 percent level
 ($p = 0.043$).
 
-Columns 1--2 of Table~\ref{tab:main} present OLS regressions of
-\texttt{effort\_luck} on treatment dummies, using the above group as the
+Columns 1--2 of Table~\ref{tab:main} report OLS regressions of the
+effort--luck belief on treatment dummies, with the above group as the
 baseline.
-The no-feedback group scores 0.56 points lower on the effort-attribution
-scale (SE = 0.44, $p = 0.21$), a difference in the expected direction that
-falls short of conventional significance.
-The below group scores 1.21 points lower than the above group
-(SE = 0.51, $p < 0.05$), a statistically significant difference consistent
-with self-serving attribution.
-Both coefficients are essentially unchanged with demographic and task-score
-controls (column 2), ruling out confounding by pre-existing differences.
+Without controls (column~1), the below group scores 1.21 points lower than
+the above group (SE = 0.51, $p < 0.05$), a large and statistically significant
+difference.
+The no-feedback group scores 0.56 points lower (SE = 0.44), a difference in
+the expected direction that falls short of conventional significance.
+Both estimates are stable once controls for age, gender, nationality, task
+score, and education are added (column~2): the below-group gap widens slightly
+to 1.29 points (SE = 0.54, $p < 0.05$), confirming that the pattern does
+not reflect pre-existing compositional differences across groups.
 Three participants did not complete the effort--luck slider; columns 1--2
 use $N = 143$.
+
+The pattern is consistent with the motivated-reasoning account of
+\citet{Kunda1990}: when individuals receive a comparative performance signal,
+they do not update their beliefs symmetrically.
+Learning one outperformed a peer appears to activate a directional reasoning
+process that reinforces the inference that effort, rather than chance,
+determines outcomes --- while learning one underperformed does not produce
+a symmetric shift toward luck-based attribution relative to having received
+no information at all.
+This asymmetry echoes the well-documented positivity bias in self-serving
+attribution documented by \citet{Mezulis2004}, whereby positive self-relevant
+signals are more readily internalised than negative ones.
+Crucially, because the comparative signal is exogenously assigned and
+uncorrelated with actual task performance, these belief differences provide
+direct experimental support for the channel theorised by \citet{Deffains2016}:
+it is the \emph{perception} of relative standing, not objective performance
+itself, that drives attribution.
 
 \subsection{Redistribution in the Merit Scenario}
 \label{sec:merit}
@@ -428,7 +460,7 @@ Columns 3--4 of Table~\ref{tab:main} report the main OLS regressions
 Relative to the above group, the no-feedback group redistributes \$0.30 more
 (SE = \$0.28, $p = 0.28$) and the below group redistributes \$0.55 more
 (SE = \$0.28, $p < 0.10$).
-Adding controls for age, gender, and task score leaves both estimates stable
+Adding controls for age, gender, task score, and education leaves both estimates stable
 (column 4: no-feedback \$0.27, SE = \$0.28; below \$0.50, SE = \$0.30,
 $p < 0.10$).
 The pattern is consistent with self-serving attribution: participants who

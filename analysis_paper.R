@@ -19,13 +19,14 @@ library(kableExtra)
 # 0.  LOAD & BUILD
 # =====================================================================
 
-lines  <- readLines("C:\\Users\\User\\Downloads\\Results_29_05.txt")
+lines  <- readLines("C:\\Users\\User\\Downloads\\Final_Results.txt")
 dt_raw <- rbindlist(lapply(lines, function(line) {
   obj <- fromJSON(line)
   obj$roundResults <- NULL
   obj[sapply(obj, is.null)] <- NA
   as.data.table(obj)
 }), fill = TRUE)
+
 
 dt <- dt_raw[, .(
   treatment = factor(fcase(
@@ -50,13 +51,16 @@ dt <- dt_raw[, .(
   n_correct    = totalCorrect,
   n_wrong      = totalWrong
 )]
-table(dt_raw$demo_country_origin, useNA = "ifany")
+
 # Exclusions
 dt <- dt[!(score == 0 & n_correct == 0 & n_wrong == 0)]
 dt[, c("n_correct", "n_wrong") := NULL]
 dt <- dt[redist_merit < 5]
 dt[is.na(effort_luck), effort_luck := 5]
+dt <- dt[score > 16 & score < 200]   # exclude 3 low outliers (score ≤ 16) and 1 high outlier (score = 40)
 
+
+hh <- dt[ pred_better == FALSE & told_above == FALSE, ]
 cat("N clean:", nrow(dt), "\n")
 print(table(dt$treatment, useNA = "ifany"))
 
@@ -579,9 +583,14 @@ sum_effort <- dt[!is.na(treatment) & !is.na(effort_luck), .(
 
 # Helpers shared with figure 2
 fmt_p2 <- function(p) {
-  if      (p < 0.001) "p<0.001"
-  else if (p < 0.01)  sprintf("p=%.3f", p)
-  else                sprintf("p=%.3f", p)
+  if (p < 0.001) "(p<0.001)" else sprintf("(%.3f)", p)
+}
+
+stars_str2 <- function(p) {
+  if      (p < 0.01) "***"
+  else if (p < 0.05) "**"
+  else if (p < 0.10) "*"
+  else               ""
 }
 
 pw_tests2 <- function(dt_sub, var) {
@@ -608,19 +617,20 @@ add_bracket2 <- function(plt, x1, x2, y, label, ymax_ext) {
     annotate("segment", x = x2, xend = x2,
              y = y, yend = y - tick, linewidth = 0.35, color = "grey30") +
     annotate("text", x = (x1 + x2) / 2, y = y + ymax_ext * 0.018,
-             label = label, size = 3.3, hjust = 0.5, vjust = 0, color = "grey20")
+             label = label, size = 2.7, hjust = 0.5, vjust = 0, color = "grey20")
 }
 
 make_bar <- function(sdata, dt_sub, var, title, ylab) {
   ymax_base <- ceiling(max(sdata$mean + sdata$se, na.rm = TRUE) * 1.25)
-  ymax_ext  <- ymax_base * 1.65
+  err_top   <- max(sdata$mean + 1.96 * sdata$se, na.rm = TRUE)
+  ymax_ext  <- err_top * 1.58
   n_map     <- setNames(sdata$n, as.character(sdata$treatment))
   xlabels   <- setNames(
     paste0(c("Told:\nAbove", "No\nFeedback", "Told:\nBelow"),
            "\n(n=", n_map[group_order], ")"),
     group_order
   )
-  heights <- c(ymax_base * 1.08, ymax_base * 1.22, ymax_base * 1.40)
+  heights <- c(err_top * 1.08, err_top * 1.22, err_top * 1.38)
   tests   <- pw_tests2(dt_sub, var)
 
   plt <- ggplot(sdata, aes(x = treatment, y = mean, fill = treatment)) +
@@ -643,7 +653,8 @@ make_bar <- function(sdata, dt_sub, var, title, ylab) {
 
   for (i in seq_along(tests)) {
     t   <- tests[[i]]
-    lbl <- sprintf("Δ=%.2f\n(%s)", t$diff, fmt_p2(t$p))
+    s   <- stars_str2(t$p)
+    lbl <- paste0(sprintf("Δ=%.2f", t$diff), s, "\n", fmt_p2(t$p))
     plt <- add_bracket2(plt, xp2[t$g1], xp2[t$g2], heights[i], lbl, ymax_ext)
   }
   plt
@@ -657,11 +668,7 @@ fig2 <- make_bar(sum_merit,  dt[!is.na(treatment) & !is.na(redist_merit)],
                  "effort_luck",
                  "Effort Attribution by Treatment",
                  "Effort-luck belief (0=luck, 10=effort)") +
-        plot_annotation(
-          caption = sprintf(
-            "Notes. Means with 95%% CI. Brackets: Welch t-test (two-sided). N = %d.",
-            nrow(dt))
-        )
+        plot_annotation(caption = NULL)
 ggsave("figure2.pdf", fig2, width = 10, height = 6, device = cairo_pdf)
 cat("Saved: figure2.pdf\n")
 
@@ -740,32 +747,61 @@ cat("Saved: figure4.pdf\n")
 # by treatment group. Illustrates the near-universal overconfidence pattern.
 
 pred_summary <- dt[!is.na(pred_better), .(
-  pct_better = mean(pred_better) * 100,
-  se_pct     = sqrt(mean(pred_better) * (1 - mean(pred_better)) / .N) * 100,
-  n          = .N
+  n    = .N,
+  mean = mean(as.numeric(pred_better)) * 100,
+  se   = sqrt(mean(as.numeric(pred_better)) * (1 - mean(as.numeric(pred_better))) / .N) * 100
 ), by = treatment][, treatment := factor(treatment, levels = group_order)]
 
-fig5 <- ggplot(pred_summary, aes(x = treatment, y = pct_better, fill = treatment)) +
+ymax_base5 <- 100
+err_top5   <- max(pred_summary$mean + 1.96 * pred_summary$se, na.rm = TRUE)
+ymax_ext5  <- err_top5 * 1.58
+n_map5     <- setNames(pred_summary$n, as.character(pred_summary$treatment))
+xlabels5   <- setNames(
+  paste0(c("Told:\nAbove", "No\nFeedback", "Told:\nBelow"),
+         "\n(n=", n_map5[group_order], ")"),
+  group_order
+)
+heights5 <- c(err_top5 * 1.08, err_top5 * 1.22, err_top5 * 1.38)
+tests5   <- lapply(
+  list(c("above", "no_feedback"), c("no_feedback", "below"), c("above", "below")),
+  function(p) {
+    y1 <- as.numeric(dt[treatment == p[1] & !is.na(pred_better), pred_better])
+    y2 <- as.numeric(dt[treatment == p[2] & !is.na(pred_better), pred_better])
+    tt <- t.test(y1, y2)
+    list(g1 = p[1], g2 = p[2], diff = (mean(y1) - mean(y2)) * 100, p = tt$p.value)
+  }
+)
+
+fig5 <- ggplot(pred_summary, aes(x = treatment, y = mean, fill = treatment)) +
   geom_col(width = 0.55) +
-  geom_errorbar(aes(ymin = pct_better - se_pct, ymax = pct_better + se_pct),
+  geom_errorbar(aes(ymin = mean - 1.96 * se, ymax = mean + 1.96 * se),
                 width = 0.12, linewidth = 0.8) +
-  geom_text(aes(y = 4, label = sprintf("%.0f%%", pct_better)),
+  geom_text(aes(y = ymax_ext5 * 0.035, label = sprintf("%.0f%%", mean)),
             color = "white", fontface = "bold", size = 4.5) +
   scale_fill_manual(values = group_colors, guide = "none") +
-  scale_x_discrete(labels = group_labels) +
-  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20),
+  scale_x_discrete(labels = xlabels5) +
+  scale_y_continuous(limits = c(0, ymax_ext5),
+                     breaks = seq(0, 100, 20),
                      labels = function(x) paste0(x, "%")) +
-  labs(title   = "Share Predicting Above-Average Performance (Pre-Feedback)",
+  labs(title   = "Share Predicting Above-Average Performance",
        x       = NULL,
        y       = "% predicting to outperform matched peer",
-       caption = sprintf("Notes. Proportion ± 1 SE. N = %d.", sum(pred_summary$n))) +
+       caption = NULL) +
   theme_classic(base_size = 13) +
   theme(
     aspect.ratio = 0.65,
     plot.title   = element_text(face = "bold", hjust = 0.5),
-    axis.text.x  = element_text(color = "black", size = 11)
+    axis.text.x  = element_text(color = "black", size = 10)
   )
-ggsave("figure5.pdf", fig5, width = 6, height = 4.5, device = cairo_pdf)
+
+for (i in seq_along(tests5)) {
+  t5  <- tests5[[i]]
+  s5  <- stars_str2(t5$p)
+  lbl <- paste0(sprintf("Δ=%.1f%%", t5$diff), s5, "\n", fmt_p2(t5$p))
+  fig5 <- add_bracket2(fig5, xp2[t5$g1], xp2[t5$g2], heights5[i], lbl, ymax_ext5)
+}
+
+ggsave("figure5.pdf", fig5, width = 6, height = 5.5, device = cairo_pdf)
 cat("Saved: figure5.pdf\n")
 
 cat("\nDone. Outputs: table1.tex, table2.tex, table3.tex,",

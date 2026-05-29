@@ -162,9 +162,15 @@ labels_n <- function(sdata) {
 
 # Format p-value
 fmt_p <- function(p) {
-  if      (p < 0.001) "p<0.001"
-  else if (p < 0.01)  sprintf("p=%.3f", p)
-  else                sprintf("p=%.3f", p)
+  if (p < 0.001) "(p<0.001)" else sprintf("(%.3f)", p)
+}
+
+# Conventional significance stars
+stars_str <- function(p) {
+  if      (p < 0.01) "***"
+  else if (p < 0.05) "**"
+  else if (p < 0.10) "*"
+  else               ""
 }
 
 # Pairwise Welch t-tests for three pairs
@@ -209,7 +215,7 @@ make_panel <- function(sdata, dt_sub, var, title, ylab) {
 
   plt <- ggplot(sdata, aes(x = treatment, y = mean, fill = treatment)) +
     geom_col(width = 0.55) +
-    geom_errorbar(aes(ymin = mean - se, ymax = mean + se),
+    geom_errorbar(aes(ymin = mean - 1.96 * se, ymax = mean + 1.96 * se),
                   width = 0.12, linewidth = 0.8) +
     geom_text(aes(y = ymax_ext * 0.035, label = round(mean, 2)),
               color = "white", fontface = "bold", size = 4.5) +
@@ -227,7 +233,8 @@ make_panel <- function(sdata, dt_sub, var, title, ylab) {
 
   for (i in seq_along(tests)) {
     t   <- tests[[i]]
-    lbl <- sprintf("Δ=%.2f\n%s", t$diff, fmt_p(t$p))
+    s   <- stars_str(t$p)
+    lbl <- paste0(sprintf("Δ=%.2f", t$diff), s, "\n", fmt_p(t$p))
     plt <- add_bracket(plt, xp[t$g1], xp[t$g2], heights[i], lbl)
   }
   plt
@@ -246,10 +253,7 @@ p_luck  <- make_panel(sum_luck,
 
 fig1 <- p_merit + p_luck +
   plot_annotation(
-    caption = paste0(
-      "Notes. Bar heights = group means. Whiskers = ±1 SE. ",
-      "Brackets: Welch t-test (two-sided). N = ", nrow(dt), "."
-    )
+    caption = NULL
   )
 print(fig1)
 ggsave("figure1.pdf", fig1, width = 10, height = 6, device = cairo_pdf)
@@ -267,7 +271,7 @@ ymax_merit2 <- ceiling(max(sum_merit$mean  + sum_merit$se,  na.rm = TRUE) * 1.2)
 make_panel2 <- function(data, title, ylab, ymax) {
   ggplot(data, aes(x = treatment, y = mean, fill = treatment)) +
     geom_col(width = 0.55) +
-    geom_errorbar(aes(ymin = mean - se, ymax = mean + se),
+    geom_errorbar(aes(ymin = mean - 1.96 * se, ymax = mean + 1.96 * se),
                   width = 0.12, linewidth = 0.8) +
     geom_text(aes(y = ymax * 0.04, label = round(mean, 1)),
               color = "white", fontface = "bold", size = 4.5) +

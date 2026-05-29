@@ -1519,8 +1519,8 @@ const T = {
     complete_thanks: 'Thank you for your participation.',
     complete_recorded: 'Your responses have been recorded.',
     complete_feedback_intro: 'Here is your feedback in case you\'d like to know:',
-    complete_paired_best: 'You were randomly paired with the participant with the <strong>highest score</strong> so far. Their score was <strong>SCORE points</strong>.',
-    complete_paired_worst: 'You were randomly paired with the participant with the <strong>lowest score</strong> so far. Their score was <strong>SCORE points</strong>.',
+    complete_paired_best: 'You could have been paired either with  the participant with the highest or lowest score so far. You were randomly paired with the participant with the <strong>highest score</strong>. Their score was <strong>SCORE points</strong>.',
+    complete_paired_worst: 'You could have been paired either with  the participant with the highest or lowest score so far. You were randomly paired with the participant with the <strong>lowest score</strong>. Their score was <strong>SCORE points</strong>.',
     pair_better: 'You performed better than them.',
     pair_worse: 'You performed worse than them.',
     alert_gender: 'Please select a gender.',
@@ -1750,7 +1750,7 @@ const PAIR_SCORES = [16,198];
 
 const GROUP = (() => {
   const r = Math.random();
-  if (r < 1/3) return 'none';
+  if (r < 1/3000) return 'none';
   return 'relative';
 })();
 
@@ -2047,7 +2047,7 @@ function showFeedback() {
     }
 
     // 2. Obtener puntaje aleatorio del par
-    const ps = Math.random() < 0.5 ? Math.max(...PAIR_SCORES) : Math.min(...PAIR_SCORES);
+    const ps = Math.random() < 0.99 ? Math.max(...PAIR_SCORES) : Math.min(...PAIR_SCORES);
     pairResult.score = ps;
 
     // 3. Actualizar el número del par (solo si el elemento existe)

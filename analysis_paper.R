@@ -346,14 +346,13 @@ cat("\n=== Robustness: log(redist_merit + 1) ===\n"); print(ctest(m_log))
 #     Column order: Told Above | No Feedback | Told Below | p-value
 # =====================================================================
 
-vars   <- c("redist_merit", "effort_luck", "score", "age", "female", "colombian")
+vars   <- c("score", "age", "female", "colombian", "pred_better")
 labels <- c(
-  "Redistribution -- merit (\\$)",
-  "Effort--luck belief (0--10)",
   "Task score",
   "Age",
   "Female (\\%)",
-  "Colombian (\\%)"
+  "Colombian (\\%)",
+  "Predicted above average (\\%)"
 )
 pct_vars <- c("female", "colombian", "pred_better", "edu_lt_ba", "edu_ba", "edu_ma_up")
 
@@ -423,7 +422,7 @@ tbl1_tex <- kable(
 ) |>
   kable_styling(latex_options = "hold_position") |>
   add_footnote(
-    "Mean (SD) for continuous variables; mean $\\times$ 100 (SD $\\times$ 100) for binary. $p$-values from one-way ANOVA (continuous) or chi-squared test (binary). Redistribution in USD.",
+    "Mean (SD) for continuous variables; mean $\\times$ 100 (SD $\\times$ 100) for binary. $p$-values from one-way ANOVA (continuous) or chi-squared test (binary). Predicted above average: share expecting to outperform matched peer, elicited before feedback.",
     notation = "none", escape = FALSE
   )
 writeLines(tbl1_tex, "table1.tex")

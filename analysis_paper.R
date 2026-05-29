@@ -1084,4 +1084,3 @@ texA5 <- gsub("(\\\\begin\\{talltblr\\})", "\\\\small\n\\1", texA5)
 writeLines(texA5, "tableA5.tex")
 cat("Post-processed: tableA5.tex\n")
 
-table(dt$country)

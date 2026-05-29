@@ -319,8 +319,9 @@ tex4 <- gsub(
          "hline{3}={1-7}{solid, black, 0.05em}"),
   tex4
 )
+tex4 <- gsub("(\\\\begin\\{talltblr\\})", "\\\\small\n\\1", tex4)
 writeLines(tex4, "table4.tex")
-cat("Post-processed: table4.tex (two-level spanning header)\n")
+cat("Post-processed: table4.tex (two-level spanning header, \\small)\n")
 
 # =====================================================================
 # 6.  HETEROGENEITY: treatment x score interaction
@@ -446,10 +447,10 @@ coef_map_main <- c(
 )
 
 models_main <- list(
-  "(1) Effort belief"                       = m1,
-  "(2) Effort belief\\phantom{x}"           = m2,
-  "(3) Merit redistrib.~(\\$)"              = m3,
-  "(4) Merit redistrib.~(\\$)\\phantom{x}"  = m4
+  "(1) Merit redistrib.~(\\$)"              = m3,
+  "(2) Merit redistrib.~(\\$)\\phantom{x}"  = m4,
+  "(3) Effort belief"                       = m1,
+  "(4) Effort belief\\phantom{x}"           = m2
 )
 
 ctrl_row_main <- as.data.frame(as.list(setNames(
@@ -472,14 +473,34 @@ modelsummary(
   notes    = paste0(
     "\\textit{Notes.} OLS with HC3-robust SEs in parentheses. ",
     "Baseline: Told Above. ",
-    "Cols.~(1)--(2): effort--luck belief (0 = luck, 10 = effort). ",
-    "Cols.~(3)--(4): USD redistributed to lower-earning worker (merit scenario). ",
+    "Cols.~(1)--(2): USD redistributed to lower-earning worker (merit scenario). ",
+    "Cols.~(3)--(4): effort--luck belief (0 = luck, 10 = effort). ",
     "Controls: age, female indicator, Colombian indicator, task score, and education (Less than bachelor = baseline). ",
     "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
   ),
   escape = FALSE
 )
 cat("Saved: table2.tex\n")
+
+# Post-process table2.tex: two-level spanning header + \small for page fit
+tex2 <- readLines("table2.tex")
+hdr_idx2 <- grep("^& \\(1\\)", tex2)
+tex2[hdr_idx2] <- paste0(
+  "& \\SetCell[c=2]{c} USD Redistributed & & \\SetCell[c=2]{c} Effort Beliefs & \\\\\n",
+  "& (1) & (2) & (3) & (4) \\\\"
+)
+tex2 <- gsub("hline\\{20\\}", "hline{21}", tex2)
+tex2 <- gsub("hline\\{23\\}", "hline{24}", tex2)
+tex2 <- gsub(
+  "hline\\{2\\}=\\{1-5\\}\\{solid, black, 0\\.05em\\}",
+  paste0("hline{2}={2-3}{solid, black, 0.05em},\n",
+         "hline{2}={4-5}{solid, black, 0.05em},\n",
+         "hline{3}={1-5}{solid, black, 0.05em}"),
+  tex2
+)
+tex2 <- gsub("(\\\\begin\\{talltblr\\})", "\\\\small\n\\1", tex2)
+writeLines(tex2, "table2.tex")
+cat("Post-processed: table2.tex (two-level header, \\small)\n")
 
 # =====================================================================
 # 10. TABLE 3: Mechanism and surprise heterogeneity
@@ -541,49 +562,108 @@ cat("Saved: table3.tex\n")
 # =====================================================================
 
 group_colors <- c("above" = "#7AB648", "no_feedback" = "#E07B6A", "below" = "#6BAED4")
-group_labels <- c("above" = "Told:\nAbove", "no_feedback" = "No\nFeedback", "below" = "Told:\nBelow")
 group_order  <- c("above", "no_feedback", "below")
 
-# ── Figure 2: effort attribution + merit redistribution by treatment ──
-
-sum_effort <- dt[!is.na(treatment) & !is.na(effort_luck), .(
-  mean = mean(effort_luck),
-  se   = sd(effort_luck) / sqrt(.N)
-), by = treatment][, treatment := factor(treatment, levels = group_order)]
+# ── Figure 2: merit redistribution + effort attribution by treatment ──
 
 sum_merit <- dt[!is.na(treatment) & !is.na(redist_merit), .(
+  n    = .N,
   mean = mean(redist_merit),
   se   = sd(redist_merit) / sqrt(.N)
 ), by = treatment][, treatment := factor(treatment, levels = group_order)]
 
-make_bar <- function(data, title, ylab) {
-  ymax <- ceiling(max(data$mean + data$se, na.rm = TRUE) * 1.25)
-  ggplot(data, aes(x = treatment, y = mean, fill = treatment)) +
+sum_effort <- dt[!is.na(treatment) & !is.na(effort_luck), .(
+  n    = .N,
+  mean = mean(effort_luck),
+  se   = sd(effort_luck) / sqrt(.N)
+), by = treatment][, treatment := factor(treatment, levels = group_order)]
+
+# Helpers shared with figure 2
+fmt_p2 <- function(p) {
+  if      (p < 0.001) "p<0.001"
+  else if (p < 0.01)  sprintf("p=%.3f", p)
+  else                sprintf("p=%.3f", p)
+}
+
+pw_tests2 <- function(dt_sub, var) {
+  pairs <- list(c("above", "no_feedback"),
+                c("no_feedback", "below"),
+                c("above", "below"))
+  lapply(pairs, function(p) {
+    y1 <- dt_sub[treatment == p[1], get(var)]
+    y2 <- dt_sub[treatment == p[2], get(var)]
+    tt <- t.test(y1, y2)
+    list(g1 = p[1], g2 = p[2], diff = mean(y1) - mean(y2), p = tt$p.value)
+  })
+}
+
+xp2 <- setNames(1:3, group_order)
+
+add_bracket2 <- function(plt, x1, x2, y, label, ymax_ext) {
+  tick <- ymax_ext * 0.025
+  plt +
+    annotate("segment", x = x1, xend = x1,
+             y = y - tick, yend = y, linewidth = 0.35, color = "grey30") +
+    annotate("segment", x = x1, xend = x2,
+             y = y,       yend = y, linewidth = 0.35, color = "grey30") +
+    annotate("segment", x = x2, xend = x2,
+             y = y, yend = y - tick, linewidth = 0.35, color = "grey30") +
+    annotate("text", x = (x1 + x2) / 2, y = y + ymax_ext * 0.018,
+             label = label, size = 3.3, hjust = 0.5, vjust = 0, color = "grey20")
+}
+
+make_bar <- function(sdata, dt_sub, var, title, ylab) {
+  ymax_base <- ceiling(max(sdata$mean + sdata$se, na.rm = TRUE) * 1.25)
+  ymax_ext  <- ymax_base * 1.65
+  n_map     <- setNames(sdata$n, as.character(sdata$treatment))
+  xlabels   <- setNames(
+    paste0(c("Told:\nAbove", "No\nFeedback", "Told:\nBelow"),
+           "\n(n=", n_map[group_order], ")"),
+    group_order
+  )
+  heights <- c(ymax_base * 1.08, ymax_base * 1.22, ymax_base * 1.40)
+  tests   <- pw_tests2(dt_sub, var)
+
+  plt <- ggplot(sdata, aes(x = treatment, y = mean, fill = treatment)) +
     geom_col(width = 0.55) +
-    geom_errorbar(aes(ymin = mean - se, ymax = mean + se),
+    geom_errorbar(aes(ymin = mean - 1.96 * se, ymax = mean + 1.96 * se),
                   width = 0.12, linewidth = 0.8) +
-    geom_text(aes(y = ymax * 0.04, label = round(mean, 2)),
+    geom_text(aes(y = ymax_ext * 0.035, label = round(mean, 2)),
               color = "white", fontface = "bold", size = 4.5) +
     scale_fill_manual(values = group_colors, guide = "none") +
-    scale_x_discrete(labels = group_labels) +
-    scale_y_continuous(limits = c(0, ymax), breaks = pretty(c(0, ymax), n = 6)) +
+    scale_x_discrete(labels = xlabels) +
+    scale_y_continuous(limits = c(0, ymax_ext),
+                       breaks = pretty(c(0, ymax_base), n = 6)) +
     labs(title = title, x = NULL, y = ylab) +
     theme_classic(base_size = 13) +
     theme(
-      aspect.ratio = 0.65,
+      aspect.ratio = 0.80,
       plot.title   = element_text(face = "bold", hjust = 0.5),
-      axis.text.x  = element_text(color = "black", size = 11)
+      axis.text.x  = element_text(color = "black", size = 10)
     )
+
+  for (i in seq_along(tests)) {
+    t   <- tests[[i]]
+    lbl <- sprintf("Δ=%.2f\n(%s)", t$diff, fmt_p2(t$p))
+    plt <- add_bracket2(plt, xp2[t$g1], xp2[t$g2], heights[i], lbl, ymax_ext)
+  }
+  plt
 }
 
-fig2 <- make_bar(sum_merit,  "Merit Redistribution by Treatment",
+fig2 <- make_bar(sum_merit,  dt[!is.na(treatment) & !is.na(redist_merit)],
+                 "redist_merit",
+                 "Merit Redistribution by Treatment",
                  "USD to Worker B") +
-        make_bar(sum_effort, "Effort Attribution by Treatment",
+        make_bar(sum_effort, dt[!is.na(treatment) & !is.na(effort_luck)],
+                 "effort_luck",
+                 "Effort Attribution by Treatment",
                  "Effort-luck belief (0=luck, 10=effort)") +
         plot_annotation(
-          caption = sprintf("Notes. Means ± 1 SE. N = %d.", nrow(dt))
+          caption = sprintf(
+            "Notes. Means with 95%% CI. Brackets: Welch t-test (two-sided). N = %d.",
+            nrow(dt))
         )
-ggsave("figure2.pdf", fig2, width = 10, height = 5, device = cairo_pdf)
+ggsave("figure2.pdf", fig2, width = 10, height = 6, device = cairo_pdf)
 cat("Saved: figure2.pdf\n")
 
 # ── Figure 3: Coefficient plot (OLS point estimates + 95% CI) ──
@@ -692,5 +772,317 @@ cat("Saved: figure5.pdf\n")
 cat("\nDone. Outputs: table1.tex, table2.tex, table3.tex,",
     "figure2.pdf, figure3.pdf, figure4.pdf, figure5.pdf\n")
 
+
+# =====================================================================
+# 12.  APPENDIX TABLES: same as 2--4 with baseline = No Feedback
+# =====================================================================
+
+dt[,     treatment_nfb := relevel(treatment, ref = "no_feedback")]
+dt_eff[, treatment_nfb := relevel(treatment, ref = "no_feedback")]
+
+# ── Appendix Table A2: main effects (baseline = No Feedback) ──
+ma1 <- lm(effort_luck  ~ treatment_nfb,
+          data = dt_eff)
+ma2 <- lm(effort_luck  ~ treatment_nfb + age + female + score + colombian + edu_3,
+          data = dt_eff)
+ma3 <- lm(redist_merit ~ treatment_nfb,
+          data = dt)
+ma4 <- lm(redist_merit ~ treatment_nfb + age + female + score + colombian + edu_3,
+          data = dt)
+
+coef_map_main_nfb <- c(
+  "(Intercept)"          = "Constant",
+  "treatment_nfbabove"   = "Told: Above",
+  "treatment_nfbbelow"   = "Told: Below",
+  "age"                  = "Age",
+  "femaleTRUE"           = "Female",
+  "colombianTRUE"        = "Colombian",
+  "score"                = "Task score",
+  "edu_3Bachelor"        = "Bachelor's degree",
+  "edu_3Master or above" = "Master's or above"
+)
+models_main_nfb <- list(
+  "(1) Merit redistrib.~(\\$)"             = ma3,
+  "(2) Merit redistrib.~(\\$)\\phantom{x}" = ma4,
+  "(3) Effort belief"                      = ma1,
+  "(4) Effort belief\\phantom{x}"          = ma2
+)
+ctrl_row_main_nfb <- as.data.frame(as.list(setNames(
+  c("Demographic controls", "No", "Yes", "No", "Yes"),
+  c("term", names(models_main_nfb))
+)))
+modelsummary(
+  models_main_nfb,
+  vcov     = lapply(models_main_nfb, hc3),
+  coef_map = coef_map_main_nfb,
+  gof_map  = list(
+    list(raw = "nobs",      clean = "$N$",     fmt = 0),
+    list(raw = "r.squared", clean = "$R^{2}$", fmt = 3)
+  ),
+  stars    = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+  add_rows = ctrl_row_main_nfb,
+  output   = "tableA2.tex",
+  title    = paste0("Treatment Effects on Effort Attribution and Redistribution ",
+                    "(Baseline: No Feedback) \\label{tab:main_nfb}"),
+  notes    = paste0(
+    "\\textit{Notes.} OLS with HC3-robust SEs in parentheses. ",
+    "Baseline: No Feedback. ",
+    "Cols.~(1)--(2): USD redistributed to lower-earning worker (merit scenario). ",
+    "Cols.~(3)--(4): effort--luck belief (0 = luck, 10 = effort). ",
+    "Controls: age, female indicator, Colombian indicator, task score, ",
+    "and education (Less than bachelor = baseline). ",
+    "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
+  ),
+  escape = FALSE
+)
+cat("Saved: tableA2.tex\n")
+
+# Post-process tableA2.tex: two-level header + \small
+texA2 <- readLines("tableA2.tex")
+hdr_A2 <- grep("^& \\(1\\)", texA2)
+texA2[hdr_A2] <- paste0(
+  "& \\SetCell[c=2]{c} USD Redistributed & ",
+  "& \\SetCell[c=2]{c} Effort Beliefs & \\\\\n",
+  "& (1) & (2) & (3) & (4) \\\\"
+)
+texA2 <- gsub("hline\\{20\\}", "hline{21}", texA2)
+texA2 <- gsub("hline\\{23\\}", "hline{24}", texA2)
+texA2 <- gsub(
+  "hline\\{2\\}=\\{1-5\\}\\{solid, black, 0\\.05em\\}",
+  paste0("hline{2}={2-3}{solid, black, 0.05em},\n",
+         "hline{2}={4-5}{solid, black, 0.05em},\n",
+         "hline{3}={1-5}{solid, black, 0.05em}"),
+  texA2
+)
+texA2 <- gsub("(\\\\begin\\{talltblr\\})", "\\\\small\n\\1", texA2)
+writeLines(texA2, "tableA2.tex")
+cat("Post-processed: tableA2.tex\n")
+
+# ── Appendix Table A3: mediation (baseline = No Feedback) ──
+ma9  <- lm(redist_merit ~ treatment_nfb + effort_luck,
+           data = dt_eff)
+ma10 <- lm(redist_merit ~ treatment_nfb + effort_luck
+           + age + female + score + colombian + edu_3,
+           data = dt_eff)
+
+coef_map_mech_nfb <- c(
+  "(Intercept)"          = "Constant",
+  "treatment_nfbabove"   = "Told: Above",
+  "treatment_nfbbelow"   = "Told: Below",
+  "effort_luck"          = "Effort--luck belief",
+  "age"                  = "Age",
+  "femaleTRUE"           = "Female",
+  "colombianTRUE"        = "Colombian",
+  "score"                = "Task score",
+  "edu_3Bachelor"        = "Bachelor's degree",
+  "edu_3Master or above" = "Master's or above"
+)
+models_mech_nfb <- list(
+  "(1) Merit redistrib.~(\\$)"             = ma9,
+  "(2) Merit redistrib.~(\\$)\\phantom{x}" = ma10
+)
+ctrl_row_mech_nfb <- as.data.frame(as.list(setNames(
+  c("Demographic controls", "No", "Yes"),
+  c("term", names(models_mech_nfb))
+)))
+modelsummary(
+  models_mech_nfb,
+  vcov     = lapply(models_mech_nfb, hc3),
+  coef_map = coef_map_mech_nfb,
+  gof_map  = list(
+    list(raw = "nobs",      clean = "$N$",     fmt = 0),
+    list(raw = "r.squared", clean = "$R^{2}$", fmt = 3)
+  ),
+  stars    = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+  add_rows = ctrl_row_mech_nfb,
+  output   = "tableA3.tex",
+  title    = "Mediation Analysis (Baseline: No Feedback) \\label{tab:mechanism_nfb}",
+  notes    = paste0(
+    "\\textit{Notes.} OLS with HC3-robust SEs in parentheses. ",
+    "Dependent variable: USD redistributed (merit scenario). ",
+    "Includes effort--luck belief as control to assess mediation; ",
+    "compare treatment coefficients with Table~\\ref{tab:main_nfb} cols.~(1)--(2). ",
+    "Baseline: No Feedback. ",
+    "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
+  ),
+  escape = FALSE
+)
+cat("Saved: tableA3.tex\n")
+
+# Post-process tableA3.tex: \small only
+texA3 <- readLines("tableA3.tex")
+texA3 <- gsub("(\\\\begin\\{talltblr\\})", "\\\\small\n\\1", texA3)
+writeLines(texA3, "tableA3.tex")
+cat("Post-processed: tableA3.tex\n")
+
+# ── Appendix Table A4: surprise effects, full-sample baseline = nf_optimistic ──
+dt[, feedback_type_nf := factor(
+  feedback_type,
+  levels = c("nf_optimistic", "nf_pessimistic",
+             "neg_surprised",  "neg_reassured",
+             "pos_surprised",  "pos_reassured")
+)]
+ms_ft_el_nf <- lm(
+  effort_luck  ~ feedback_type_nf,
+  data = dt[!is.na(effort_luck) & !is.na(feedback_type_nf)]
+)
+ms_ft_rd_nf <- lm(
+  redist_merit ~ feedback_type_nf,
+  data = dt[!is.na(feedback_type_nf)]
+)
+
+coef_map_surpr_nf <- c(
+  "(Intercept)"                    = "Constant",
+  "above_positively_surprised"     = "Pos.\\ surprised (within above arm)",
+  "below_negatively_surprised"     = "Neg.\\ surprised (within below arm)",
+  "feedback_type_nfnf_pessimistic" = "No feedback -- pessimistic",
+  "feedback_type_nfneg_surprised"  = "Negatively surprised",
+  "feedback_type_nfneg_reassured"  = "Negatively reassured",
+  "feedback_type_nfpos_surprised"  = "Positively surprised",
+  "feedback_type_nfpos_reassured"  = "Positively reassured"
+)
+models_surpr_nf <- list(
+  "(1)" = ms_rd_above,
+  "(2)" = ms_rd_below,
+  "(3)" = ms_ft_rd_nf,
+  "(4)" = ms_el_above,
+  "(5)" = ms_el_below,
+  "(6)" = ms_ft_el_nf
+)
+modelsummary(
+  models_surpr_nf,
+  vcov     = lapply(models_surpr_nf, hc3),
+  coef_map = coef_map_surpr_nf,
+  gof_map  = list(
+    list(raw = "nobs",      clean = "$N$",     fmt = 0),
+    list(raw = "r.squared", clean = "$R^{2}$", fmt = 3)
+  ),
+  stars    = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+  output   = "tableA4.tex",
+  title    = paste0(
+    "Surprise Effects: Within-Arm and Full-Sample Comparisons ",
+    "(Baseline: No Feedback -- Optimistic) \\label{tab:surprise_nfb}"
+  ),
+  notes    = paste0(
+    "\\textit{Notes.} OLS with HC3-robust SEs in parentheses. ",
+    "Cols.~(1) and (4): above group only ($N = 47$); ",
+    "positively surprised = told above but predicted below ($n_{\\text{surp}} = 5$). ",
+    "Cols.~(2) and (5): below group only ($N = 48$); ",
+    "negatively surprised = told below but predicted above ($n_{\\text{surp}} = 37$). ",
+    "Cols.~(3) and (6): full sample ($N = 145$); ",
+    "baseline = no feedback -- optimistic (no feedback, predicted above; $n = 43$). ",
+    "No feedback -- pessimistic = no feedback, predicted below ($n = 7$); ",
+    "negatively surprised = told below, predicted above ($n = 37$); ",
+    "negatively reassured = told below, predicted below ($n = 11$); ",
+    "positively surprised = told above, predicted below ($n = 5$); ",
+    "positively reassured = told above, predicted above ($n = 42$). ",
+    "Constant in cols.~(3) and (6) = mean of the no-feedback optimistic group. ",
+    "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
+  ),
+  escape = FALSE
+)
+cat("Saved: tableA4.tex\n")
+
+# Post-process tableA4.tex: two-level header + \small
+texA4 <- readLines("tableA4.tex")
+hdr_A4 <- grep("^& \\(1\\)", texA4)
+texA4[hdr_A4] <- paste0(
+  "& \\SetCell[c=3]{c} USD Redistributed & & ",
+  "& \\SetCell[c=3]{c} Effort Beliefs & & \\\\\n",
+  "& (1) & (2) & (3) & (4) & (5) & (6) \\\\"
+)
+texA4 <- gsub("hline\\{18\\}", "hline{19}", texA4)
+texA4 <- gsub("hline\\{20\\}", "hline{21}", texA4)
+texA4 <- gsub("hline\\{2\\}=",  "hline{3}=",  texA4)
+texA4 <- gsub(
+  "hline\\{3\\}=\\{1-7\\}\\{solid, black, 0\\.05em\\}",
+  paste0("hline{2}={2-4}{solid, black, 0.05em},\n",
+         "hline{2}={5-7}{solid, black, 0.05em},\n",
+         "hline{3}={1-7}{solid, black, 0.05em}"),
+  texA4
+)
+texA4 <- gsub("(\\\\begin\\{talltblr\\})", "\\\\small\n\\1", texA4)
+writeLines(texA4, "tableA4.tex")
+cat("Post-processed: tableA4.tex\n")
+
+# ── Appendix Table A5: no-intercept estimation ──
+mn1 <- lm(effort_luck  ~ treatment - 1,
+          data = dt_eff)
+mn2 <- lm(effort_luck  ~ treatment - 1 + age + female + score + colombian + edu_3,
+          data = dt_eff)
+mn3 <- lm(redist_merit ~ treatment - 1,
+          data = dt)
+mn4 <- lm(redist_merit ~ treatment - 1 + age + female + score + colombian + edu_3,
+          data = dt)
+
+coef_map_main_nocst <- c(
+  "treatmentabove"               = "Told: Above",
+  "treatmentno_feedback"         = "No Feedback",
+  "treatmentbelow"               = "Told: Below",
+  "age"                          = "Age",
+  "femaleTRUE"                   = "Female",
+  "colombianTRUE"                = "Colombian",
+  "score"                        = "Task score",
+  "edu_3Bachelor"                = "Bachelor's degree",
+  "edu_3Master or above"         = "Master's or above"
+)
+models_main_nocst <- list(
+  "(1) Merit redistrib.~(\\$)"             = mn3,
+  "(2) Merit redistrib.~(\\$)\\phantom{x}" = mn4,
+  "(3) Effort belief"                      = mn1,
+  "(4) Effort belief\\phantom{x}"          = mn2
+)
+ctrl_row_nocst <- as.data.frame(as.list(setNames(
+  c("Demographic controls", "No", "Yes", "No", "Yes"),
+  c("term", names(models_main_nocst))
+)))
+modelsummary(
+  models_main_nocst,
+  vcov     = lapply(models_main_nocst, hc3),
+  coef_map = coef_map_main_nocst,
+  gof_map  = list(
+    list(raw = "nobs",      clean = "$N$",     fmt = 0),
+    list(raw = "r.squared", clean = "$R^{2}$", fmt = 3)
+  ),
+  stars    = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+  add_rows = ctrl_row_nocst,
+  output   = "tableA5.tex",
+  title    = paste0(
+    "Treatment Effects on Effort Attribution and Redistribution ",
+    "(No Intercept) \\label{tab:main_nocst}"
+  ),
+  notes    = paste0(
+    "\\textit{Notes.} OLS without intercept (\\texttt{-1}) with HC3-robust SEs in parentheses. ",
+    "Each treatment coefficient equals the conditional group mean. ",
+    "Cols.~(1)--(2): USD redistributed to lower-earning worker (merit scenario). ",
+    "Cols.~(3)--(4): effort--luck belief (0 = luck, 10 = effort). ",
+    "Controls: age, female indicator, Colombian indicator, task score, ",
+    "and education (Less than bachelor = baseline). ",
+    "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
+  ),
+  escape = FALSE
+)
+cat("Saved: tableA5.tex\n")
+
+# Post-process tableA5.tex: two-level header + \small
+texA5 <- readLines("tableA5.tex")
+hdr_A5 <- grep("^& \\(1\\)", texA5)
+texA5[hdr_A5] <- paste0(
+  "& \\SetCell[c=2]{c} USD Redistributed & ",
+  "& \\SetCell[c=2]{c} Effort Beliefs & \\\\\n",
+  "& (1) & (2) & (3) & (4) \\\\"
+)
+texA5 <- gsub("hline\\{20\\}", "hline{21}", texA5)
+texA5 <- gsub("hline\\{23\\}", "hline{24}", texA5)
+texA5 <- gsub(
+  "hline\\{2\\}=\\{1-5\\}\\{solid, black, 0\\.05em\\}",
+  paste0("hline{2}={2-3}{solid, black, 0.05em},\n",
+         "hline{2}={4-5}{solid, black, 0.05em},\n",
+         "hline{3}={1-5}{solid, black, 0.05em}"),
+  texA5
+)
+texA5 <- gsub("(\\\\begin\\{talltblr\\})", "\\\\small\n\\1", texA5)
+writeLines(texA5, "tableA5.tex")
+cat("Post-processed: tableA5.tex\n")
 
 table(dt$country)

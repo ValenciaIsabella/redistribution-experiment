@@ -2,9 +2,9 @@
 \centering
 \small
 \begin{talltblr}[         %% tabularray outer open
-caption={Treatment Effects on Effort Attribution and Redistribution \label{tab:main}},
+caption={Treatment Effects on Effort Attribution and Redistribution (No Intercept) \label{tab:main_nocst}},
 note{}={* p \num{< 0.1}, ** p \num{< 0.05}, *** p \num{< 0.01}},
-note{ }={\textit{Notes.} OLS with HC3-robust SEs in parentheses. Baseline: Told Above. Cols.~(1)--(2): USD redistributed to lower-earning worker (merit scenario). Cols.~(3)--(4): effort--luck belief (0 = luck, 10 = effort). Controls: age, female indicator, Colombian indicator, task score, and education (Less than bachelor = baseline). $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.},
+note{ }={\textit{Notes.} OLS without intercept (\texttt{-1}) with HC3-robust SEs in parentheses. Each treatment coefficient equals the conditional group mean. Cols.~(1)--(2): USD redistributed to lower-earning worker (merit scenario). Cols.~(3)--(4): effort--luck belief (0 = luck, 10 = effort). Controls: age, female indicator, Colombian indicator, task score, and education (Less than bachelor = baseline). $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.},
 ]                     %% tabularray outer close
 {                     %% tabularray inner open
 colspec={Q[]Q[]Q[]Q[]Q[]},
@@ -19,12 +19,12 @@ column{1}={}{halign=l},
 }                     %% tabularray inner close
 & \SetCell[c=2]{c} USD Redistributed & & \SetCell[c=2]{c} Effort Beliefs & \\
 & (1) & (2) & (3) & (4) \\
-Constant & \num{1.915}*** & \num{3.461}*** & \num{7.423}*** & \num{6.470}*** \\
+Told: Above & \num{1.915}*** & \num{3.461}*** & \num{7.423}*** & \num{6.470}*** \\
 & (\num{0.199}) & (\num{0.837}) & (\num{0.348}) & (\num{1.301}) \\
-No Feedback & \num{0.205} & \num{0.172} & \num{-0.467} & \num{-0.476} \\
-& (\num{0.281}) & (\num{0.290}) & (\num{0.453}) & (\num{0.450}) \\
-Told: Below & \num{0.523}* & \num{0.549}* & \num{-1.205}** & \num{-1.301}** \\
-& (\num{0.283}) & (\num{0.305}) & (\num{0.509}) & (\num{0.518}) \\
+No Feedback & \num{2.120}*** & \num{3.633}*** & \num{6.956}*** & \num{5.994}*** \\
+& (\num{0.198}) & (\num{0.731}) & (\num{0.313}) & (\num{1.220}) \\
+Told: Below & \num{2.438}*** & \num{4.010}*** & \num{6.218}*** & \num{5.169}*** \\
+& (\num{0.211}) & (\num{0.778}) & (\num{0.354}) & (\num{1.269}) \\
 Age &  & \num{-0.008} &  & \num{0.021} \\
 &  & (\num{0.012}) &  & (\num{0.018}) \\
 Female &  & \num{-0.256} &  & \num{0.324} \\

@@ -128,57 +128,131 @@ print(coeftest(h4_, vcov = vcovHC(h4_, "HC3")))
 # FIGURE: Redistribution by treatment × scenario (Cappelen-style)
 # =============================================================================
 
-group_colors <- c("no_feedback" = "#E07B6A", "above" = "#7AB648", "below" = "#6BAED4")
-group_labels <- c("no_feedback" = "No Feedback", "above" = "Told:\nAbove", "below" = "Told:\nBelow")
+group_order  <- c("above", "no_feedback", "below")
+group_colors <- c("above" = "#7AB648", "no_feedback" = "#E07B6A", "below" = "#6BAED4")
 
+# Summaries with N per group
 sum_merit <- dt[!is.na(treatment) & !is.na(redist_merit), .(
+  n    = .N,
   mean = mean(redist_merit),
   se   = sd(redist_merit) / sqrt(.N)
-), by = treatment]
+), by = treatment][, treatment := factor(treatment, levels = group_order)]
 
 sum_luck <- dt[!is.na(treatment) & !is.na(redist_luck), .(
+  n    = .N,
   mean = mean(redist_luck),
   se   = sd(redist_luck) / sqrt(.N)
-), by = treatment]
+), by = treatment][, treatment := factor(treatment, levels = group_order)]
 
-ymax <- ceiling(max(c(sum_merit$mean + sum_merit$se,
-                      sum_luck$mean  + sum_luck$se), na.rm = TRUE) * 1.2)
+# Base y-ceiling (shared across panels)
+ymax_base <- ceiling(max(c(sum_merit$mean + sum_merit$se,
+                           sum_luck$mean  + sum_luck$se),
+                         na.rm = TRUE) * 1.2)
+ymax_ext  <- ymax_base * 1.65   # extra room for brackets
 
-make_panel <- function(data, title, ylab) {
-  ggplot(data, aes(x = treatment, y = mean, fill = treatment)) +
+# X-axis labels with n embedded
+labels_n <- function(sdata) {
+  n_map <- setNames(sdata$n, as.character(sdata$treatment))
+  setNames(
+    paste0(c("Told:\nAbove", "No\nFeedback", "Told:\nBelow"),
+           "\n(n=", n_map[group_order], ")"),
+    group_order
+  )
+}
+
+# Format p-value
+fmt_p <- function(p) {
+  if      (p < 0.001) "p<0.001"
+  else if (p < 0.01)  sprintf("p=%.3f", p)
+  else                sprintf("p=%.3f", p)
+}
+
+# Pairwise Welch t-tests for three pairs
+pw_tests <- function(dt_sub, var) {
+  pairs <- list(
+    c("above",        "no_feedback"),
+    c("no_feedback",  "below"),
+    c("above",        "below")
+  )
+  lapply(pairs, function(p) {
+    y1 <- dt_sub[treatment == p[1], get(var)]
+    y2 <- dt_sub[treatment == p[2], get(var)]
+    tt <- t.test(y1, y2)
+    list(g1   = p[1], g2 = p[2],
+         diff = mean(y1) - mean(y2),
+         p    = tt$p.value)
+  })
+}
+
+# Draw a single bracket at height y between x positions x1 and x2
+add_bracket <- function(plt, x1, x2, y, label) {
+  tick <- ymax_ext * 0.025
+  plt +
+    annotate("segment", x = x1, xend = x1,
+             y = y - tick, yend = y, linewidth = 0.35, color = "grey30") +
+    annotate("segment", x = x1, xend = x2,
+             y = y,       yend = y, linewidth = 0.35, color = "grey30") +
+    annotate("segment", x = x2, xend = x2,
+             y = y, yend = y - tick, linewidth = 0.35, color = "grey30") +
+    annotate("text", x = (x1 + x2) / 2, y = y + ymax_ext * 0.018,
+             label = label, size = 2.7, hjust = 0.5, vjust = 0, color = "grey20")
+}
+
+# x positions of bars in ggplot (factor order = group_order → 1, 2, 3)
+xp <- setNames(1:3, group_order)
+
+make_panel <- function(sdata, dt_sub, var, title, ylab) {
+  tests   <- pw_tests(dt_sub, var)
+  heights <- c(ymax_base * 1.08,   # above vs NF  (adjacent)
+               ymax_base * 1.22,   # NF   vs below (adjacent)
+               ymax_base * 1.40)   # above vs below (spanning)
+
+  plt <- ggplot(sdata, aes(x = treatment, y = mean, fill = treatment)) +
     geom_col(width = 0.55) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se),
                   width = 0.12, linewidth = 0.8) +
-    geom_text(aes(y = ymax * 0.04, label = round(mean, 1)),
+    geom_text(aes(y = ymax_ext * 0.035, label = round(mean, 2)),
               color = "white", fontface = "bold", size = 4.5) +
     scale_fill_manual(values = group_colors, guide = "none") +
-    scale_x_discrete(labels = group_labels) +
-    scale_y_continuous(limits = c(0, ymax),
-                       breaks = pretty(c(0, ymax), n = 6)) +
+    scale_x_discrete(labels = labels_n(sdata)) +
+    scale_y_continuous(limits = c(0, ymax_ext),
+                       breaks = pretty(c(0, ymax_base), n = 6)) +
     labs(title = title, x = NULL, y = ylab) +
     theme_classic(base_size = 13) +
     theme(
-      aspect.ratio = 0.65,
-      plot.title  = element_text(face = "bold", hjust = 0.5),
-      axis.text.x = element_text(color = "black", size = 11)
+      aspect.ratio = 0.80,
+      plot.title   = element_text(face = "bold", hjust = 0.5),
+      axis.text.x  = element_text(color = "black", size = 10)
     )
+
+  for (i in seq_along(tests)) {
+    t   <- tests[[i]]
+    lbl <- sprintf("Δ=%.2f\n%s", t$diff, fmt_p(t$p))
+    plt <- add_bracket(plt, xp[t$g1], xp[t$g2], heights[i], lbl)
+  }
+  plt
 }
 
 p_merit <- make_panel(sum_merit,
+                      dt[!is.na(treatment) & !is.na(redist_merit)],
+                      "redist_merit",
                       "Redistributive decisions\nfor merit scenario",
                       "USD to Worker B")
 p_luck  <- make_panel(sum_luck,
+                      dt[!is.na(treatment) & !is.na(redist_luck)],
+                      "redist_luck",
                       "Redistributive decisions\nfor luck scenario",
                       "USD to Worker D")
 
 fig1 <- p_merit + p_luck +
   plot_annotation(
     caption = paste0(
-      "Notes. Bar heights = group means. Whiskers = +1 SE. N = ", nrow(dt), "."
+      "Notes. Bar heights = group means. Whiskers = ±1 SE. ",
+      "Brackets: Welch t-test (two-sided). N = ", nrow(dt), "."
     )
   )
 print(fig1)
-ggsave("figure1.pdf", fig1, width = 10, height = 5, device = cairo_pdf)
+ggsave("figure1.pdf", fig1, width = 10, height = 6, device = cairo_pdf)
 
 # Figure 2: effort_luck (left) + redist_merit (right)
 

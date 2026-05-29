@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.21)  29 MAY 2026 06:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.21)  29 MAY 2026 08:20
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -658,36 +658,33 @@ File: figure2.pdf Graphic file (type pdf)
 Package pdftex.def Info: figure2.pdf  used on input line 458.
 (pdftex.def)             Requested size: 469.75502pt x 234.88023pt.
 [9] [10 <./figure2.pdf>] [11]
-Overfull \hbox (3.51137pt too wide) in paragraph at lines 565--572
+Overfull \hbox (3.51137pt too wide) in paragraph at lines 552--557
 \T1/lmr/m/n/12 ing-ful, rep-re-sent-ing roughly 27--29% of the above-group mean of $1.91, and re-mains marginally
  []
 
 (table2.tex
-LaTeX Font Info:    Trying to load font information for T1+lmss on input line 39.
+LaTeX Font Info:    Trying to load font information for T1+lmss on input line 43.
  (C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-Overfull \hbox (107.91374pt too wide) in paragraph at lines 39--40
- [][] 
- []
-
-) [12] [13] (table3.tex)
+)) [12] [13] (table3.tex)
 
 pdfTeX warning: pdflatex (file ./figure5.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<figure5.pdf, id=265, 433.62pt x 325.215pt>
+<figure5.pdf, id=266, 433.62pt x 325.215pt>
 File: figure5.pdf Graphic file (type pdf)
 <use figure5.pdf>
-Package pdftex.def Info: figure5.pdf  used on input line 624.
+Package pdftex.def Info: figure5.pdf  used on input line 609.
 (pdftex.def)             Requested size: 281.85587pt x 211.40213pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[14] [15] [16 <./figure5.pdf>] (table4.tex
-Overfull \hbox (60.73837pt too wide) in paragraph at lines 39--40
+[14 <./figure5.pdf>] [15] [16] (table4.tex
+Overfull \hbox (30.25246pt too wide) in paragraph at lines 40--41
  [][] 
  []
 
-) [17] [18] [19] [20] [21] (paper.aux)
+) [17] [18] [19] [20] (tableA2.tex) (tableA3.tex) (tableA4.tex
+Overfull \hbox (27.21075pt too wide) in paragraph at lines 40--41
+ [][] 
+ []
+
+) (tableA5.tex) [21] [22] [23] [24] [25] (paper.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -696,17 +693,17 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: 4603C2947798057FFC0D35BA927E320D;2568.
  ) 
 Here is how much of TeX's memory you used:
- 20832 strings out of 467871
- 431722 string characters out of 5418860
- 856028 words of memory out of 5000000
- 49415 multiletter control sequences out of 15000+600000
- 720714 words of font info for 93 fonts, out of 8000000 for 9000
+ 20892 strings out of 467871
+ 432955 string characters out of 5418860
+ 921373 words of memory out of 5000000
+ 49441 multiletter control sequences out of 15000+600000
+ 721033 words of font info for 94 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,12n,112p,1072b,2819s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr7.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtk10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
-Output written on paper.pdf (21 pages, 446865 bytes).
+ 83i,12n,112p,1072b,3135s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr7.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtk10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
+Output written on paper.pdf (25 pages, 481412 bytes).
 PDF statistics:
- 425 PDF objects out of 1000 (max. 8388607)
- 76 named destinations out of 1000 (max. 500000)
+ 469 PDF objects out of 1000 (max. 8388607)
+ 97 named destinations out of 1000 (max. 500000)
  123 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,0 +1,40 @@
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+caption={Surprise Effects: Within-Arm and Full-Sample Comparisons \label{tab:surprise}},
+note{}={* p \num{< 0.1}, ** p \num{< 0.05}, *** p \num{< 0.01}},
+note{ }={\textit{Notes.} OLS with HC3-robust SEs in parentheses. Cols.~(1) and (4): above group only ($N = 47$); positively surprised = told above but predicted below ($n_{\text{surp}} = 5$). Cols.~(2) and (5): below group only ($N = 48$); negatively surprised = told below but predicted above ($n_{\text{surp}} = 37$). Constant in cols.~(1)--(2) and (4)--(5) = mean of the not-surprised sub-group within each arm. Cols.~(3) and (6): full sample ($N = 145$); baseline = negatively surprised. Negatively reassured = told below, predicted below ($n = 11$); positively surprised = told above, predicted below ($n = 5$); positively reassured = told above, predicted above ($n = 42$); no feedback -- optimistic = no feedback, predicted above ($n = 43$); no feedback -- pessimistic = no feedback, predicted below ($n = 7$). Constant in cols.~(3) and (6) = mean of the negatively surprised group. $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]Q[]Q[]},
+hline{2}={2-4}{solid, black, 0.05em},
+hline{2}={5-7}{solid, black, 0.05em},
+hline{3}={1-7}{solid, black, 0.05em},
+hline{19}={1-7}{solid, black, 0.05em},
+hline{1}={1-7}{solid, black, 0.08em},
+hline{21}={1-7}{solid, black, 0.08em},
+column{2-7}={}{halign=c},
+column{1}={}{halign=l},
+}                     %% tabularray inner close
+& \SetCell[c=3]{c} USD Redistributed & & & \SetCell[c=3]{c} Effort Beliefs & & \\
+& (1) & (2) & (3) & (4) & (5) & (6) \\
+Constant & \num{1.881}*** & \num{2.182}*** & \num{2.514}*** & \num{7.476}*** & \num{5.873}*** & \num{6.322}*** \\
+& (\num{0.210}) & (\num{0.486}) & (\num{0.224}) & (\num{0.353}) & (\num{0.865}) & (\num{0.420}) \\
+Pos.\ surprised (within above arm) & \num{0.319} &  &  & \num{-0.496} &  &  \\
+& (\num{0.771}) &  &  & (\num{1.721}) &  &  \\
+Neg.\ surprised (within below arm) &  & \num{0.332} &  &  & \num{0.449} &  \\
+&  & (\num{0.535}) &  &  & (\num{0.962}) &  \\
+Negatively reassured &  &  & \num{-0.332} &  &  & \num{-0.449} \\
+&  &  & (\num{0.535}) &  &  & (\num{0.962}) \\
+Positively surprised &  &  & \num{-0.314} &  &  & \num{0.658} \\
+&  &  & (\num{0.775}) &  &  & (\num{1.736}) \\
+Positively reassured &  &  & \num{-0.633}** &  &  & \num{1.155}** \\
+&  &  & (\num{0.308}) &  &  & (\num{0.549}) \\
+No feedback -- optimistic &  &  & \num{-0.397} &  &  & \num{0.499} \\
+&  &  & (\num{0.313}) &  &  & (\num{0.532}) \\
+No feedback -- pessimistic &  &  & \num{-0.371} &  &  & \num{1.464}** \\
+&  &  & (\num{0.593}) &  &  & (\num{0.638}) \\
+$N$ & \num{47} & \num{48} & \num{145} & \num{47} & \num{48} & \num{145} \\
+$R^{2}$ & \num{0.005} & \num{0.010} & \num{0.029} & \num{0.004} & \num{0.006} & \num{0.055} \\
+\end{talltblr}
+\end{table}

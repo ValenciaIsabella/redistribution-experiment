@@ -8,7 +8,7 @@ library(data.table)
 library(jsonlite)
 library(lmtest)
 library(sandwich)
-install.packages(c("car","ggplot2", "patchwork", "modelsummary", "kableExtra"))
+# install.packages(c("car","ggplot2", "patchwork", "modelsummary", "kableExtra"))
 library(car)
 library(ggplot2)
 library(patchwork)
@@ -39,7 +39,7 @@ dt <- dt_raw[, .(
   effort_luck  = demo_effortLuck / 10,
   effort_self  = sr_effort,
   score_guess  = sr_guess,
-  pred_better  = sr_relPerf,
+  pred_better  = (sr_relPerf == "much_better"),   # TRUE = predicted to outperform
   guess_error  = sr_guess - totalScore,
   age          = demo_age,
   female       = (demo_gender == "female"),
@@ -75,6 +75,20 @@ dt[, edu_ma_up := (!is.na(edu_3) & edu_3 == "Master or above")]
 
 dt[, above_positively_surprised := fifelse(told_above == TRUE  & pred_better == FALSE, 1L, 0L)]
 dt[, below_negatively_surprised := fifelse(told_above == FALSE & pred_better == TRUE,  1L, 0L)]
+
+# 6-category feedback_type: crosses treatment × prediction direction
+# No-feedback group split by pred_better (optimistic vs pessimistic)
+# Baseline for full-sample regression: negatively surprised (told below, predicted above)
+dt[, feedback_type := factor(fcase(
+  treatment == "no_feedback" & pred_better == TRUE,  "nf_optimistic",
+  treatment == "no_feedback" & pred_better == FALSE, "nf_pessimistic",
+  told_above == FALSE & pred_better == TRUE,         "neg_surprised",
+  told_above == FALSE & pred_better == FALSE,        "neg_reassured",
+  told_above == TRUE  & pred_better == FALSE,        "pos_surprised",
+  told_above == TRUE  & pred_better == TRUE,         "pos_reassured"
+), levels = c("neg_surprised", "neg_reassured", "pos_surprised", "pos_reassured",
+              "nf_optimistic", "nf_pessimistic"))]
+
 dt[, log_redist_merit := log(redist_merit + 1)]
 dt[, log_effort_luck  := log(effort_luck  + 1)]
 
@@ -159,15 +173,154 @@ cat("\n(Compare treatment coefficients with m3/m4 to assess mediation)\n")
 
 has_surprise <- sum(!is.na(dt_rel$pred_better)) > 10   # enough non-NA obs
 
+# Diagnostic: distribution of pre-feedback predictions
+cat("\n--- Pre-feedback prediction (TRUE = expected to outperform) ---\n")
+print(table(dt$treatment, dt$pred_better, useNA = "ifany"))
+cat("\n--- % predicting above average by treatment ---\n")
+pred_pct <- dt[!is.na(pred_better), .(
+  n_total              = .N,
+  n_predicted_better   = sum(pred_better),
+  pct_predicted_better = round(mean(pred_better) * 100, 1)
+), by = treatment]
+print(pred_pct)
+
+cat("\n--- Variation in surprise indicators ---\n")
+cat("above_positively_surprised:", table(dt_rel$above_positively_surprised), "\n")
+cat("below_negatively_surprised:", table(dt_rel$below_negatively_surprised), "\n")
+
 if (has_surprise) {
   m7 <- lm(redist_merit ~ above_positively_surprised + below_negatively_surprised,
            data = dt_rel)
   m8 <- lm(redist_merit ~ above_positively_surprised + below_negatively_surprised
            + age + female + score + colombian + edu_3, data = dt_rel)
-  cat("\n=== Surprise heterogeneity ===\n"); print(ctest(m7))
+  cat("\n=== Surprise heterogeneity (pooled, dt_rel) ===\n"); print(ctest(m7))
 } else {
   cat("\nNOTE: pred_better is missing — surprise models skipped.\n")
 }
+
+# =====================================================================
+# 5b. WITHIN-TREATMENT SURPRISE ANALYSIS
+#     Compare surprised vs. not-surprised WITHIN each treatment arm.
+#     Above group (n=47): 5 positively surprised, 42 not surprised.
+#     Below group (n=48): 37 negatively surprised, 11 not surprised.
+#     Outcome: effort_luck AND redist_merit.
+# =====================================================================
+
+dt_above     <- dt[treatment == "above"]
+dt_below     <- dt[treatment == "below"]
+dt_above_eff <- dt_above[!is.na(effort_luck)]
+dt_below_eff <- dt_below[!is.na(effort_luck)]
+
+# Descriptive means by surprise status
+cat("\n--- Means by treatment × surprise status ---\n")
+cat("Above group:\n")
+print(dt_above[, .(n = .N, effort_luck = mean(effort_luck, na.rm=TRUE),
+                   redist = mean(redist_merit, na.rm=TRUE)),
+               by = above_positively_surprised])
+cat("Below group:\n")
+print(dt_below[, .(n = .N, effort_luck = mean(effort_luck, na.rm=TRUE),
+                   redist = mean(redist_merit, na.rm=TRUE)),
+               by = below_negatively_surprised])
+
+# Within-treatment regressions (no controls — cell sizes too small for controls)
+ms_el_above <- lm(effort_luck  ~ above_positively_surprised, data = dt_above_eff)
+ms_el_below <- lm(effort_luck  ~ below_negatively_surprised, data = dt_below_eff)
+ms_rd_above <- lm(redist_merit ~ above_positively_surprised, data = dt_above)
+ms_rd_below <- lm(redist_merit ~ below_negatively_surprised, data = dt_below)
+
+cat("\n=== Within above: effort_luck ~ pos_surprised ===\n"); print(ctest(ms_el_above))
+cat("\n=== Within below: effort_luck ~ neg_surprised ===\n"); print(ctest(ms_el_below))
+cat("\n=== Within above: redist_merit ~ pos_surprised ===\n"); print(ctest(ms_rd_above))
+cat("\n=== Within below: redist_merit ~ neg_surprised ===\n"); print(ctest(ms_rd_below))
+
+# =====================================================================
+# 5c. FULL-SAMPLE FEEDBACK-TYPE REGRESSION
+#     All 5 mutually exclusive categories in one model.
+#     Baseline: negatively surprised (told below, predicted above)
+# =====================================================================
+
+cat("\n--- feedback_type distribution ---\n")
+print(table(dt$feedback_type, useNA = "ifany"))
+
+ms_ft_el <- lm(effort_luck  ~ feedback_type, data = dt[!is.na(effort_luck) & !is.na(feedback_type)])
+ms_ft_rd <- lm(redist_merit ~ feedback_type, data = dt[!is.na(feedback_type)])
+cat("\n=== Full-sample feedback_type → effort_luck ===\n");  print(ctest(ms_ft_el))
+cat("\n=== Full-sample feedback_type → redist_merit ===\n"); print(ctest(ms_ft_rd))
+
+# Table 4: Within-treatment surprise + full-sample feedback-type effects
+coef_map_surpr <- c(
+  "(Intercept)"                    = "Constant",
+  "above_positively_surprised"     = "Pos.\\ surprised (within above arm)",
+  "below_negatively_surprised"     = "Neg.\\ surprised (within below arm)",
+  "feedback_typeneg_reassured"     = "Negatively reassured",
+  "feedback_typepos_surprised"     = "Positively surprised",
+  "feedback_typepos_reassured"     = "Positively reassured",
+  "feedback_typenf_optimistic"     = "No feedback -- optimistic",
+  "feedback_typenf_pessimistic"    = "No feedback -- pessimistic"
+)
+
+# USD Redistributed first (cols 1-3), Effort Beliefs second (cols 4-6)
+models_surpr <- list(
+  "(1)" = ms_rd_above,
+  "(2)" = ms_rd_below,
+  "(3)" = ms_ft_rd,
+  "(4)" = ms_el_above,
+  "(5)" = ms_el_below,
+  "(6)" = ms_ft_el
+)
+
+modelsummary(
+  models_surpr,
+  vcov     = lapply(models_surpr, hc3),
+  coef_map = coef_map_surpr,
+  gof_map  = list(
+    list(raw = "nobs",      clean = "$N$",     fmt = 0),
+    list(raw = "r.squared", clean = "$R^{2}$", fmt = 3)
+  ),
+  stars    = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+  output   = "table4.tex",
+  title    = "Surprise Effects: Within-Arm and Full-Sample Comparisons \\label{tab:surprise}",
+  notes    = paste0(
+    "\\textit{Notes.} OLS with HC3-robust SEs in parentheses. ",
+    "Cols.~(1) and (4): above group only ($N = 47$); positively surprised = told above but predicted below ($n_{\\text{surp}} = 5$). ",
+    "Cols.~(2) and (5): below group only ($N = 48$); negatively surprised = told below but predicted above ($n_{\\text{surp}} = 37$). ",
+    "Constant in cols.~(1)--(2) and (4)--(5) = mean of the not-surprised sub-group within each arm. ",
+    "Cols.~(3) and (6): full sample ($N = 145$); baseline = negatively surprised. ",
+    "Negatively reassured = told below, predicted below ($n = 11$); ",
+    "positively surprised = told above, predicted below ($n = 5$); ",
+    "positively reassured = told above, predicted above ($n = 42$); ",
+    "no feedback -- optimistic = no feedback, predicted above ($n = 43$); ",
+    "no feedback -- pessimistic = no feedback, predicted below ($n = 7$). ",
+    "Constant in cols.~(3) and (6) = mean of the negatively surprised group. ",
+    "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
+  ),
+  escape = FALSE
+)
+cat("Saved: table4.tex\n")
+
+# Post-process table4.tex: replace the single column-number header row with a
+# two-row spanning header: Row 1 = outcome group labels, Row 2 = (1)...(6)
+tex4 <- readLines("table4.tex")
+hdr_idx <- grep("^& \\(1\\)", tex4)
+tex4[hdr_idx] <- paste0(
+  "& \\SetCell[c=3]{c} USD Redistributed & & ",
+  "& \\SetCell[c=3]{c} Effort Beliefs & & \\\\\n",
+  "& (1) & (2) & (3) & (4) & (5) & (6) \\\\"
+)
+# Shift hline row numbers (one extra row added at the top)
+tex4 <- gsub("hline\\{18\\}", "hline{19}", tex4)
+tex4 <- gsub("hline\\{20\\}", "hline{21}", tex4)
+tex4 <- gsub("hline\\{2\\}=",  "hline{3}=",  tex4)
+# Add partial underlines under each spanning label (cmidrule-style, skips row-label col)
+tex4 <- gsub(
+  "hline\\{3\\}=\\{1-7\\}\\{solid, black, 0\\.05em\\}",
+  paste0("hline{2}={2-4}{solid, black, 0.05em},\n",
+         "hline{2}={5-7}{solid, black, 0.05em},\n",
+         "hline{3}={1-7}{solid, black, 0.05em}"),
+  tex4
+)
+writeLines(tex4, "table4.tex")
+cat("Post-processed: table4.tex (two-level spanning header)\n")
 
 # =====================================================================
 # 6.  HETEROGENEITY: treatment x score interaction
@@ -292,15 +445,17 @@ coef_map_main <- c(
   "edu_3Master or above"         = "Master's or above"
 )
 
-ctrl_row_main <- as.data.frame(as.list(setNames(
-  c("Controls (age, female, score, Colombian, edu.)", "No", "Yes", "No", "Yes"),
-  c("term", "(1)", "(2)", "(3)", "(4)")
-)))
-
 models_main <- list(
-  "(1)" = m1, "(2)" = m2,
-  "(3)" = m3, "(4)" = m4
+  "(1) Effort belief"                       = m1,
+  "(2) Effort belief\\phantom{x}"           = m2,
+  "(3) Merit redistrib.~(\\$)"              = m3,
+  "(4) Merit redistrib.~(\\$)\\phantom{x}"  = m4
 )
+
+ctrl_row_main <- as.data.frame(as.list(setNames(
+  c("Demographic controls", "No", "Yes", "No", "Yes"),
+  c("term", names(models_main))
+)))
 
 modelsummary(
   models_main,
@@ -347,37 +502,22 @@ coef_map_mech <- c(
   "edu_3Master or above"       = "Master's or above"
 )
 
-if (has_surprise) {
-  models_mech   <- list("(1)" = m9, "(2)" = m10, "(3)" = m7, "(4)" = m8)
-  ctrl_row_mech <- as.data.frame(as.list(setNames(
-    c("Controls (age, female, score, Colombian, edu.)", "No", "Yes", "No", "Yes"),
-    c("term", "(1)", "(2)", "(3)", "(4)")
-  )))
-  tbl3_notes <- paste0(
-    "\\textit{Notes.} OLS with HC3-robust SEs in parentheses. ",
-    "Dependent variable: USD redistributed (merit scenario). ",
-    "Cols.~(1)--(2): full sample; includes effort--luck belief to assess mediation; ",
-    "compare treatment coefficients with Table~\\ref{tab:main} cols.~(3)--(4). ",
-    "Cols.~(3)--(4): relative-feedback group only. ",
-    "``Positively surprised'': told above but predicted below. ",
-    "``Negatively surprised'': told below but predicted above. ",
-    "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
-  )
-} else {
-  models_mech   <- list("(1)" = m9, "(2)" = m10)
-  ctrl_row_mech <- as.data.frame(as.list(setNames(
-    c("Controls (age, female, score, Colombian, edu.)", "No", "Yes"),
-    c("term", "(1)", "(2)")
-  )))
-  tbl3_notes <- paste0(
-    "\\textit{Notes.} OLS with HC3-robust SEs in parentheses. ",
-    "Dependent variable: USD redistributed (merit scenario). ",
-    "Includes effort--luck belief as control to assess mediation; ",
-    "compare treatment coefficients with Table~\\ref{tab:main} cols.~(3)--(4). ",
-    "Baseline: Told Above. ",
-    "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
-  )
-}
+models_mech <- list(
+  "(1) Merit redistrib.~(\\$)"              = m9,
+  "(2) Merit redistrib.~(\\$)\\phantom{x}"  = m10
+)
+ctrl_row_mech <- as.data.frame(as.list(setNames(
+  c("Demographic controls", "No", "Yes"),
+  c("term", names(models_mech))
+)))
+tbl3_notes <- paste0(
+  "\\textit{Notes.} OLS with HC3-robust SEs in parentheses. ",
+  "Dependent variable: USD redistributed (merit scenario). ",
+  "Includes effort--luck belief as control to assess mediation; ",
+  "compare treatment coefficients with Table~\\ref{tab:main} cols.~(3)--(4). ",
+  "Baseline: Told Above. ",
+  "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$."
+)
 
 modelsummary(
   models_mech,
@@ -516,8 +656,41 @@ fig4 <- ggplot(dt_eff[!is.na(redist_merit)],
 ggsave("figure4.pdf", fig4, width = 8, height = 6, device = cairo_pdf)
 cat("Saved: figure4.pdf\n")
 
+# ── Figure 5: Pre-feedback prediction distribution by treatment ──
+# Shows the share of participants who predicted they would outperform their peer,
+# by treatment group. Illustrates the near-universal overconfidence pattern.
+
+pred_summary <- dt[!is.na(pred_better), .(
+  pct_better = mean(pred_better) * 100,
+  se_pct     = sqrt(mean(pred_better) * (1 - mean(pred_better)) / .N) * 100,
+  n          = .N
+), by = treatment][, treatment := factor(treatment, levels = group_order)]
+
+fig5 <- ggplot(pred_summary, aes(x = treatment, y = pct_better, fill = treatment)) +
+  geom_col(width = 0.55) +
+  geom_errorbar(aes(ymin = pct_better - se_pct, ymax = pct_better + se_pct),
+                width = 0.12, linewidth = 0.8) +
+  geom_text(aes(y = 4, label = sprintf("%.0f%%", pct_better)),
+            color = "white", fontface = "bold", size = 4.5) +
+  scale_fill_manual(values = group_colors, guide = "none") +
+  scale_x_discrete(labels = group_labels) +
+  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20),
+                     labels = function(x) paste0(x, "%")) +
+  labs(title   = "Share Predicting Above-Average Performance (Pre-Feedback)",
+       x       = NULL,
+       y       = "% predicting to outperform matched peer",
+       caption = sprintf("Notes. Proportion ± 1 SE. N = %d.", sum(pred_summary$n))) +
+  theme_classic(base_size = 13) +
+  theme(
+    aspect.ratio = 0.65,
+    plot.title   = element_text(face = "bold", hjust = 0.5),
+    axis.text.x  = element_text(color = "black", size = 11)
+  )
+ggsave("figure5.pdf", fig5, width = 6, height = 4.5, device = cairo_pdf)
+cat("Saved: figure5.pdf\n")
+
 cat("\nDone. Outputs: table1.tex, table2.tex, table3.tex,",
-    "figure2.pdf, figure3.pdf, figure4.pdf\n")
+    "figure2.pdf, figure3.pdf, figure4.pdf, figure5.pdf\n")
 
 
 table(dt$country)

@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(Test-Path \"c:\\\\Users\\\\User\\\\Documents\\\\jatos_win_java\\\\jatos_win_java\\\\study_assets_root\\\\2258638b-1e40-4a76-9c2a-bad96df69fab\\\\analysis_paper.R\")"
+      "Bash(Test-Path \"c:\\\\Users\\\\User\\\\Documents\\\\jatos_win_java\\\\jatos_win_java\\\\study_assets_root\\\\2258638b-1e40-4a76-9c2a-bad96df69fab\\\\analysis_paper.R\")",
+      "Bash(ls \"C:/Users/User/Downloads/Results_29_05.txt\" 2>/dev/null && echo \"EXISTS\" || echo \"NOT FOUND\")",
+      "Read(//c/Users/User/Downloads/**)",
+      "Bash(Rscript analysis_paper.R)",
+      "PowerShell(Get-ChildItem \"C:\\\\\" -Filter \"R\" -Directory -ErrorAction SilentlyContinue | Select-Object FullName; where.exe Rscript 2>$null; \\(Get-ItemProperty \"HKLM:\\\\SOFTWARE\\\\R-core\\\\R\" -ErrorAction SilentlyContinue\\).InstallPath)",
+      "PowerShell($rscript = \"C:\\\\Program Files\\\\R\\\\R-4.5.2\\\\bin\\\\Rscript.exe\"; Set-Location \"C:\\\\Users\\\\User\\\\Documents\\\\jatos_win_java\\\\jatos_win_java\\\\study_assets_root\\\\2258638b-1e40-4a76-9c2a-bad96df69fab\"; & $rscript analysis_paper.R 2>&1)",
+      "PowerShell($rscript = \"C:\\\\Program Files\\\\R\\\\R-4.5.2\\\\bin\\\\Rscript.exe\"; Set-Location \"C:\\\\Users\\\\User\\\\Documents\\\\jatos_win_java\\\\jatos_win_java\\\\study_assets_root\\\\2258638b-1e40-4a76-9c2a-bad96df69fab\"; & $rscript analysis_paper.R 2>&1 | Select-String -Pattern \"Surprise|Within|surprise|Means|not_surpr|positively|negatively|Estimate|Intercept|Std|t value|Error|Pr\\\\\\(|===|---\" | Select-Object -First 80)"
     ]
   }
 }

@@ -784,10 +784,10 @@ interact with feedback reception in ways that a single no-feedback dummy
 cannot capture, and warrants further investigation with larger samples.
 
 Table~\ref{tab:surprise} underscores the main limitation of the
-within-arm analysis: the $R^{2}$ values in columns (1)--(4) are all below
-0.01, and the positive-surprise cell is too small ($n = 5$) to yield any
-useful estimate.
-The full-sample results in columns (3)--(6) further suggest that the
+within-arm analysis: the $R^{2}$ values in the within-arm columns
+(1)--(2) and (4)--(5) are all at most 0.02, and the positive-surprise
+cell is too small ($n = 5$) to yield any useful estimate.
+The full-sample results in columns (3) and (6) further suggest that the
 treatment effect documented in Sections~\ref{sec:beliefs}--\ref{sec:merit}
 is primarily driven by the contrast between those whose optimistic
 prediction was confirmed (\emph{positively reassured}) and those whose
@@ -995,7 +995,8 @@ Piketty, Thomas. 1995.
 
 % ============================================================
 \appendix
-\section*{Appendix}
+
+\section{Additional Tables}
 \setcounter{table}{1}
 \renewcommand{\thetable}{A\arabic{table}}
 \renewcommand{\theHtable}{A\arabic{table}}
@@ -1007,5 +1008,63 @@ Piketty, Thomas. 1995.
 \input{tableA4}
 
 \input{tableA5}
+
+% ============================================================
+\section{Experimental Design}
+\label{app:design}
+
+\captionsetup[figure]{labelformat=empty}
+
+The following screenshots illustrate the experiment as seen by spectator participants.
+The experiment was conducted online via JATOS.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.82\textwidth]{Exp_pictures/Ex0.png}
+\caption{Welcome screen and informed consent.}
+\label{fig:ex0}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.82\textwidth]{Exp_pictures/Ex1.png}
+\caption{Part~1 instructions: code-recognition task scoring rules and structure.}
+\label{fig:ex1}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{Exp_pictures/Ex2.png}
+\caption{Code-recognition task interface (Round~2 of~5). Participants identify and check every instance of the target code (361) in the grid within 45 seconds.}
+\label{fig:ex2}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.82\textwidth]{Exp_pictures/Ex3.png}
+\caption{Pre-feedback survey, elicited immediately after the task: self-reported effort, guessed score, and relative performance prediction (used to classify participants as optimistic or pessimistic).}
+\label{fig:ex3}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.82\textwidth]{Exp_pictures/Ex5.png}
+\caption{Part~2 instructions: merit scenario. Participants are informed of the two workers' initial earnings and asked to decide how to redistribute the total payment.}
+\label{fig:ex5}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.82\textwidth]{Exp_pictures/Ex6.png}
+\caption{Redistribution decision interface. Participants choose one of nine discrete allocations of the \$8 total between Worker~A (\$8 initial) and Worker~B (\$0 initial).}
+\label{fig:ex6}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.72\textwidth]{Exp_pictures/Ex7.png}
+\caption{Post-redistribution survey: demographics and the effort--luck belief measure (0--10 slider), which is the hypothesised mediator.}
+\label{fig:ex7}
+\end{figure}
 
 \end{document}

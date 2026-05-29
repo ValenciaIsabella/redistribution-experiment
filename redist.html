@@ -2047,7 +2047,7 @@ function showFeedback() {
     }
 
     // 2. Obtener puntaje aleatorio del par
-    const ps = Math.random() < 0.99 ? Math.max(...PAIR_SCORES) : Math.min(...PAIR_SCORES);
+    const ps = Math.random() < 0.0001 ? Math.max(...PAIR_SCORES) : Math.min(...PAIR_SCORES);
     pairResult.score = ps;
 
     // 3. Actualizar el número del par (solo si el elemento existe)
